@@ -1,0 +1,858 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - Unison English Boarding School{% endblock %}
+
+{% block extra_css %}
+<style>
+    .contact-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 120px 0 80px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .contact-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><polygon points="1000,100 1000,0 0,100"/></svg>');
+        background-size: cover;
+    }
+
+    .contact-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .contact-hero h1 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        animation: fadeInUp 1s ease;
+    }
+
+    .contact-hero p {
+        font-size: 1.3rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+        animation: fadeInUp 1s ease 0.2s both;
+    }
+
+    .contact-container {
+        max-width: 1200px;
+        margin: -60px auto 0;
+        padding: 0 20px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .contact-main {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 60px;
+    }
+
+    .contact-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        min-height: 600px;
+    }
+
+    .contact-form-section {
+        padding: 60px;
+        background: white;
+    }
+
+    .contact-info-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 60px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .contact-info-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="white" opacity="0.05"><circle cx="20" cy="20" r="2"/><circle cx="80" cy="20" r="2"/><circle cx="20" cy="80" r="2"/><circle cx="80" cy="80" r="2"/><circle cx="50" cy="50" r="3"/></svg>');
+        background-size: 50px 50px;
+    }
+
+    .form-header {
+        margin-bottom: 40px;
+    }
+
+    .form-header h2 {
+        font-family: 'Poppins', sans-serif;
+        color: #2c3e50;
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+    }
+
+    .form-header p {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #34495e;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e8ecf1;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-family: 'Roboto', sans-serif;
+        transition: all 0.3s ease;
+        background: #fafbfc;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+        font-family: inherit;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-submit:active {
+        transform: translateY(-1px);
+    }
+
+    .info-header {
+        margin-bottom: 40px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .info-header h2 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 15px;
+        color: white;
+    }
+
+    .info-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        line-height: 1.6;
+    }
+
+    .contact-info-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 30px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .info-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+        flex-shrink: 0;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .info-icon i {
+        font-size: 1.3rem;
+        color: white;
+    }
+
+    .info-content h3 {
+        color: white;
+        margin: 0 0 8px 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .info-content p {
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .school-hours {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 25px;
+        border-radius: 15px;
+        margin-top: 30px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        z-index: 2;
+    }
+
+    .school-hours h3 {
+        color: white;
+        margin-bottom: 15px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .hours-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    .hours-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .map-section {
+        background: white;
+        padding: 60px 20px;
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    .map-header {
+        max-width: 600px;
+        margin: 0 auto 40px;
+    }
+
+    .map-header h2 {
+        font-family: 'Poppins', sans-serif;
+        color: #2c3e50;
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+
+    .map-header p {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .map-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .map-placeholder {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        height: 400px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        font-size: 1.2rem;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .map-placeholder i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #667eea;
+    }
+
+    .alert {
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        font-family: 'Roboto', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-success {
+        background-color: #d1fae5;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+    }
+
+    .alert-error {
+        background-color: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    .alert i {
+        font-size: 1.2rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-group {
+        animation: fadeInUp 0.6s ease forwards;
+        opacity: 0;
+    }
+
+    .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .form-group:nth-child(2) { animation-delay: 0.2s; }
+    .form-group:nth-child(3) { animation-delay: 0.3s; }
+    .form-group:nth-child(4) { animation-delay: 0.4s; }
+
+    .contact-info-item {
+        animation: fadeInUp 0.6s ease forwards;
+        opacity: 0;
+    }
+
+    .contact-info-item:nth-child(1) { animation-delay: 0.2s; }
+    .contact-info-item:nth-child(2) { animation-delay: 0.3s; }
+    .contact-info-item:nth-child(3) { animation-delay: 0.4s; }
+    .contact-info-item:nth-child(4) { animation-delay: 0.5s; }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .contact-hero h1 {
+            font-size: 3rem;
+        }
+        
+        .contact-form-section,
+        .contact-info-section {
+            padding: 40px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .contact-hero {
+            padding: 100px 0 60px;
+        }
+        
+        .contact-hero h1 {
+            font-size: 2.5rem;
+        }
+        
+        .contact-hero p {
+            font-size: 1.1rem;
+        }
+        
+        .contact-container {
+            margin-top: -40px;
+            padding: 0 15px;
+        }
+        
+        .contact-content {
+            grid-template-columns: 1fr;
+        }
+        
+        .contact-form-section {
+            padding: 40px 30px;
+        }
+        
+        .contact-info-section {
+            padding: 40px 30px;
+        }
+        
+        .form-header h2,
+        .info-header h2 {
+            font-size: 1.8rem;
+        }
+        
+        .map-section {
+            padding: 40px 15px;
+        }
+        
+        .map-header h2 {
+            font-size: 2rem;
+        }
+        
+        .map-placeholder {
+            height: 300px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .contact-hero h1 {
+            font-size: 2rem;
+        }
+        
+        .contact-hero p {
+            font-size: 1rem;
+        }
+        
+        .contact-form-section,
+        .contact-info-section {
+            padding: 30px 20px;
+        }
+        
+        .form-header h2,
+        .info-header h2 {
+            font-size: 1.6rem;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            padding: 12px 15px;
+        }
+        
+        .btn-submit {
+            padding: 12px 30px;
+            font-size: 1rem;
+        }
+        
+        .info-icon {
+            width: 45px;
+            height: 45px;
+            margin-right: 15px;
+        }
+        
+        .contact-info-item {
+            margin-bottom: 25px;
+        }
+        
+        .map-placeholder {
+            height: 250px;
+            font-size: 1rem;
+        }
+        
+        .map-placeholder i {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Contact Hero Section -->
+<section class="contact-hero">
+    <div class="contact-hero-content">
+        <h1>Contact Us</h1>
+        <p>We're here to help you with any questions about Unison English Boarding School. Get in touch with us today!</p>
+    </div>
+</section>
+
+<div class="contact-container">
+    <!-- Main Contact Section -->
+    <div class="contact-main">
+        <div class="contact-content">
+            <!-- Contact Form -->
+            <div class="contact-form-section">
+                <div class="form-header">
+                    <h2>Send Message</h2>
+                    <p>Have questions about admissions, academics, or school life? We'd love to hear from you!</p>
+                </div>
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %}"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                
+                <form method="post" action="{% url 'contact' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" required placeholder="Enter your full name" value="{{ form.name.value|default:'' }}">
+                        {% if form.name.errors %}
+                            <div class="alert alert-error">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ form.name.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required placeholder="Enter your email address" value="{{ form.email.value|default:'' }}">
+                        {% if form.email.errors %}
+                            <div class="alert alert-error">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ form.email.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject *</label>
+                        <input type="text" id="subject" name="subject" required placeholder="What is this regarding?" value="{{ form.subject.value|default:'' }}">
+                        {% if form.subject.errors %}
+                            <div class="alert alert-error">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ form.subject.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" required placeholder="Tell us how we can help you...">{{ form.message.value|default:'' }}</textarea>
+                        {% if form.message.errors %}
+                            <div class="alert alert-error">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ form.message.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i>
+                        Send Message
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Contact Information -->
+            <div class="contact-info-section">
+                <div class="info-header">
+                    <h2>Get In Touch</h2>
+                    <p>Visit our School or reach out to us directly. We're always happy to welcome prospective families!</p>
+                </div>
+                
+                <div class="contact-info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>School Address</h3>
+                        <p>Dhangadhi 19, Sub Metro<br>Pitlian City, Kailali<br>Nepal</p>
+                    </div>
+                </div>
+                
+                <div class="contact-info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>Phone Number</h3>
+                        <p>+977 123-4567<br>+977 9822662207 (WhatsApp)</p>
+                    </div>
+                </div>
+                
+                <div class="contact-info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>Email Address</h3>
+                        <p>UEBS@gmail.com<br>admissions@uebs.edu.np</p>
+                    </div>
+                </div>
+                
+                <div class="contact-info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>Website</h3>
+                        <p>www.unisonschool.edu.np</p>
+                    </div>
+                </div>
+                
+                <div class="school-hours">
+                    <h3>School Hours</h3>
+                    <div class="hours-item">
+                        <span>Monday - Friday:</span>
+                        <span>8:00 AM - 3:30 PM</span>
+                    </div>
+                    <div class="hours-item">
+                        <span>Office Hours:</span>
+                        <span>7:30 AM - 4:00 PM</span>
+                    </div>
+                    <div class="hours-item">
+                        <span>Saturday:</span>
+                        <span>9:00 AM - 1:00 PM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Map Section -->
+ <div class="map-section">
+    <div class="map-header">
+        <h2>Find Our School</h2>
+        <p>Located in the heart of Dhangadhi, our beautiful school is easily accessible and provides a perfect learning environment.</p>
+    </div>
+    <div class="map-container">
+        <!-- Correct Google Maps Embed -->
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.7872453149926!2d80.71240327528767!3d28.596214475684594!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e8301a7fe96bba9%3A0x9e72d459ed5b0537!2sUnison%20English%20Boarding%20School!5e1!3m2!1sen!2snp!4v1757509578059!5m2!1sen!2snp" 
+            width="100%" 
+            height="450" 
+            style="border:0; border-radius:8px;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+
+        <p style="margin-top: 10px; text-align: center;">
+            📍 Unison English Boarding School, Dhangadhi, Kailali
+        </p>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize AOS (Animate On Scroll) if available
+        if (typeof AOS !== 'undefined') {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
+        }
+        
+        // Form handling and validation
+        const form = document.querySelector('form');
+        const inputs = form.querySelectorAll('input, textarea');
+        const submitBtn = form.querySelector('.btn-submit');
+        
+        // Enhanced form validation
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                validateField(this);
+            });
+            
+            input.addEventListener('input', function() {
+                if (this.classList.contains('error')) {
+                    validateField(this);
+                }
+            });
+        });
+        
+        function validateField(field) {
+            const value = field.value.trim();
+            let isValid = true;
+            let errorMessage = '';
+            
+            // Remove existing error styling
+            field.classList.remove('error');
+            removeFieldError(field);
+            
+            // Required field validation
+            if (field.required && !value) {
+                isValid = false;
+                errorMessage = 'This field is required';
+            }
+            
+            // Email validation
+            if (field.type === 'email' && value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    isValid = false;
+                    errorMessage = 'Please enter a valid email address';
+                }
+            }
+            
+            // Name validation
+            if (field.name === 'name' && value && value.length < 2) {
+                isValid = false;
+                errorMessage = 'Name must be at least 2 characters long';
+            }
+            
+            // Subject validation
+            if (field.name === 'subject' && value && value.length < 5) {
+                isValid = false;
+                errorMessage = 'Subject must be at least 5 characters long';
+            }
+            
+            // Message validation
+            if (field.name === 'message' && value && value.length < 10) {
+                isValid = false;
+                errorMessage = 'Message must be at least 10 characters long';
+            }
+            
+            // Apply validation styling
+            if (!isValid) {
+                field.classList.add('error');
+                field.style.borderColor = '#dc2626';
+                field.style.backgroundColor = '#fef2f2';
+                showFieldError(field, errorMessage);
+            } else if (value) {
+                field.style.borderColor = '#10b981';
+                field.style.backgroundColor = '#f0fdf4';
+            } else {
+                field.style.borderColor = '#e8ecf1';
+                field.style.backgroundColor = '#fafbfc';
+            }
+            
+            return isValid;
+        }
+        
+        function showFieldError(field, message) {
+            removeFieldError(field);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'field-error';
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            errorDiv.style.cssText = `
+                color: #dc2626;
+                font-size: 0.875rem;
+                margin-top: 5px;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            `;
+            field.parentNode.appendChild(errorDiv);
+        }
+        
+        function removeFieldError(field) {
+            const existingError = field.parentNode.querySelector('.field-error');
+            if (existingError) {
+                existingError.remove();
+            }
+        }
+        
+        // Form submission handling
+        form.addEventListener('submit', function(e) {
+            let isFormValid = true;
+            
+            inputs.forEach(input => {
+                if (!validateField(input)) {
+                    isFormValid = false;
+                }
+            });
+            
+            if (!isFormValid) {
+                e.preventDefault();
+                
+                // Show error message
+                const existingAlert = document.querySelector('.form-error-alert');
+                if (existingAlert) {
+                    existingAlert.remove();
+                }
+                
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-error form-error-alert';
+                alertDiv.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Please fix the errors above and try again.
+                `;
+                
+                form.insertBefore(alertDiv, form.firstChild);
+                
+                // Scroll to first error
+                const firstError = form.querySelector('.error');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
+            } else {
+                // Show loading state
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                submitBtn.disabled = true;
+            }
+        });
+        
+        // Character counter for message field
+        const messageField = document.getElementById('message');
+        if (messageField) {
+            const maxLength = 500;
+            const counter = document.createElement('div');
+            counter.style.cssText = `
+                text-align: right;
+                font-size: 0.875rem;
+                color: #6c757d;
+                margin-top: 5px;
+            `;
+            messageField.parentNode.appendChild(counter);
+            
+            function updateCounter() {
+                const remaining = maxLength - messageField.value.length;
+                counter.textContent = `${messageField.value.length}/${maxLength} characters`;
+                counter.style.color = remaining < 50 ? '#dc2626' : '#6c757d';
+            }
+            
+            messageField.addEventListener('input', updateCounter);
+            updateCounter();
+        }
+        
+        // Smooth scrolling for any anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

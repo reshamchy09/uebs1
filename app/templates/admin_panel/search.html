@@ -1,0 +1,733 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Search - School Management System{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent animate__animated animate__fadeInDown">
+      <i class="fas fa-search mr-3"></i>Search Directory
+    </h1>
+    <p class="text-white/70 mt-2">Search for students, staff, and other records across the entire system</p>
+  </div>
+
+  <!-- Search Interface -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <!-- Search Bar -->
+      <div class="relative flex-1">
+        <input type="text" id="searchInput" placeholder="Search by name, email, phone, username, or address..." class="w-full glass-card text-white placeholder-white/50 px-6 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 text-lg">
+        <button id="searchBtn" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white">
+          <i class="fas fa-search text-xl"></i>
+        </button>
+      </div>
+      
+      <!-- Search Filters -->
+      <div class="flex flex-wrap gap-3">
+        <select id="searchType" class="glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option value="all">All Records</option>
+          <option value="students">Students Only</option>
+          <option value="staff">Staff Only</option>
+          <option value="parents">Parents Only</option>
+        </select>
+        
+        <select id="searchField" class="glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option value="all">All Fields</option>
+          <option value="name">Name</option>
+          <option value="email">Email</option>
+          <option value="phone">Phone</option>
+          <option value="username">Username</option>
+          <option value="address">Address</option>
+        </select>
+        
+        <button id="advancedSearchBtn" class="px-4 py-3 glass-card rounded-xl text-sm font-medium transition-all hover:bg-white/20">
+          <i class="fas fa-sliders-h mr-2"></i>Advanced
+        </button>
+      </div>
+    </div>
+    
+    <!-- Quick Search Tips -->
+    <div class="mt-6 p-4 bg-blue-600/20 border border-blue-500/30 rounded-lg">
+      <div class="flex items-start">
+        <i class="fas fa-lightbulb text-blue-400 mt-1 mr-3"></i>
+        <div>
+          <h3 class="font-medium text-blue-300">Search Tips</h3>
+          <ul class="text-sm text-blue-200 mt-2 space-y-1">
+            <li>• Use quotes for exact matches: "John Smith"</li>
+            <li>• Use wildcards: John* will match John, Johnny, Johnson</li>
+            <li>• Search by partial email: @gmail.com</li>
+            <li>• Search by area code: (555) or 555-</li>
+            <li>• Combine terms: math teacher grade 10</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Statistics -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-blue-600 rounded-lg mr-4">
+          <i class="fas fa-users text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Total Students</p>
+          <p class="text-2xl font-bold text-blue-400">1,247</p>
+          <p class="text-xs text-white/60">Across all grades</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-green-600 rounded-lg mr-4">
+          <i class="fas fa-chalkboard-teacher text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Total Staff</p>
+          <p class="text-2xl font-bold text-green-400">87</p>
+          <p class="text-xs text-white/60">Teaching & Admin</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-purple-600 rounded-lg mr-4">
+          <i class="fas fa-user-friends text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Total Parents</p>
+          <p class="text-2xl font-bold text-purple-400">1,847</p>
+          <p class="text-xs text-white/60">Primary & Secondary</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-orange-600 rounded-lg mr-4">
+          <i class="fas fa-database text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Total Records</p>
+          <p class="text-2xl font-bold text-orange-400">3,181</p>
+          <p class="text-xs text-white/60">All searchable data</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced Search Panel -->
+  <div id="advancedSearchPanel" class="glass-card rounded-xl p-6 mb-8 hidden">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-sliders-h mr-3"></i>Advanced Search Options
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div>
+        <label class="block text-sm font-medium text-white/80 mb-2">Grade Level</label>
+        <select class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option>All Grades</option>
+          <option>Kindergarten</option>
+          <option>Grade 1</option>
+          <option>Grade 2</option>
+          <option>Grade 3</option>
+          <option>Grade 4</option>
+          <option>Grade 5</option>
+          <option>Grade 6</option>
+          <option>Grade 7</option>
+          <option>Grade 8</option>
+          <option>Grade 9</option>
+          <option>Grade 10</option>
+          <option>Grade 11</option>
+          <option>Grade 12</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-white/80 mb-2">Department</label>
+        <select class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option>All Departments</option>
+          <option>Administration</option>
+          <option>Academic</option>
+          <option>Science</option>
+          <option>Mathematics</option>
+          <option>English</option>
+          <option>Arts</option>
+          <option>Sports</option>
+          <option>Support Staff</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-white/80 mb-2">Status</label>
+        <select class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option>All Statuses</option>
+          <option>Active</option>
+          <option>Inactive</option>
+          <option>Graduated</option>
+          <option>Transferred</option>
+          <option>On Leave</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-white/80 mb-2">Date Range (Enrollment)</label>
+        <input type="date" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-white/80 mb-2">City</label>
+        <input type="text" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Enter city">
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-white/80 mb-2">State/Province</label>
+        <input type="text" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Enter state/province">
+      </div>
+    </div>
+    
+    <div class="flex flex-wrap gap-4 pt-4">
+      <button id="applyAdvancedSearch" class="liquid-btn px-6 py-3 rounded-xl font-medium text-white transition-all duration-300 hover:bg-green-600">
+        <i class="fas fa-search mr-2"></i>Apply Advanced Search
+      </button>
+      <button id="resetAdvancedSearch" class="px-6 py-3 glass-card rounded-xl font-medium text-white transition-all duration-300 hover:bg-white/20">
+        <i class="fas fa-undo mr-2"></i>Reset Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Search Results -->
+  <div id="searchResults" class="hidden">
+    <div class="glass-card rounded-xl p-6 mb-8">
+      <h2 class="text-2xl font-semibold mb-6 flex items-center">
+        <i class="fas fa-list mr-3"></i>Search Results
+      </h2>
+      
+      <div class="mb-4 flex items-center justify-between">
+        <p class="text-white/70">Found <span id="resultCount" class="font-medium text-white">24</span> results for "<span id="searchTerm" class="font-medium text-white">John</span>"</p>
+        <div class="flex items-center space-x-4">
+          <select id="sortResults" class="glass-card px-4 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-400">
+            <option>Sort by Relevance</option>
+            <option>Sort by Name (A-Z)</option>
+            <option>Sort by Name (Z-A)</option>
+            <option>Sort by Date Added</option>
+          </select>
+          <button id="clearSearch" class="px-4 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+            <i class="fas fa-times mr-2"></i>Clear Search
+          </button>
+        </div>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-white/20">
+              <th class="text-left py-3 px-4 font-medium text-white/80">Type</th>
+              <th class="text-left py-3 px-4 font-medium text-white/80">Name</th>
+              <th class="text-left py-3 px-4 font-medium text-white/80">Username</th>
+              <th class="text-left py-3 px-4 font-medium text-white/80">Email</th>
+              <th class="text-left py-3 px-4 font-medium text-white/80">Phone</th>
+              <th class="text-left py-3 px-4 font-medium text-white/80">Address</th>
+              <th class="text-center py-3 px-4 font-medium text-white/80">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Student Results -->
+            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4">
+                <span class="px-2 py-1 bg-blue-600 text-white text-xs rounded-full">Student</span>
+              </td>
+              <td class="py-4 px-4 font-medium">John Smith</td>
+              <td class="py-4 px-4">john.smith</td>
+              <td class="py-4 px-4">john.smith@student.edu</td>
+              <td class="py-4 px-4">+1 (555) 123-4567</td>
+              <td class="py-4 px-4">123 Main St, Anytown, ST 12345</td>
+              <td class="py-4 px-4 text-center">
+                <div class="flex justify-center gap-2">
+                  <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                  <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4">
+                <span class="px-2 py-1 bg-blue-600 text-white text-xs rounded-full">Student</span>
+              </td>
+              <td class="py-4 px-4 font-medium">Jennifer Johnson</td>
+              <td class="py-4 px-4">jennifer.j</td>
+              <td class="py-4 px-4">jennifer.j@student.edu</td>
+              <td class="py-4 px-4">+1 (555) 123-4568</td>
+              <td class="py-4 px-4">456 Oak Ave, Anytown, ST 12345</td>
+              <td class="py-4 px-4 text-center">
+                <div class="flex justify-center gap-2">
+                  <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                  <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                </div>
+              </td>
+            </tr>
+            
+            <!-- Staff Results -->
+            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4">
+                <span class="px-2 py-1 bg-green-600 text-white text-xs rounded-full">Staff</span>
+              </td>
+              <td class="py-4 px-4 font-medium">Dr. John Davis</td>
+              <td class="py-4 px-4">john.davis</td>
+              <td class="py-4 px-4">john.davis@school.edu</td>
+              <td class="py-4 px-4">+1 (555) 987-6543</td>
+              <td class="py-4 px-4">789 Pine St, Anytown, ST 12345</td>
+              <td class="py-4 px-4 text-center">
+                <div class="flex justify-center gap-2">
+                  <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                  <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4">
+                <span class="px-2 py-1 bg-green-600 text-white text-xs rounded-full">Staff</span>
+              </td>
+              <td class="py-4 px-4 font-medium">Sarah Johnson</td>
+              <td class="py-4 px-4">sarah.j</td>
+              <td class="py-4 px-4">sarah.j@school.edu</td>
+              <td class="py-4 px-4">+1 (555) 987-6544</td>
+              <td class="py-4 px-4">321 Elm St, Anytown, ST 12345</td>
+              <td class="py-4 px-4 text-center">
+                <div class="flex justify-center gap-2">
+                  <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                  <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                </div>
+              </td>
+            </tr>
+            
+            <!-- Parent Results -->
+            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4">
+                <span class="px-2 py-1 bg-purple-600 text-white text-xs rounded-full">Parent</span>
+              </td>
+              <td class="py-4 px-4 font-medium">Robert Smith</td>
+              <td class="py-4 px-4">robert.s</td>
+              <td class="py-4 px-4">robert.smith@email.com</td>
+              <td class="py-4 px-4">+1 (555) 234-5678</td>
+              <td class="py-4 px-4">123 Main St, Anytown, ST 12345</td>
+              <td class="py-4 px-4 text-center">
+                <div class="flex justify-center gap-2">
+                  <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                  <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4">
+                <span class="px-2 py-1 bg-purple-600 text-white text-xs rounded-full">Parent</span>
+              </td>
+              <td class="py-4 px-4 font-medium">Mary Johnson</td>
+              <td class="py-4 px-4">mary.j</td>
+              <td class="py-4 px-4">mary.johnson@email.com</td>
+              <td class="py-4 px-4">+1 (555) 234-5679</td>
+              <td class="py-4 px-4">456 Oak Ave, Anytown, ST 12345</td>
+              <td class="py-4 px-4 text-center">
+                <div class="flex justify-center gap-2">
+                  <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                  <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-6">
+        <div class="text-sm text-white/70 mb-4 sm:mb-0">
+          Showing 1 to 6 of 24 entries
+        </div>
+        <div class="flex gap-2">
+          <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="px-3 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium">1</button>
+          <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">2</button>
+          <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">3</button>
+          <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">4</button>
+          <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Searches -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-history mr-3"></i>Recent Searches
+    </h2>
+    
+    <div class="space-y-4">
+      <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+          <i class="fas fa-search text-white"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <h3 class="font-medium">"john" in All Records</h3>
+            <span class="text-xs text-white/60">2 hours ago</span>
+          </div>
+          <p class="text-sm text-white/70 mt-1">Found 24 results (12 students, 8 staff, 4 parents)</p>
+        </div>
+        <button class="text-blue-400 hover:text-blue-300">
+          <i class="fas fa-redo"></i>
+        </button>
+      </div>
+      
+      <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+          <i class="fas fa-search text-white"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <h3 class="font-medium">"smith@email.com" in Email</h3>
+            <span class="text-xs text-white/60">1 day ago</span>
+          </div>
+          <p class="text-sm text-white/70 mt-1">Found 3 results (2 students, 1 parent)</p>
+        </div>
+        <button class="text-blue-400 hover:text-blue-300">
+          <i class="fas fa-redo"></i>
+        </button>
+      </div>
+      
+      <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+          <i class="fas fa-search text-white"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <h3 class="font-medium">"(555) 123-" in Phone</h3>
+            <span class="text-xs text-white/60">3 days ago</span>
+          </div>
+          <p class="text-sm text-white/70 mt-1">Found 18 results (12 students, 4 staff, 2 parents)</p>
+        </div>
+        <button class="text-blue-400 hover:text-blue-300">
+          <i class="fas fa-redo"></i>
+        </button>
+      </div>
+      
+      <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-10 h-10 bg-orange-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+          <i class="fas fa-search text-white"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <h3 class="font-medium">"Anytown" in Address</h3>
+            <span class="text-xs text-white/60">5 days ago</span>
+          </div>
+          <p class="text-sm text-white/70 mt-1">Found 87 results (62 students, 15 staff, 10 parents)</p>
+        </div>
+        <button class="text-blue-400 hover:text-blue-300">
+          <i class="fas fa-redo"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="mt-6 pt-4 border-t border-white/20">
+      <button id="clearHistory" class="px-4 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+        <i class="fas fa-trash mr-2"></i>Clear Search History
+      </button>
+    </div>
+  </div>
+
+  <!-- Saved Searches -->
+  <div class="glass-card rounded-xl p-6">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-bookmark mr-3"></i>Saved Searches
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+            <i class="fas fa-user-graduate text-white"></i>
+          </div>
+          <h3 class="font-semibold">Grade 10 Students</h3>
+        </div>
+        <p class="text-sm text-white/70 mb-3">All students currently in Grade 10</p>
+        <div class="flex items-center text-xs text-white/60">
+          <i class="fas fa-search mr-2"></i>
+          <span>Last run: 2 days ago</span>
+        </div>
+        <div class="mt-3 flex justify-between">
+          <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-play mr-1"></i>Run
+          </button>
+          <button class="px-3 py-1 glass-card hover:bg-white/20 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-edit mr-1"></i>Edit
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center mr-3">
+            <i class="fas fa-chalkboard-teacher text-white"></i>
+          </div>
+          <h3 class="font-semibold">Math Department</h3>
+        </div>
+        <p class="text-sm text-white/70 mb-3">All staff in the Mathematics department</p>
+        <div class="flex items-center text-xs text-white/60">
+          <i class="fas fa-search mr-2"></i>
+          <span>Last run: 1 week ago</span>
+        </div>
+        <div class="mt-3 flex justify-between">
+          <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-play mr-1"></i>Run
+          </button>
+          <button class="px-3 py-1 glass-card hover:bg-white/20 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-edit mr-1"></i>Edit
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center mr-3">
+            <i class="fas fa-user-friends text-white"></i>
+          </div>
+          <h3 class="font-semibold">Active Parents</h3>
+        </div>
+        <p class="text-sm text-white/70 mb-3">Parents with active students in the school</p>
+        <div class="flex items-center text-xs text-white/60">
+          <i class="fas fa-search mr-2"></i>
+          <span>Last run: 3 days ago</span>
+        </div>
+        <div class="mt-3 flex justify-between">
+          <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-play mr-1"></i>Run
+          </button>
+          <button class="px-3 py-1 glass-card hover:bg-white/20 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-edit mr-1"></i>Edit
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center mr-3">
+            <i class="fas fa-envelope text-white"></i>
+          </div>
+          <h3 class="font-semibold">Gmail Users</h3>
+        </div>
+        <p class="text-sm text-white/70 mb-3">All users with Gmail email addresses</p>
+        <div class="flex items-center text-xs text-white/60">
+          <i class="fas fa-search mr-2"></i>
+          <span>Last run: 5 days ago</span>
+        </div>
+        <div class="mt-3 flex justify-between">
+          <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-play mr-1"></i>Run
+          </button>
+          <button class="px-3 py-1 glass-card hover:bg-white/20 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-edit mr-1"></i>Edit
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center mr-3">
+            <i class="fas fa-phone text-white"></i>
+          </div>
+          <h3 class="font-semibold">Mobile Numbers</h3>
+        </div>
+        <p class="text-sm text-white/70 mb-3">All users with mobile phone numbers</p>
+        <div class="flex items-center text-xs text-white/60">
+          <i class="fas fa-search mr-2"></i>
+          <span>Last run: 1 day ago</span>
+        </div>
+        <div class="mt-3 flex justify-between">
+          <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-play mr-1"></i>Run
+          </button>
+          <button class="px-3 py-1 glass-card hover:bg-white/20 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-edit mr-1"></i>Edit
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex items-center mb-3">
+          <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center mr-3">
+            <i class="fas fa-home text-white"></i>
+          </div>
+          <h3 class="font-semibold">Anytown Residents</h3>
+        </div>
+        <p class="text-sm text-white/70 mb-3">All users with addresses in Anytown</p>
+        <div class="flex items-center text-xs text-white/60">
+          <i class="fas fa-search mr-2"></i>
+          <span>Last run: 4 days ago</span>
+        </div>
+        <div class="mt-3 flex justify-between">
+          <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-play mr-1"></i>Run
+          </button>
+          <button class="px-3 py-1 glass-card hover:bg-white/20 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-edit mr-1"></i>Edit
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-6 pt-4 border-t border-white/20">
+      <button id="saveCurrentSearch" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all">
+        <i class="fas fa-plus mr-2"></i>Save Current Search
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Get elements
+  const searchInput = document.getElementById('searchInput');
+  const searchBtn = document.getElementById('searchBtn');
+  const advancedSearchBtn = document.getElementById('advancedSearchBtn');
+  const advancedSearchPanel = document.getElementById('advancedSearchPanel');
+  const applyAdvancedSearch = document.getElementById('applyAdvancedSearch');
+  const resetAdvancedSearch = document.getElementById('resetAdvancedSearch');
+  const searchResults = document.getElementById('searchResults');
+  const resultCount = document.getElementById('resultCount');
+  const searchTerm = document.getElementById('searchTerm');
+  const clearSearch = document.getElementById('clearSearch');
+  const sortResults = document.getElementById('sortResults');
+  const clearHistory = document.getElementById('clearHistory');
+  const saveCurrentSearch = document.getElementById('saveCurrentSearch');
+  
+  // Toggle advanced search panel
+  advancedSearchBtn.addEventListener('click', function() {
+    advancedSearchPanel.classList.toggle('hidden');
+  });
+  
+  // Apply advanced search
+  applyAdvancedSearch.addEventListener('click', function() {
+    performSearch();
+  });
+  
+  // Reset advanced search
+  resetAdvancedSearch.addEventListener('click', function() {
+    // Reset all advanced search fields to default values
+    const advancedFields = advancedSearchPanel.querySelectorAll('select, input');
+    advancedFields.forEach(field => {
+      if (field.tagName === 'SELECT') {
+        field.selectedIndex = 0;
+      } else {
+        field.value = '';
+      }
+    });
+  });
+  
+  // Perform search
+  function performSearch() {
+    const query = searchInput.value.trim();
+    if (query) {
+      searchTerm.textContent = query;
+      resultCount.textContent = Math.floor(Math.random() * 50) + 1; // Random number for demo
+      searchResults.classList.remove('hidden');
+    } else {
+      searchResults.classList.add('hidden');
+    }
+  }
+  
+  // Search button click
+  searchBtn.addEventListener('click', performSearch);
+  
+  // Search on Enter key
+  searchInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      performSearch();
+    }
+  });
+  
+  // Clear search
+  clearSearch.addEventListener('click', function() {
+    searchInput.value = '';
+    searchResults.classList.add('hidden');
+  });
+  
+  // Sort results
+  sortResults.addEventListener('change', function() {
+    alert(`Sorting results by: ${this.value}`);
+  });
+  
+  // Clear search history
+  clearHistory.addEventListener('click', function() {
+    if (confirm('Are you sure you want to clear your search history?')) {
+      alert('Search history cleared!');
+    }
+  });
+  
+  // Save current search
+  saveCurrentSearch.addEventListener('click', function() {
+    const query = searchInput.value.trim();
+    if (query) {
+      const searchName = prompt('Enter a name for this saved search:', 'My Search');
+      if (searchName) {
+        alert(`Search "${searchName}" saved successfully!`);
+      }
+    } else {
+      alert('Please perform a search first before saving.');
+    }
+  });
+  
+  // Recent search click
+  const recentSearchButtons = document.querySelectorAll('.cursor-pointer .text-blue-400');
+  recentSearchButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const searchItem = this.closest('.cursor-pointer');
+      const searchTitle = searchItem.querySelector('h3').textContent;
+      alert(`Re-running search: ${searchTitle}`);
+    });
+  });
+  
+  // Saved search click
+  const savedSearchCards = document.querySelectorAll('.cursor-pointer');
+  savedSearchCards.forEach(card => {
+    if (!card.querySelector('.text-blue-400')) {
+      card.addEventListener('click', function() {
+        const searchName = this.querySelector('h3').textContent;
+        alert(`Running saved search: ${searchName}`);
+      });
+    }
+  });
+  
+  // Run saved search
+  const runSavedSearchButtons = document.querySelectorAll('.bg-green-600');
+  runSavedSearchButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const searchCard = this.closest('.glass-card');
+      const searchName = searchCard.querySelector('h3').textContent;
+      alert(`Running saved search: ${searchName}`);
+    });
+  });
+  
+  // Edit saved search
+  const editSavedSearchButtons = document.querySelectorAll('.hover\\:bg-white\\/20');
+  editSavedSearchButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const searchCard = this.closest('.glass-card');
+      const searchName = searchCard.querySelector('h3').textContent;
+      alert(`Editing saved search: ${searchName}`);
+    });
+  });
+});
+</script>
+{% endblock %}

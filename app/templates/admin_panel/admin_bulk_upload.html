@@ -1,0 +1,595 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Bulk Upload via Excel - School Management System{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent animate__animated animate__fadeInDown">
+      <i class="fas fa-file-excel mr-3"></i>Bulk Upload via Excel
+    </h1>
+    <p class="text-white/70 mt-2">Upload student, staff, or other data in bulk using Excel templates</p>
+  </div>
+
+  <!-- Upload Instructions -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <h2 class="text-2xl font-semibold mb-4 flex items-center">
+      <i class="fas fa-info-circle text-blue-400 mr-3"></i>How to Upload
+    </h2>
+    <div class="space-y-4">
+      <div class="flex items-start">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+          <span class="text-white font-bold text-sm">1</span>
+        </div>
+        <div>
+          <h3 class="font-medium">Download Template</h3>
+          <p class="text-white/70 mt-1">Download the appropriate Excel template for the data you want to upload</p>
+        </div>
+      </div>
+      
+      <div class="flex items-start">
+        <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+          <span class="text-white font-bold text-sm">2</span>
+        </div>
+        <div>
+          <h3 class="font-medium">Fill in Data</h3>
+          <p class="text-white/70 mt-1">Enter your data in the template, following the format and guidelines provided</p>
+        </div>
+      </div>
+      
+      <div class="flex items-start">
+        <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+          <span class="text-white font-bold text-sm">3</span>
+        </div>
+        <div>
+          <h3 class="font-medium">Upload File</h3>
+          <p class="text-white/70 mt-1">Upload your completed Excel file using the upload area below</p>
+        </div>
+      </div>
+      
+      <div class="flex items-start">
+        <div class="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+          <span class="text-white font-bold text-sm">4</span>
+        </div>
+        <div>
+          <h3 class="font-medium">Review & Confirm</h3>
+          <p class="text-white/70 mt-1">Review the data preview and confirm the upload to add records to the system</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Template Selection -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-download mr-3"></i>Download Templates
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-users text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-center mb-2">Student Data</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Upload student information including personal details, classes, and contact information</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-download mr-2"></i>Download Template
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-chalkboard-teacher text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-center mb-2">Staff Data</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Upload staff information including roles, departments, and contact details</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-download mr-2"></i>Download Template
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-graduation-cap text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-center mb-2">Class & Section</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Upload class information, sections, and teacher assignments</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-download mr-2"></i>Download Template
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-dollar-sign text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-center mb-2">Fee Structure</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Upload fee structures for different classes, categories, and payment types</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-download mr-2"></i>Download Template
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-clipboard-check text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-center mb-2">Grades & Marks</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Upload student grades, marks, and assessment results</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-download mr-2"></i>Download Template
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-calendar-alt text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-center mb-2">Attendance</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Upload student or staff attendance records for specific dates</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-download mr-2"></i>Download Template
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- File Upload Area -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-cloud-upload-alt mr-3"></i>Upload Excel File
+    </h2>
+    
+    <div class="mb-6">
+      <label class="block text-sm font-medium text-white/80 mb-2">Select Data Type</label>
+      <select id="dataType" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">Select data type for upload</option>
+        <option value="students">Student Data</option>
+        <option value="staff">Staff Data</option>
+        <option value="classes">Class & Section Data</option>
+        <option value="fees">Fee Structure</option>
+        <option value="grades">Grades & Marks</option>
+        <option value="attendance">Attendance Records</option>
+      </select>
+    </div>
+    
+    <div id="uploadArea" class="border-2 border-dashed border-white/30 rounded-xl p-12 text-center hover:border-white/50 transition-all cursor-pointer mb-6">
+      <i class="fas fa-file-excel text-6xl text-green-500 mb-4"></i>
+      <h3 class="text-xl font-medium mb-2">Drag & Drop Excel File Here</h3>
+      <p class="text-white/70 mb-2">or click to browse</p>
+      <p class="text-sm text-white/50">Supported formats: .xlsx, .xls</p>
+      <input type="file" id="fileInput" class="hidden" accept=".xlsx,.xls">
+    </div>
+    
+    <div id="fileInfo" class="hidden">
+      <div class="flex items-center p-4 glass-card rounded-lg mb-4">
+        <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center mr-4">
+          <i class="fas fa-file-excel text-white"></i>
+        </div>
+        <div class="flex-1">
+          <h4 id="fileName" class="font-medium">filename.xlsx</h4>
+          <p id="fileSize" class="text-sm text-white/70">2.4 MB</p>
+        </div>
+        <button id="removeFile" class="text-red-400 hover:text-red-300">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="flex flex-wrap gap-4">
+      <button id="uploadBtn" class="liquid-btn px-6 py-3 rounded-xl font-medium text-white transition-all duration-300 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+        <i class="fas fa-upload mr-2"></i>Upload File
+      </button>
+      <button id="cancelBtn" class="px-6 py-3 glass-card rounded-xl font-medium text-white transition-all duration-300 hover:bg-white/20 hidden">
+        <i class="fas fa-times mr-2"></i>Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Data Preview -->
+  <div id="previewSection" class="hidden">
+    <div class="glass-card rounded-xl p-6 mb-8">
+      <h2 class="text-2xl font-semibold mb-6 flex items-center">
+        <i class="fas fa-eye mr-3"></i>Data Preview
+      </h2>
+      
+      <div class="mb-4 p-4 bg-yellow-600/20 border border-yellow-500/30 rounded-lg">
+        <div class="flex items-start">
+          <i class="fas fa-exclamation-triangle text-yellow-400 mt-1 mr-3"></i>
+          <div>
+            <h3 class="font-medium text-yellow-300">Review Data Before Uploading</h3>
+            <p class="text-sm text-yellow-200 mt-1">Please carefully review the data below. Any errors will be highlighted. You can still make changes to your Excel file and re-upload if needed.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-white/20">
+              <th class="text-left py-3 px-4 font-medium text-white/80">ID</th>
+              <th class="text-left py-3 px-4 font-medium text-white/80">Name</th>
+              <th class="text-left py-3 px-4 font-medium text-white/80">Class</th>
+              <th class="text-left py-3 px-4 font-medium text-white/80">Roll Number</th>
+              <th class="text-left py-3 px-4 font-medium text-white/80">Email</th>
+              <th class="text-center py-3 px-4 font-medium text-white/80">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4">1</td>
+              <td class="py-4 px-4">John Smith</td>
+              <td class="py-4 px-4">Grade 10 - A</td>
+              <td class="py-4 px-4">10A001</td>
+              <td class="py-4 px-4">john.smith@email.com</td>
+              <td class="py-4 px-4 text-center">
+                <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Valid</span>
+              </td>
+            </tr>
+            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4">2</td>
+              <td class="py-4 px-4">Emma Johnson</td>
+              <td class="py-4 px-4">Grade 10 - B</td>
+              <td class="py-4 px-4">10B002</td>
+              <td class="py-4 px-4">emma.johnson@email.com</td>
+              <td class="py-4 px-4 text-center">
+                <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Valid</span>
+              </td>
+            </tr>
+            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4">3</td>
+              <td class="py-4 px-4">Michael Brown</td>
+              <td class="py-4 px-4">Grade 11 - A</td>
+              <td class="py-4 px-4">11A003</td>
+              <td class="py-4 px-4 text-red-400">Invalid email format</td>
+              <td class="py-4 px-4 text-center">
+                <span class="px-3 py-1 bg-red-600 text-white text-xs rounded-full">Error</span>
+              </td>
+            </tr>
+            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4">4</td>
+              <td class="py-4 px-4">Sarah Davis</td>
+              <td class="py-4 px-4">Grade 9 - C</td>
+              <td class="py-4 px-4">9C004</td>
+              <td class="py-4 px-4">sarah.davis@email.com</td>
+              <td class="py-4 px-4 text-center">
+                <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Valid</span>
+              </td>
+            </tr>
+            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4">5</td>
+              <td class="py-4 px-4">Robert Wilson</td>
+              <td class="py-4 px-4 text-red-400">Class not found</td>
+              <td class="py-4 px-4">12A005</td>
+              <td class="py-4 px-4">robert.wilson@email.com</td>
+              <td class="py-4 px-4 text-center">
+                <span class="px-3 py-1 bg-orange-600 text-white text-xs rounded-full">Warning</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="mt-6 p-4 bg-gray-800/50 rounded-lg">
+        <div class="flex flex-wrap justify-between items-center">
+          <div class="flex items-center space-x-6">
+            <div class="flex items-center">
+              <span class="w-3 h-3 bg-green-600 rounded-full mr-2"></span>
+              <span class="text-sm">Valid: 3 records</span>
+            </div>
+            <div class="flex items-center">
+              <span class="w-3 h-3 bg-orange-600 rounded-full mr-2"></span>
+              <span class="text-sm">Warnings: 1 record</span>
+            </div>
+            <div class="flex items-center">
+              <span class="w-3 h-3 bg-red-600 rounded-full mr-2"></span>
+              <span class="text-sm">Errors: 1 record</span>
+            </div>
+          </div>
+          <div class="mt-4 sm:mt-0">
+            <button id="confirmUpload" class="liquid-btn px-6 py-3 rounded-xl font-medium text-white transition-all duration-300 hover:bg-purple-600">
+              <i class="fas fa-check mr-2"></i>Confirm & Upload
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload History -->
+  <div class="glass-card rounded-xl p-6">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-history mr-3"></i>Upload History
+    </h2>
+    
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-white/20">
+            <th class="text-left py-3 px-4 font-medium text-white/80">File Name</th>
+            <th class="text-left py-3 px-4 font-medium text-white/80">Data Type</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Records</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Status</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Uploaded By</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Date</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">students_batch_1.xlsx</td>
+            <td class="py-4 px-4">Student Data</td>
+            <td class="py-4 px-4 text-center">245</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Success</span>
+            </td>
+            <td class="py-4 px-4 text-center">Admin User</td>
+            <td class="py-4 px-4 text-center">2024-06-15</td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-download"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-file-alt"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">staff_data_update.xlsx</td>
+            <td class="py-4 px-4">Staff Data</td>
+            <td class="py-4 px-4 text-center">42</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Success</span>
+            </td>
+            <td class="py-4 px-4 text-center">HR Manager</td>
+            <td class="py-4 px-4 text-center">2024-06-12</td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-download"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-file-alt"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">grades_q1_2024.xlsx</td>
+            <td class="py-4 px-4">Grades & Marks</td>
+            <td class="py-4 px-4 text-center">187</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-orange-600 text-white text-xs rounded-full">Partial Success</span>
+            </td>
+            <td class="py-4 px-4 text-center">Academic Head</td>
+            <td class="py-4 px-4 text-center">2024-06-10</td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-download"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-file-alt"></i></button>
+                <button class="text-yellow-400 hover:text-yellow-300"><i class="fas fa-exclamation-triangle"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">attendance_may_2024.xlsx</td>
+            <td class="py-4 px-4">Attendance Records</td>
+            <td class="py-4 px-4 text-center">3,245</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-red-600 text-white text-xs rounded-full">Failed</span>
+            </td>
+            <td class="py-4 px-4 text-center">Admin Assistant</td>
+            <td class="py-4 px-4 text-center">2024-06-05</td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-download"></i></button>
+                <button class="text-red-400 hover:text-red-300"><i class="fas fa-exclamation-triangle"></i></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-6">
+      <div class="text-sm text-white/70 mb-4 sm:mb-0">
+        Showing 1 to 4 of 18 entries
+      </div>
+      <div class="flex gap-2">
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="px-3 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium">1</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">2</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">3</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">...</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">5</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // File upload functionality
+  const uploadArea = document.getElementById('uploadArea');
+  const fileInput = document.getElementById('fileInput');
+  const fileInfo = document.getElementById('fileInfo');
+  const fileName = document.getElementById('fileName');
+  const fileSize = document.getElementById('fileSize');
+  const removeFile = document.getElementById('removeFile');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const dataType = document.getElementById('dataType');
+  const previewSection = document.getElementById('previewSection');
+  const confirmUpload = document.getElementById('confirmUpload');
+  
+  // Handle drag and drop
+  uploadArea.addEventListener('click', function() {
+    fileInput.click();
+  });
+  
+  uploadArea.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    this.classList.add('border-white/70', 'bg-white/5');
+  });
+  
+  uploadArea.addEventListener('dragleave', function() {
+    this.classList.remove('border-white/70', 'bg-white/5');
+  });
+  
+  uploadArea.addEventListener('drop', function(e) {
+    e.preventDefault();
+    this.classList.remove('border-white/70', 'bg-white/5');
+    
+    if (e.dataTransfer.files.length > 0) {
+      handleFile(e.dataTransfer.files[0]);
+    }
+  });
+  
+  // Handle file selection
+  fileInput.addEventListener('change', function() {
+    if (this.files.length > 0) {
+      handleFile(this.files[0]);
+    }
+  });
+  
+  // Handle file processing
+  function handleFile(file) {
+    // Check file type
+    if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+      alert('Please upload an Excel file (.xlsx or .xls)');
+      return;
+    }
+    
+    // Check if data type is selected
+    if (dataType.value === '') {
+      alert('Please select a data type before uploading');
+      return;
+    }
+    
+    // Display file info
+    fileName.textContent = file.name;
+    fileSize.textContent = formatFileSize(file.size);
+    fileInfo.classList.remove('hidden');
+    uploadBtn.disabled = false;
+    cancelBtn.classList.remove('hidden');
+    
+    // Hide preview section if it was visible
+    previewSection.classList.add('hidden');
+  }
+  
+  // Remove file
+  removeFile.addEventListener('click', function() {
+    fileInput.value = '';
+    fileInfo.classList.add('hidden');
+    uploadBtn.disabled = true;
+    cancelBtn.classList.add('hidden');
+  });
+  
+  // Cancel upload
+  cancelBtn.addEventListener('click', function() {
+    fileInput.value = '';
+    fileInfo.classList.add('hidden');
+    uploadBtn.disabled = true;
+    cancelBtn.classList.add('hidden');
+  });
+  
+  // Upload button
+  uploadBtn.addEventListener('click', function() {
+    // Show loading state
+    this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+    this.disabled = true;
+    
+    // Simulate processing delay
+    setTimeout(() => {
+      // Show preview section
+      previewSection.classList.remove('hidden');
+      this.innerHTML = '<i class="fas fa-upload mr-2"></i>Upload File';
+      this.disabled = true;
+    }, 2000);
+  });
+  
+  // Confirm upload
+  confirmUpload.addEventListener('click', function() {
+    // Show loading state
+    this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Uploading...';
+    this.disabled = true;
+    
+    // Simulate upload delay
+    setTimeout(() => {
+      alert('Data uploaded successfully!');
+      // Reset form
+      fileInput.value = '';
+      fileInfo.classList.add('hidden');
+      uploadBtn.disabled = true;
+      cancelBtn.classList.add('hidden');
+      previewSection.classList.add('hidden');
+      confirmUpload.innerHTML = '<i class="fas fa-check mr-2"></i>Confirm & Upload';
+      confirmUpload.disabled = false;
+    }, 3000);
+  });
+  
+  // Format file size
+  function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+  
+  // Enable/disable upload button based on data type selection
+  dataType.addEventListener('change', function() {
+    if (this.value !== '' && fileInput.files.length > 0) {
+      uploadBtn.disabled = false;
+    } else {
+      uploadBtn.disabled = true;
+    }
+  });
+  
+  // Add interactivity to template downloads
+  const downloadButtons = document.querySelectorAll('.bg-green-600, .bg-blue-600, .bg-purple-600, .bg-orange-600, .bg-red-600, .bg-teal-600');
+  downloadButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const templateType = this.closest('.glass-card').querySelector('h3').textContent;
+      alert(`Downloading ${templateType} template...`);
+    });
+  });
+  
+  // Add action button functionality
+  const actionButtons = document.querySelectorAll('.text-blue-400, .text-green-400, .text-yellow-400, .text-red-400');
+  actionButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const icon = this.querySelector('i').className;
+      let message = '';
+      
+      if (icon.includes('fa-download')) {
+        message = 'Downloading upload report...';
+      } else if (icon.includes('fa-file-alt')) {
+        message = 'Viewing detailed upload log...';
+      } else if (icon.includes('fa-exclamation-triangle')) {
+        message = 'Viewing upload errors...';
+      }
+      
+      alert(message);
+    });
+  });
+});
+</script>
+{% endblock %}

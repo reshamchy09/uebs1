@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin – Fees Approval</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{font-family:system-ui;background:#0f172a;color:#e5e7eb;margin:0}
+  .wrap{max-width:1100px;margin:auto;padding:20px}
+  .card{background:#111827;border:1px solid #1f2937;border-radius:14px;padding:16px;margin-bottom:16px}
+  input,select,button{width:100%;padding:10px;border-radius:10px;border:1px solid #334155;background:#0b1223;color:#e5e7eb}
+  button{cursor:pointer}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .col{flex:1;min-width:180px}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:10px;border-bottom:1px solid #1f2937;font-size:14px}
+  th{color:#93a3b6;text-align:left}
+  .right{text-align:right}
+  .btn{background:#22c55e;border:none}
+  .btn-danger{background:#ef4444;border:none}
+  .badge{padding:4px 8px;border-radius:999px;border:1px solid #334155;background:#0b1223;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    <h1>Admin – Fee Requests</h1>
+    <div class="row">
+      <input id="email" placeholder="Admin Email" style="width:220px">
+      <input id="pass" type="password" placeholder="Password" style="width:160px">
+      <button id="btnIn">Sign In</button>
+      <button id="btnOut" class="hidden">Sign Out</button>
+      <span id="who" class="badge hidden"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div class="col">
+        <label>Status Filter</label>
+        <select id="fStatus">
+          <option value="">All</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+      <div class="col">
+        <label>Search (Name/ID/Ref)</label>
+        <input id="search" placeholder="Type to search...">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Student</th><th>ID</th><th>Date</th><th>Method</th><th>Amount</th><th>Ref</th><th>Proof</th><th>Status</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script id="firebase-config" type="application/json">{{ firebase_config|safe }}</script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { getDatabase, ref, onValue, update, push, set } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+import { getStorage, ref as sref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
+
+const firebaseConfig = JSON.parse(document.getElementById("firebase-config").textContent);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const st = getStorage(app);
+
+const email = document.getElementById('email');
+const pass  = document.getElementById('pass');
+const btnIn = document.getElementById('btnIn');
+const btnOut= document.getElementById('btnOut');
+const who   = document.getElementById('who');
+const fStatus = document.getElementById('fStatus');
+const search = document.getElementById('search');
+const tbody  = document.getElementById('tbody');
+
+let UID = null;
+let ALL = [];
+
+onAuthStateChanged(auth, user=>{
+  if(user){
+    UID = user.uid; who.textContent = user.email; who.classList.remove('hidden');
+    btnOut.classList.remove('hidden');
+    attachAll();
+  }else{
+    UID = null; who.classList.add('hidden'); btnOut.classList.add('hidden');
+    tbody.innerHTML = '';
+  }
+});
+btnIn.onclick = async ()=>{ await signInWithEmailAndPassword(auth, email.value, pass.value).catch(e=>alert(e.message)); };
+btnOut.onclick= async ()=>{ await signOut(auth); };
+
+function attachAll(){
+  onValue(ref(db,'fees_requests'), snap=>{
+    const val = snap.val() || {};
+    ALL = Object.entries(val).map(([id,v])=>({id,...v})).sort((a,b)=>b.createdAt-a.createdAt);
+    render();
+  });
+}
+fStatus.onchange = render;
+search.oninput = render;
+
+function render(){
+  const s = (search.value||'').toLowerCase();
+  const fs = fStatus.value;
+  const rows = ALL.filter(r=>{
+    const matchS = !s || (r.studentName||'').toLowerCase().includes(s) || (r.studentId||'').toLowerCase().includes(s) || (r.reference||'').toLowerCase().includes(s);
+    const matchSt = !fs || r.status===fs;
+    return matchS && matchSt;
+  });
+  tbody.innerHTML = '';
+  for(const r of rows){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${r.studentName||''}</td>
+      <td>${r.studentId||''}</td>
+      <td>${r.paymentDate||''}</td>
+      <td>${r.method}</td>
+      <td class="right">${Number(r.amount||0).toFixed(2)}</td>
+      <td>${r.reference||''}</td>
+      <td>${r.proofUrl ? `<a href="${r.proofUrl}" target="_blank">View</a>`:''}</td>
+      <td>${r.status}</td>
+      <td>
+        ${r.status==='pending' ? `
+          <button data-act="approve" data-id="${r.id}" class="btn">Approve</button>
+          <button data-act="reject" data-id="${r.id}" class="btn-danger">Reject</button>
+        ` : r.receiptUrl ? `<a href="${r.receiptUrl}" target="_blank">Receipt</a>` : ''}
+      </td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+
+tbody.addEventListener('click', async (e)=>{
+  const el = e.target;
+  const act = el.getAttribute('data-act');
+  const id  = el.getAttribute('data-id');
+  if(!act || !id) return;
+  const req = ALL.find(x=>x.id===id); if(!req) return;
+
+  if(act==='approve'){
+    if(!confirm('Approve this fee?')) return;
+    // Generate PDF, upload to Storage, save receiptUrl, set status approved
+    try{
+      const pdfBlob = await makeReceiptPdf(req);
+      const path = `receipts/${id}.pdf`;
+      const rref = sref(st, path);
+      await uploadBytes(rref, pdfBlob);
+      const url = await getDownloadURL(rref);
+
+      await update(ref(db, `fees_requests/${id}`), {
+        status: 'approved',
+        reason: '',
+        approvedAt: Date.now(),
+        approverUid: UID,
+        receiptUrl: url
+      });
+
+      await notifyStudent(req.studentUid, "Fee Approved", `Your payment of ${req.amount} via ${req.method} has been approved. Receipt available.`);
+      // OPTIONAL: email (requires Django endpoint + EMAIL settings)
+      // await fetch("/fees/notify-email/", {method:"POST", headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')}, body: JSON.stringify({to: req.studentEmail, subject:"Fee Approved", message:"Your fee has been approved. Please download the receipt from the portal."})});
+
+      alert('Approved & Receipt generated.');
+    }catch(err){
+      alert('Approve failed: '+err.message);
+    }
+  }else if(act==='reject'){
+    const reason = prompt('Enter rejection reason (required):');
+    if(!reason) return alert('Reason is required.');
+    try{
+      await update(ref(db, `fees_requests/${id}`), {
+        status: 'rejected',
+        reason: reason,
+        rejectedAt: Date.now(),
+        approverUid: UID,
+        receiptUrl: null
+      });
+      await notifyStudent(req.studentUid, "Fee Rejected", `Your payment was rejected. Reason: ${reason}`);
+      // OPTIONAL email:
+      // await fetch("/fees/notify-email/", {method:"POST", headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')}, body: JSON.stringify({to: req.studentEmail, subject:"Fee Rejected", message:`Reason: ${reason}`})});
+      alert('Rejected.');
+    }catch(err){
+      alert('Reject failed: '+err.message);
+    }
+  }
+});
+
+async function notifyStudent(uid, title, body){
+  const nref = push(ref(db, `notifications/${uid}`));
+  await set(nref, { title, body, createdAt: Date.now() });
+}
+
+async function makeReceiptPdf(req){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const line = (y)=>doc.line(15,y,195,y);
+  const pad = 10;
+  let y = 20;
+
+  doc.setFontSize(16);
+  doc.text("School Name", 15, y); y+=8;
+  doc.setFontSize(12);
+  doc.text("Official Receipt", 15, y); y+=6; line(y); y+=8;
+
+  doc.text(`Receipt ID: ${req.id||''}`, 15, y); y+=6;
+  doc.text(`Date: ${new Date().toLocaleString()}`, 15, y); y+=8; line(y); y+=8;
+
+  doc.text(`Student Name: ${req.studentName}`, 15, y); y+=6;
+  doc.text(`Student ID: ${req.studentId}`, 15, y); y+=6;
+  doc.text(`Payment Date: ${req.paymentDate||''}`, 15, y); y+=6;
+  doc.text(`Method: ${req.method}`, 15, y); y+=6;
+  doc.text(`Reference: ${req.reference||''}`, 15, y); y+=6;
+  doc.text(`Amount: ${Number(req.amount||0).toFixed(2)}`, 15, y); y+=10; line(y); y+=10;
+
+  doc.text("Approved by (Principal): ____________________", 15, y); y+=20;
+  const blob = doc.output('blob');
+  return blob;
+}
+</script>
+</body>
+</html>

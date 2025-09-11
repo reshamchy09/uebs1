@@ -1,0 +1,347 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}User Management - UEBS{% endblock %}
+
+{% block content %}
+<!-- Top Navbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+  <div class="mt-12 md:mt-0">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">User Management</h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">Manage users and their roles</p>
+  </div>
+  <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+    <div class="hidden md:block relative flex-1 max-w-md">
+      <input type="text" id="searchUser" placeholder="Search users..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+      <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative md:hidden" onclick="document.getElementById('searchUserMobile').focus()">
+      <i class="fas fa-search text-sm sm:text-base"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile search bar -->
+<div class="md:hidden mb-4">
+  <div class="relative">
+    <input type="text" id="searchUserMobile" placeholder="Search users..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+    <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Add/Edit User -->
+<div class="glass-card p-4 mb-6 rounded-2xl animate__animated animate__fadeInUp">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-user-plus text-purple-400 mr-3"></i> Add / Edit User
+  </h3>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-white/80 mb-2">Full Name</label>
+      <input type="text" id="fullName" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., John Doe">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Email</label>
+      <input type="email" id="email" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., john@example.com">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Role</label>
+      <select id="role" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">Select Role</option>
+        <option value="Student">Student</option>
+        <option value="Staff">Staff</option>
+        <option value="Admin">Admin</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Class/Section (Optional)</label>
+      <input type="text" id="classSection" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., Class 10 A">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Contact Number</label>
+      <input type="text" id="contact" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., +1234567890">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Gender (Optional)</label>
+      <input type="text" id="gender" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., Male">
+    </div>
+    <div class="md:col-span-3">
+      <label class="block text-white/80 mb-2">Address (Optional)</label>
+      <input type="text" id="address" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., 123 Main St">
+    </div>
+  </div>
+  <div class="flex space-x-4 mt-6">
+    <button id="addUserBtn" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+      <i class="fas fa-user-plus mr-2"></i> Add User
+    </button>
+  </div>
+</div>
+
+<!-- User List -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-users text-purple-400 mr-3"></i> User List
+  </h3>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div>
+      <label class="block text-white/80 mb-2">Role</label>
+      <select id="filterRole" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Roles</option>
+        <option value="Student">Student</option>
+        <option value="Staff">Staff</option>
+        <option value="Admin">Admin</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Class/Section</label>
+      <input type="text" id="filterClass" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., Class 10 A">
+    </div>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="userTable">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">#</th>
+          <th class="text-left py-3 px-4">Full Name</th>
+          <th class="text-left py-3 px-4">Email</th>
+          <th class="text-left py-3 px-4">Role</th>
+          <th class="text-left py-3 px-4">Class/Section</th>
+          <th class="text-left py-3 px-4">Contact</th>
+          <th class="text-left py-3 px-4">Gender</th>
+          <th class="text-left py-3 px-4">Address</th>
+          <th class="text-left py-3 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fixed inset-0 bg-black/50 z-50 hidden justify-center items-center" id="confirmModal">
+  <div class="glass-card p-6 lg:p-8 rounded-2xl w-full max-w-md">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl sm:text-2xl font-semibold text-white" id="modalTitle">Confirm Action</h3>
+      <button id="closeModal" class="text-white/70 hover:text-white text-2xl">&times;</button>
+    </div>
+    <p class="text-white/80 mb-6" id="modalMessage"></p>
+    <div class="flex justify-end space-x-4">
+      <button id="confirmAction" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+        Confirm
+      </button>
+      <button id="cancelAction" class="glass-card text-white px-6 py-3 rounded-xl font-semibold transition-all hover:bg-white/20">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+
+<script>
+// Initialize Firebase with your config
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let users = {};
+let currentEditUserId = null;
+
+// Load Users
+db.ref('users').on('value', snap => {
+  users = snap.val() || {};
+  populateUserTable();
+});
+
+// Add/Edit User
+document.getElementById('addUserBtn').addEventListener('click', () => {
+  const btn = document.getElementById('addUserBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+  btn.disabled = true;
+
+  const user = {
+    fullName: document.getElementById('fullName').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    role: document.getElementById('role').value,
+    classSection: document.getElementById('classSection').value.trim(),
+    contact: document.getElementById('contact').value.trim(),
+    gender: document.getElementById('gender').value.trim(),
+    address: document.getElementById('address').value.trim(),
+    password: currentEditUserId ? users[currentEditUserId].password : 'UEBS@123'
+  };
+
+  if (!user.fullName || !user.email || !user.role) {
+    alert("Please fill all required fields (Full Name, Email, Role)");
+    btn.innerHTML = '<i class="fas fa-user-plus mr-2"></i> ' + (currentEditUserId ? 'Update User' : 'Add User');
+    btn.disabled = false;
+    return;
+  }
+
+  // Basic email validation
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
+    alert("Please enter a valid email address");
+    btn.innerHTML = '<i class="fas fa-user-plus mr-2"></i> ' + (currentEditUserId ? 'Update User' : 'Add User');
+    btn.disabled = false;
+    return;
+  }
+
+  const ref = currentEditUserId ? db.ref('users/' + currentEditUserId) : db.ref('users').push();
+  ref.set(user).then(() => {
+    alert(currentEditUserId ? 'User updated!' : 'User added!');
+    clearUserForm();
+    currentEditUserId = null;
+    btn.innerHTML = '<i class="fas fa-user-plus mr-2"></i> Add User';
+    btn.disabled = false;
+  });
+});
+
+function clearUserForm() {
+  document.getElementById('fullName').value = '';
+  document.getElementById('email').value = '';
+  document.getElementById('role').value = '';
+  document.getElementById('classSection').value = '';
+  document.getElementById('contact').value = '';
+  document.getElementById('gender').value = '';
+  document.getElementById('address').value = '';
+}
+
+// Populate User Table
+function populateUserTable() {
+  const tbody = document.querySelector('#userTable tbody');
+  tbody.innerHTML = '';
+  const search = document.getElementById('searchUser').value.toLowerCase() || 
+                 document.getElementById('searchUserMobile').value.toLowerCase();
+  const roleFilter = document.getElementById('filterRole').value;
+  const classFilter = document.getElementById('filterClass').value.toLowerCase();
+
+  Object.keys(users).forEach((id, idx) => {
+    const u = users[id];
+    if (roleFilter && u.role !== roleFilter) return;
+    if (classFilter && (!u.classSection || !u.classSection.toLowerCase().includes(classFilter))) return;
+    if (search && !u.fullName.toLowerCase().includes(search) && !u.email.toLowerCase().includes(search)) return;
+
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-white/10 hover:bg-white/5';
+    tr.innerHTML = `
+      <td class="py-3 px-4">${idx + 1}</td>
+      <td class="py-3 px-4">${u.fullName}</td>
+      <td class="py-3 px-4">${u.email}</td>
+      <td class="py-3 px-4">${u.role}</td>
+      <td class="py-3 px-4">${u.classSection || '-'}</td>
+      <td class="py-3 px-4">${u.contact || '-'}</td>
+      <td class="py-3 px-4">${u.gender || '-'}</td>
+      <td class="py-3 px-4">${u.address || '-'}</td>
+      <td class="py-3 px-4">
+        <div class="flex space-x-2">
+          <button onclick="editUser('${id}')" class="glass-card px-3 py-1 rounded-lg text-yellow-400 hover:bg-yellow-400/20">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button onclick="deleteUser('${id}')" class="glass-card px-3 py-1 rounded-lg text-red-400 hover:bg-red-400/20">
+            <i class="fas fa-trash"></i>
+          </button>
+          <button onclick="resetPassword('${id}')" class="glass-card px-3 py-1 rounded-lg text-blue-400 hover:bg-blue-400/20">
+            <i class="fas fa-key"></i>
+          </button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Edit User
+function editUser(id) {
+  const u = users[id];
+  currentEditUserId = id;
+  document.getElementById('fullName').value = u.fullName;
+  document.getElementById('email').value = u.email;
+  document.getElementById('role').value = u.role;
+  document.getElementById('classSection').value = u.classSection || '';
+  document.getElementById('contact').value = u.contact || '';
+  document.getElementById('gender').value = u.gender || '';
+  document.getElementById('address').value = u.address || '';
+  document.getElementById('addUserBtn').innerHTML = '<i class="fas fa-edit mr-2"></i> Update User';
+}
+
+// Delete User
+function deleteUser(id) {
+  const modal = document.getElementById('confirmModal');
+  const confirmBtn = document.getElementById('confirmAction');
+  const cancelBtn = document.getElementById('cancelAction');
+  const closeBtn = document.getElementById('closeModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalMessage = document.getElementById('modalMessage');
+
+  modalTitle.textContent = 'Confirm Delete';
+  modalMessage.textContent = 'Are you sure you want to delete this user?';
+  modal.classList.remove('hidden');
+
+  confirmBtn.onclick = () => {
+    db.ref('users/' + id).remove();
+    modal.classList.add('hidden');
+  };
+  cancelBtn.onclick = () => modal.classList.add('hidden');
+  closeBtn.onclick = () => modal.classList.add('hidden');
+}
+
+// Reset Password
+function resetPassword(id) {
+  const modal = document.getElementById('confirmModal');
+  const confirmBtn = document.getElementById('confirmAction');
+  const cancelBtn = document.getElementById('cancelAction');
+  const closeBtn = document.getElementById('closeModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalMessage = document.getElementById('modalMessage');
+
+  modalTitle.textContent = 'Confirm Password Reset';
+  modalMessage.textContent = 'Are you sure you want to reset the password to default (UEBS@123)?';
+  modal.classList.remove('hidden');
+
+  confirmBtn.onclick = () => {
+    db.ref('users/' + id + '/password').set('UEBS@123').then(() => {
+      alert('Password reset!');
+      modal.classList.add('hidden');
+    });
+  };
+  cancelBtn.onclick = () => modal.classList.add('hidden');
+  closeBtn.onclick = () => modal.classList.add('hidden');
+}
+
+// Debounced search
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+const debouncedPopulateTable = debounce(populateUserTable, 300);
+document.getElementById('searchUser').addEventListener('keyup', debouncedPopulateTable);
+document.getElementById('searchUserMobile').addEventListener('keyup', debouncedPopulateTable);
+document.getElementById('filterRole').addEventListener('change', populateUserTable);
+document.getElementById('filterClass').addEventListener('keyup', debouncedPopulateTable);
+
+// Initial load
+populateUserTable();
+</script>
+{% endblock %}

@@ -1,0 +1,370 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Balance Sheet - UEBS{% endblock %}
+
+{% block content %}
+<!-- Top Navbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+  <div class="mt-12 md:mt-0">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Balance Sheet</h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">View financial position with assets, liabilities, and equity</p>
+  </div>
+  <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+    <button id="downloadPdfBtn" class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all" title="Download as PDF">
+      <i class="fas fa-file-pdf text-sm sm:text-base"></i>
+    </button>
+    <button id="printBtn" class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all" title="Print">
+      <i class="fas fa-print text-sm sm:text-base"></i>
+    </button>
+    <button id="exportExcelBtn" class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all" title="Export to Excel">
+      <i class="fas fa-file-excel text-sm sm:text-base"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Date Range Filter -->
+<div class="glass-card p-4 mb-6 rounded-2xl animate__animated animate__fadeInUp">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-filter text-purple-400 mr-3"></i> Date Range
+  </h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label class="block text-white/80 mb-2">Start Date</label>
+      <input type="date" id="startDate" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">End Date</label>
+      <input type="date" id="endDate" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+    </div>
+  </div>
+</div>
+
+<!-- Assets Table -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-wallet text-purple-400 mr-3"></i> Assets
+  </h3>
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">Assets</th>
+          <th class="text-left py-3 px-4">Amount</th>
+        </tr>
+      </thead>
+      <tbody id="assetsTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Liabilities Table -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-money-bill text-purple-400 mr-3"></i> Liabilities
+  </h3>
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">Liabilities</th>
+          <th class="text-left py-3 px-4">Amount</th>
+        </tr>
+      </thead>
+      <tbody id="liabilitiesTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Equity Table -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-balance-scale text-purple-400 mr-3"></i> Equity
+  </h3>
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">Equity</th>
+          <th class="text-left py-3 px-4">Amount</th>
+        </tr>
+      </thead>
+      <tbody id="equityTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Summary -->
+<div class="glass-card p-4 rounded-2xl animate__animated animate__fadeInUp">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-4 flex items-center">
+    <i class="fas fa-chart-bar text-purple-400 mr-3"></i> Summary
+  </h3>
+  <div class="text-white/80">
+    Total Assets: <span id="totalAssets" class="font-bold">0</span> <br>
+    Total Liabilities: <span id="totalLiabilities" class="font-bold">0</span> <br>
+    Total Equity: <span id="totalEquity" class="font-bold">0</span> <br>
+    Assets = Liabilities + Equity: <span id="balanceCheck" class="font-bold">Balanced</span>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+<!-- jsPDF and html2canvas for PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- XLSX for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+// Initialize Firebase with your config
+const firebaseConfig = {
+  apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+  authDomain: "uebs-school.firebaseapp.com",
+  projectId: "uebs-school",
+  storageBucket: "uebs-school.firebasestorage.app",
+  messagingSenderId: "740325293639",
+  appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+  measurementId: "G-T7YEBMNHBH"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const { jsPDF } = window.jspdf;
+
+// Load Ledger and Update Balance Sheet
+db.ref('ledger').on('value', snap => {
+  const ledger = snap.val() || {};
+  calculateBalanceSheet(ledger);
+});
+
+function calculateBalanceSheet(ledger) {
+  const assets = {};
+  const liabilities = {};
+  const equity = {};
+  let totalAssets = 0;
+  let totalLiabilities = 0;
+  let totalEquity = 0;
+
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+
+  Object.values(ledger).forEach(t => {
+    if (startDate && t.date < startDate) return;
+    if (endDate && t.date > endDate) return;
+
+    if (t.type === 'Income') {
+      if (!assets[t.category]) assets[t.category] = 0;
+      assets[t.category] += t.amount;
+      totalAssets += t.amount;
+    }
+    if (t.type === 'Expense') {
+      if (!liabilities[t.category]) liabilities[t.category] = 0;
+      liabilities[t.category] += t.amount;
+      totalLiabilities += t.amount;
+    }
+  });
+
+  totalEquity = totalAssets - totalLiabilities;
+  equity['Owner/School Equity'] = totalEquity;
+
+  // Populate tables
+  const assetsTable = document.getElementById('assetsTable');
+  assetsTable.innerHTML = '';
+  Object.keys(assets).forEach(a => {
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-white/10';
+    tr.innerHTML = `<td class="py-3 px-4">${a}</td><td class="py-3 px-4">${assets[a].toFixed(2)}</td>`;
+    assetsTable.appendChild(tr);
+  });
+
+  const liabilitiesTable = document.getElementById('liabilitiesTable');
+  liabilitiesTable.innerHTML = '';
+  Object.keys(liabilities).forEach(l => {
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-white/10';
+    tr.innerHTML = `<td class="py-3 px-4">${l}</td><td class="py-3 px-4">${liabilities[l].toFixed(2)}</td>`;
+    liabilitiesTable.appendChild(tr);
+  });
+
+  const equityTable = document.getElementById('equityTable');
+  equityTable.innerHTML = '';
+  Object.keys(equity).forEach(e => {
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-white/10';
+    tr.innerHTML = `<td class="py-3 px-4">${e}</td><td class="py-3 px-4">${equity[e].toFixed(2)}</td>`;
+    equityTable.appendChild(tr);
+  });
+
+  document.getElementById('totalAssets').textContent = totalAssets.toFixed(2);
+  document.getElementById('totalLiabilities').textContent = totalLiabilities.toFixed(2);
+  document.getElementById('totalEquity').textContent = totalEquity.toFixed(2);
+  document.getElementById('balanceCheck').textContent = (Math.abs(totalAssets - (totalLiabilities + totalEquity)) < 0.01) ? 'Balanced' : 'Not Balanced';
+}
+
+// Download as PDF
+document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+  const btn = document.getElementById('downloadPdfBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.disabled = true;
+
+  const assetsTable = document.getElementById('assetsTable').parentElement.parentElement;
+  const liabilitiesTable = document.getElementById('liabilitiesTable').parentElement.parentElement;
+  const equityTable = document.getElementById('equityTable').parentElement.parentElement;
+  const summary = document.querySelector('.summary');
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  // Set canvas size to fit content
+  canvas.width = Math.max(assetsTable.offsetWidth, liabilitiesTable.offsetWidth, equityTable.offsetWidth);
+  canvas.height = assetsTable.offsetHeight + liabilitiesTable.offsetHeight + equityTable.offsetHeight + summary.offsetHeight + 60;
+
+  // White background
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  let yOffset = 0;
+  html2canvas(assetsTable, { backgroundColor: null }).then(assetsCanvas => {
+    ctx.drawImage(assetsCanvas, 0, yOffset);
+    yOffset += assetsCanvas.height + 20;
+    html2canvas(liabilitiesTable, { backgroundColor: null }).then(liabilitiesCanvas => {
+      ctx.drawImage(liabilitiesCanvas, 0, yOffset);
+      yOffset += liabilitiesCanvas.height + 20;
+      html2canvas(equityTable, { backgroundColor: null }).then(equityCanvas => {
+        ctx.drawImage(equityCanvas, 0, yOffset);
+        yOffset += equityCanvas.height + 20;
+        html2canvas(summary, { backgroundColor: null }).then(summaryCanvas => {
+          ctx.drawImage(summaryCanvas, 0, yOffset);
+          const doc = new jsPDF('p', 'mm', 'a4');
+          const imgData = canvas.toDataURL('image/png');
+          const imgProps = doc.getImageProperties(imgData);
+          const pdfWidth = doc.internal.pageSize.getWidth();
+          const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+          doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+          doc.save('balance_sheet.pdf');
+          btn.innerHTML = '<i class="fas fa-file-pdf"></i>';
+          btn.disabled = false;
+        });
+      });
+    });
+  });
+});
+
+// Print Balance Sheet
+document.getElementById('printBtn').addEventListener('click', () => {
+  const printContent = `
+    <h2>Balance Sheet</h2>
+    ${document.getElementById('assetsTable').parentElement.parentElement.outerHTML}
+    ${document.getElementById('liabilitiesTable').parentElement.parentElement.outerHTML}
+    ${document.getElementById('equityTable').parentElement.parentElement.outerHTML}
+    <div style="margin-top:20px;">${document.querySelector('.summary').outerHTML}</div>
+  `;
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Balance Sheet</title>
+        <style>
+          body { font-family: Arial, sans-serif; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+          th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+          th { background: #007bff; color: white; }
+          h2 { text-align: center; }
+          .summary { font-weight: bold; }
+        </style>
+      </head>
+      <body>${printContent}</body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
+});
+
+// Export to Excel
+document.getElementById('exportExcelBtn').addEventListener('click', () => {
+  const btn = document.getElementById('exportExcelBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.disabled = true;
+
+  const ledger = db.ref('ledger').once('value').then(snap => snap.val() || {});
+  ledger.then(data => {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    const assets = {};
+    const liabilities = {};
+    const equity = {};
+    let totalAssets = 0;
+    let totalLiabilities = 0;
+    let totalEquity = 0;
+
+    Object.values(data).forEach(t => {
+      if (startDate && t.date < startDate) return;
+      if (endDate && t.date > endDate) return;
+
+      if (t.type === 'Income') {
+        if (!assets[t.category]) assets[t.category] = 0;
+        assets[t.category] += t.amount;
+        totalAssets += t.amount;
+      }
+      if (t.type === 'Expense') {
+        if (!liabilities[t.category]) liabilities[t.category] = 0;
+        liabilities[t.category] += t.amount;
+        totalLiabilities += t.amount;
+      }
+    });
+
+    totalEquity = totalAssets - totalLiabilities;
+    equity['Owner/School Equity'] = totalEquity;
+
+    const dataSheet = [];
+    dataSheet.push(['Balance Sheet']);
+    dataSheet.push([]);
+    dataSheet.push(['Assets']);
+    dataSheet.push(['Category', 'Amount']);
+    Object.keys(assets).forEach(a => dataSheet.push([a, assets[a].toFixed(2)]));
+    dataSheet.push(['Total Assets', totalAssets.toFixed(2)]);
+    dataSheet.push([]);
+    dataSheet.push(['Liabilities']);
+    dataSheet.push(['Category', 'Amount']);
+    Object.keys(liabilities).forEach(l => dataSheet.push([l, liabilities[l].toFixed(2)]));
+    dataSheet.push(['Total Liabilities', totalLiabilities.toFixed(2)]);
+    dataSheet.push([]);
+    dataSheet.push(['Equity']);
+    dataSheet.push(['Category', 'Amount']);
+    Object.keys(equity).forEach(e => dataSheet.push([e, equity[e].toFixed(2)]));
+    dataSheet.push(['Total Equity', totalEquity.toFixed(2)]);
+    dataSheet.push([]);
+    dataSheet.push(['Assets = Liabilities + Equity', (Math.abs(totalAssets - (totalLiabilities + totalEquity)) < 0.01) ? 'Balanced' : 'Not Balanced']);
+
+    const ws = XLSX.utils.aoa_to_sheet(dataSheet);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Balance Sheet');
+    XLSX.writeFile(wb, 'balance_sheet.xlsx');
+    btn.innerHTML = '<i class="fas fa-file-excel"></i>';
+    btn.disabled = false;
+  });
+});
+
+// Date Range Filter
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+document.getElementById('startDate').addEventListener('change', () => {
+  db.ref('ledger').once('value').then(snap => calculateBalanceSheet(snap.val() || {}));
+});
+document.getElementById('endDate').addEventListener('change', () => {
+  db.ref('ledger').once('value').then(snap => calculateBalanceSheet(snap.val() || {}));
+});
+</script>
+{% endblock %}

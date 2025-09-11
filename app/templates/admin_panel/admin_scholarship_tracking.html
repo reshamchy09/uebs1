@@ -1,0 +1,595 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Scholarship Tracking - School Management System{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent animate__animated animate__fadeInDown">
+      <i class="fas fa-graduation-cap mr-3"></i>Scholarship Tracking
+    </h1>
+    <p class="text-white/70 mt-2">Manage scholarship programs, track applications, and monitor disbursements</p>
+  </div>
+
+  <!-- Action Buttons and Filters -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div class="flex flex-wrap gap-3">
+        <button class="liquid-btn px-6 py-3 rounded-xl font-medium text-white transition-all duration-300 hover:bg-purple-600">
+          <i class="fas fa-plus mr-2"></i>New Scholarship
+        </button>
+        <button class="px-6 py-3 glass-card rounded-xl font-medium text-white transition-all duration-300 hover:bg-white/20">
+          <i class="fas fa-download mr-2"></i>Export Data
+        </button>
+        <button class="px-6 py-3 glass-card rounded-xl font-medium text-white transition-all duration-300 hover:bg-white/20">
+          <i class="fas fa-print mr-2"></i>Print Report
+        </button>
+      </div>
+      
+      <div class="flex flex-col sm:flex-row gap-4">
+        <div>
+          <label class="block text-sm font-medium text-white/80 mb-2">Status</label>
+          <select class="glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 w-full">
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="pending">Pending Applications</option>
+            <option value="awarded">Awarded</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/80 mb-2">Academic Year</label>
+          <select class="glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 w-full">
+            <option value="">All Years</option>
+            <option value="2023-2024">2023-2024</option>
+            <option value="2024-2025" selected>2024-2025</option>
+            <option value="2025-2026">2025-2026</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scholarship Statistics -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-blue-600 rounded-lg mr-4">
+          <i class="fas fa-award text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Active Scholarships</p>
+          <p class="text-2xl font-bold text-blue-400">18</p>
+          <p class="text-xs text-white/60">+3 from last year</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-green-600 rounded-lg mr-4">
+          <i class="fas fa-users text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Students Awarded</p>
+          <p class="text-2xl font-bold text-green-400">87</p>
+          <p class="text-xs text-white/60">+12 this year</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-purple-600 rounded-lg mr-4">
+          <i class="fas fa-dollar-sign text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Total Funding</p>
+          <p class="text-2xl font-bold text-purple-400">$245,000</p>
+          <p class="text-xs text-white/60">+15% YoY</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-orange-600 rounded-lg mr-4">
+          <i class="fas fa-file-alt text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Pending Applications</p>
+          <p class="text-2xl font-bold text-orange-400">23</p>
+          <p class="text-xs text-white/60">Due in 7 days</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scholarship Programs -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-list mr-3"></i>Scholarship Programs
+    </h2>
+    
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-white/20">
+            <th class="text-left py-3 px-4 font-medium text-white/80">Program Name</th>
+            <th class="text-left py-3 px-4 font-medium text-white/80">Sponsor</th>
+            <th class="text-right py-3 px-4 font-medium text-white/80">Amount</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Recipients</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Deadline</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Status</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">
+              <div class="flex items-center">
+                <div class="w-8 h-8 bg-yellow-600 rounded mr-3 flex items-center justify-center">
+                  <i class="fas fa-graduation-cap text-white text-sm"></i>
+                </div>
+                <span>Academic Excellence Scholarship</span>
+              </div>
+            </td>
+            <td class="py-4 px-4">School Foundation</td>
+            <td class="py-4 px-4 text-right font-medium">$5,000</td>
+            <td class="py-4 px-4 text-center">15</td>
+            <td class="py-4 px-4 text-center">2024-08-15</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Active</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-users"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">
+              <div class="flex items-center">
+                <div class="w-8 h-8 bg-blue-600 rounded mr-3 flex items-center justify-center">
+                  <i class="fas fa-flask text-white text-sm"></i>
+                </div>
+                <span>STEM Scholarship</span>
+              </div>
+            </td>
+            <td class="py-4 px-4">Tech Innovators Inc.</td>
+            <td class="py-4 px-4 text-right font-medium">$7,500</td>
+            <td class="py-4 px-4 text-center">8</td>
+            <td class="py-4 px-4 text-center">2024-09-01</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Active</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-users"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">
+              <div class="flex items-center">
+                <div class="w-8 h-8 bg-purple-600 rounded mr-3 flex items-center justify-center">
+                  <i class="fas fa-palette text-white text-sm"></i>
+                </div>
+                <span>Arts & Culture Grant</span>
+              </div>
+            </td>
+            <td class="py-4 px-4">Cultural Foundation</td>
+            <td class="py-4 px-4 text-right font-medium">$3,000</td>
+            <td class="py-4 px-4 text-center">12</td>
+            <td class="py-4 px-4 text-center">2024-07-30</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-orange-600 text-white text-xs rounded-full">Pending</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-users"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">
+              <div class="flex items-center">
+                <div class="w-8 h-8 bg-red-600 rounded mr-3 flex items-center justify-center">
+                  <i class="fas fa-basketball-ball text-white text-sm"></i>
+                </div>
+                <span>Athletic Scholarship</span>
+              </div>
+            </td>
+            <td class="py-4 px-4">Sports Association</td>
+            <td class="py-4 px-4 text-right font-medium">$4,200</td>
+            <td class="py-4 px-4 text-center">10</td>
+            <td class="py-4 px-4 text-center">2024-08-10</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Active</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-users"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">
+              <div class="flex items-center">
+                <div class="w-8 h-8 bg-green-600 rounded mr-3 flex items-center justify-center">
+                  <i class="fas fa-leaf text-white text-sm"></i>
+                </div>
+                <span>Environmental Studies Grant</span>
+              </div>
+            </td>
+            <td class="py-4 px-4">Eco Foundation</td>
+            <td class="py-4 px-4 text-right font-medium">$6,000</td>
+            <td class="py-4 px-4 text-center">6</td>
+            <td class="py-4 px-4 text-center">2024-10-15</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-gray-600 text-white text-xs rounded-full">Inactive</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-users"></i></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-6">
+      <div class="text-sm text-white/70 mb-4 sm:mb-0">
+        Showing 1 to 5 of 18 entries
+      </div>
+      <div class="flex gap-2">
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="px-3 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium">1</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">2</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scholarship Recipients -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-users mr-3"></i>Scholarship Recipients
+    </h2>
+    
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-white/20">
+            <th class="text-left py-3 px-4 font-medium text-white/80">Student Name</th>
+            <th class="text-left py-3 px-4 font-medium text-white/80">Scholarship Program</th>
+            <th class="text-right py-3 px-4 font-medium text-white/80">Amount Awarded</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Grade</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">GPA</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Status</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">Emma Johnson</td>
+            <td class="py-4 px-4">Academic Excellence Scholarship</td>
+            <td class="py-4 px-4 text-right font-medium">$5,000</td>
+            <td class="py-4 px-4 text-center">11</td>
+            <td class="py-4 px-4 text-center">4.0</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Active</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-file-pdf"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">Michael Brown</td>
+            <td class="py-4 px-4">STEM Scholarship</td>
+            <td class="py-4 px-4 text-right font-medium">$7,500</td>
+            <td class="py-4 px-4 text-center">12</td>
+            <td class="py-4 px-4 text-center">3.9</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Active</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-file-pdf"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">Sarah Davis</td>
+            <td class="py-4 px-4">Arts & Culture Grant</td>
+            <td class="py-4 px-4 text-right font-medium">$3,000</td>
+            <td class="py-4 px-4 text-center">10</td>
+            <td class="py-4 px-4 text-center">3.7</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-yellow-600 text-white text-xs rounded-full">Pending</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-file-pdf"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">Robert Wilson</td>
+            <td class="py-4 px-4">Athletic Scholarship</td>
+            <td class="py-4 px-4 text-right font-medium">$4,200</td>
+            <td class="py-4 px-4 text-center">11</td>
+            <td class="py-4 px-4 text-center">3.5</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Active</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-file-pdf"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">Jennifer Lee</td>
+            <td class="py-4 px-4">Academic Excellence Scholarship</td>
+            <td class="py-4 px-4 text-right font-medium">$5,000</td>
+            <td class="py-4 px-4 text-center">12</td>
+            <td class="py-4 px-4 text-center">3.95</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Active</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-edit"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-file-pdf"></i></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-6">
+      <div class="text-sm text-white/70 mb-4 sm:mb-0">
+        Showing 1 to 5 of 87 entries
+      </div>
+      <div class="flex gap-2">
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="px-3 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium">1</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">2</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">3</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">...</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">18</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Scholarship Activity -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-history mr-3"></i>Recent Activity
+    </h2>
+    
+    <div class="space-y-4">
+      <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+        <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+          <i class="fas fa-check text-white"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <h3 class="font-medium">Scholarship Awarded</h3>
+            <span class="text-xs text-white/60">2 hours ago</span>
+          </div>
+          <p class="text-sm text-white/70 mt-1">Emma Johnson has been awarded the Academic Excellence Scholarship ($5,000).</p>
+        </div>
+      </div>
+      
+      <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+        <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+          <i class="fas fa-file-alt text-white"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <h3 class="font-medium">Application Submitted</h3>
+            <span class="text-xs text-white/60">1 day ago</span>
+          </div>
+          <p class="text-sm text-white/70 mt-1">New application received for the Arts & Culture Grant from Sarah Davis.</p>
+        </div>
+      </div>
+      
+      <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+        <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+          <i class="fas fa-calendar text-white"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <h3 class="font-medium">Deadline Approaching</h3>
+            <span class="text-xs text-white/60">2 days ago</span>
+          </div>
+          <p class="text-sm text-white/70 mt-1">Athletic Scholarship applications closing in 8 days (August 10, 2024).</p>
+        </div>
+      </div>
+      
+      <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+        <div class="w-10 h-10 bg-orange-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+          <i class="fas fa-bell text-white"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <h3 class="font-medium">New Scholarship Added</h3>
+            <span class="text-xs text-white/60">3 days ago</span>
+          </div>
+          <p class="text-sm text-white/70 mt-1">"First Generation Student Grant" has been added to the scholarship programs.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add New Scholarship Form -->
+  <div class="glass-card rounded-xl p-6">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-edit mr-3"></i>Add New Scholarship Program
+    </h2>
+    
+    <form class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-white/80 mb-2">Scholarship Name</label>
+          <input type="text" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Enter scholarship name">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/80 mb-2">Sponsor</label>
+          <input type="text" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Enter sponsor name">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/80 mb-2">Amount</label>
+          <input type="text" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="$0.00">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/80 mb-2">Number of Recipients</label>
+          <input type="number" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Enter number of recipients">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/80 mb-2">Application Deadline</label>
+          <input type="date" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/80 mb-2">Academic Year</label>
+          <select class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+            <option>2024-2025</option>
+            <option>2025-2026</option>
+            <option>2026-2027</option>
+          </select>
+        </div>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-white/80 mb-2">Eligibility Criteria</label>
+        <textarea rows="4" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Describe the eligibility criteria for this scholarship..."></textarea>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-white/80 mb-2">Description</label>
+        <textarea rows="4" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Provide a detailed description of the scholarship program..."></textarea>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-white/80 mb-2">Status</label>
+        <div class="flex space-x-6">
+          <label class="flex items-center cursor-pointer">
+            <input type="radio" name="status" value="active" class="mr-2" checked>
+            <span>Active</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="radio" name="status" value="inactive" class="mr-2">
+            <span>Inactive</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="radio" name="status" value="pending" class="mr-2">
+            <span>Pending</span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="flex flex-wrap gap-4 pt-4">
+        <button type="submit" class="liquid-btn px-6 py-3 rounded-xl font-medium text-white transition-all duration-300 hover:bg-green-600">
+          <i class="fas fa-save mr-2"></i>Save Scholarship Program
+        </button>
+        <button type="button" class="px-6 py-3 glass-card rounded-xl font-medium text-white transition-all duration-300 hover:bg-white/20">
+          <i class="fas fa-times mr-2"></i>Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Add interactivity to scholarship tracking page
+  const actionButtons = document.querySelectorAll('.text-blue-400, .text-green-400, .text-purple-400');
+  actionButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const icon = this.querySelector('i').className;
+      let message = '';
+      
+      if (icon.includes('fa-eye')) {
+        message = 'Viewing scholarship details...';
+      } else if (icon.includes('fa-edit')) {
+        message = 'Editing scholarship information...';
+      } else if (icon.includes('fa-users')) {
+        message = 'Viewing recipients list...';
+      } else if (icon.includes('fa-file-pdf')) {
+        message = 'Generating award letter...';
+      }
+      
+      alert(message);
+    });
+  });
+  
+  // Add form submission handling
+  const scholarshipForm = document.querySelector('form');
+  if (scholarshipForm) {
+    scholarshipForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      // In a real application, this would submit the form via AJAX
+      alert('New scholarship program has been added successfully!');
+      // Reset form or redirect as needed
+    });
+  }
+  
+  // Add status filter functionality
+  const statusFilter = document.querySelector('select');
+  if (statusFilter) {
+    statusFilter.addEventListener('change', function() {
+      const status = this.value;
+      if (status) {
+        alert(`Filtering scholarships by status: ${status}`);
+      }
+    });
+  }
+});
+</script>
+{% endblock %}

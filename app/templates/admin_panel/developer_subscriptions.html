@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Subscription Management</title>
+<style>
+body {font-family: Arial, sans-serif; background:#f5f5f5; padding:20px;}
+.container {max-width:900px; margin:auto; background:#fff; padding:20px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+h2{text-align:center;}
+h3 {margin-top: 20px;}
+input, select, button {padding:6px; margin:5px; border-radius:5px; border:1px solid #ccc;}
+button {cursor:pointer;}
+button.add {background:#28a745; color:white;}
+button.update {background:#007bff; color:white;}
+table {width:100%; border-collapse:collapse; margin-top:15px;}
+th, td {border:1px solid #ccc; padding:8px; text-align:center;}
+th {background:#007bff; color:white;}
+a {color:blue; text-decoration:underline;}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>Admin Subscription Management</h2>
+
+<div>
+<h3>Add / Update Plan</h3>
+<select id="planDuration">
+  <option value="1M">1 Month</option>
+  <option value="3M">3 Months</option>
+  <option value="6M">6 Months</option>
+  <option value="8M">8 Months</option>
+  <option value="12M">12 Months</option>
+  <option value="2Y">2 Years</option>
+  <option value="3Y">3 Years</option>
+  <option value="4Y">4 Years</option>
+  <option value="5Y">5 Years</option>
+</select>
+<input type="number" id="planPrice" placeholder="Price" required>
+<button class="add" id="addPlanBtn">Add / Update Plan</button>
+</div>
+
+<h3>Subscription Plans</h3>
+<table id="planTable">
+<thead>
+<tr>
+<th>Duration</th>
+<th>Price</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<h3>Pending Subscription Approvals</h3>
+<table id="pendingTable">
+<thead>
+<tr>
+<th>User ID</th>
+<th>Plan</th>
+<th>Price</th>
+<th>Start Date</th>
+<th>End Date</th>
+<th>Days Remaining</th>
+<th>Payment Proof</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<h3>Subscription History</h3>
+<table id="historyTable">
+<thead>
+<tr>
+<th>User ID</th>
+<th>Plan</th>
+<th>Price</th>
+<th>Status</th>
+<th>Start Date</th>
+<th>End Date</th>
+<th>Days Remaining</th>
+<th>Payment Proof</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+  authDomain: "uebs-school.firebaseapp.com",
+  projectId: "uebs-school",
+  storageBucket: "uebs-school.firebasestorage.app",
+  messagingSenderId: "740325293639",
+  appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+  measurementId: "G-T7YEBMNHBH"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let plans = {};
+let pendingSubs = {};
+
+// Load Plans
+db.ref('subscriptionPlans').on('value', snap => {
+  plans = snap.val() || {};
+  populatePlanTable();
+});
+
+// Load All Subscriptions
+db.ref('userSubscriptions').on('value', snap => {
+  pendingSubs = snap.val() || {};
+  populatePendingTable();
+  populateHistoryTable();
+});
+
+// Add / Update Plan
+document.getElementById('addPlanBtn').addEventListener('click', () => {
+  const durationCode = document.getElementById('planDuration').value; // e.g., 6M or 2Y
+  const durationLabel = document.getElementById('planDuration').selectedOptions[0].text; // "6 Months", "2 Years"
+  const price = parseFloat(document.getElementById('planPrice').value);
+  if (!price || isNaN(price)) {
+    alert("Enter a valid price");
+    return;
+  }
+  db.ref('subscriptionPlans/' + durationCode).set({ label: durationLabel, price: price, status: "Active" })
+    .then(() => alert("Plan saved successfully!"))
+    .catch(error => alert("Error saving plan: " + error.message));
+});
+
+// Populate Plan Table
+function populatePlanTable() {
+  const tbody = document.querySelector('#planTable tbody');
+  tbody.innerHTML = '';
+  Object.keys(plans).forEach(durationCode => {
+    const p = plans[durationCode];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${p.label}</td>
+      <td>${p.price.toFixed(2)}</td>
+      <td>${p.status}</td>
+      <td><button onclick="toggleStatus('${durationCode}')">${p.status === "Active" ? "Deactivate" : "Activate"}</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// Toggle Plan Status
+function toggleStatus(durationCode) {
+  const newStatus = plans[durationCode].status === "Active" ? "Inactive" : "Active";
+  db.ref('subscriptionPlans/' + durationCode + '/status').set(newStatus)
+    .then(() => alert("Plan status updated!"))
+    .catch(error => alert("Error updating status: " + error.message));
+}
+
+// Calculate Days Remaining
+function calculateDaysRemaining(endDate) {
+  const today = new Date();
+  const expiry = new Date(endDate);
+  const diffTime = expiry - today;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays >= 0 ? diffDays : "Expired";
+}
+
+// Populate Pending Subscriptions Table
+function populatePendingTable() {
+  const tbody = document.querySelector('#pendingTable tbody');
+  tbody.innerHTML = '';
+  Object.keys(pendingSubs).forEach(userId => {
+    Object.keys(pendingSubs[userId]).forEach(subId => {
+      const s = pendingSubs[userId][subId];
+      if (s.status === "Pending") {
+        const daysRemaining = calculateDaysRemaining(s.endDate);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${userId}</td>
+          <td>${s.label || s.duration}</td>
+          <td>${s.price.toFixed(2)}</td>
+          <td>${s.startDate}</td>
+          <td>${s.endDate}</td>
+          <td>${daysRemaining}</td>
+          <td><a href="${s.proof}" target="_blank">View Proof</a></td>
+          <td>
+            <button onclick="approve('${userId}', '${subId}')">Approve</button>
+            <button onclick="reject('${userId}', '${subId}')">Reject</button>
+          </td>`;
+        tbody.appendChild(tr);
+      }
+    });
+  });
+}
+
+// Populate Subscription History Table
+function populateHistoryTable() {
+  const tbody = document.querySelector('#historyTable tbody');
+  tbody.innerHTML = '';
+  Object.keys(pendingSubs).forEach(userId => {
+    Object.keys(pendingSubs[userId]).forEach(subId => {
+      const s = pendingSubs[userId][subId];
+      const daysRemaining = calculateDaysRemaining(s.endDate);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${userId}</td>
+        <td>${s.label || s.duration}</td>
+        <td>${s.price.toFixed(2)}</td>
+        <td>${s.status}</td>
+        <td>${s.startDate}</td>
+        <td>${s.endDate}</td>
+        <td>${daysRemaining}</td>
+        <td><a href="${s.proof}" target="_blank">View Proof</a></td>`;
+      tbody.appendChild(tr);
+    });
+  });
+}
+
+// Approve / Reject
+function approve(userId, subId) {
+  db.ref('userSubscriptions/' + userId + '/' + subId + '/status').set("Active")
+    .then(() => alert("Subscription Approved!"))
+    .catch(error => alert("Error approving subscription: " + error.message));
+}
+
+function reject(userId, subId) {
+  db.ref('userSubscriptions/' + userId + '/' + subId + '/status').set("Rejected")
+    .then(() => alert("Subscription Rejected!"))
+    .catch(error => alert("Error rejecting subscription: " + error.message));
+}
+</script>
+</body>
+</html>

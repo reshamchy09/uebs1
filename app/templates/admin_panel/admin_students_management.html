@@ -1,0 +1,947 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Student Management - UEBS{% endblock %}
+
+{% block content %}
+<!-- CSRF Token for Django Forms -->
+<input type="hidden" name="csrfmiddlewaretoken" value="{% csrf_token %}">
+
+<!-- Top Navbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+  <div class="mt-12 md:mt-0">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Student Management</h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">Manage all student records</p>
+  </div>
+  <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+    <div class="hidden md:block relative flex-1 max-w-md">
+      <input type="text" id="searchInput" placeholder="Search students..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+      <button id="searchButton" class="absolute right-3 top-2 text-white/70 hover:text-white">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    <button id="mobileSearchToggle" class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative md:hidden">
+      <i class="fas fa-search text-sm sm:text-base"></i>
+    </button>
+    <button class="liquid-btn text-white px-4 py-2 rounded-xl font-semibold transition-all hover:scale-105 text-sm sm:text-base" onclick="window.location.href='{% url 'admin_admission_management' %}'">
+      <i class="fas fa-plus mr-2"></i> Add Student
+    </button>
+    <div class="relative">
+      <button class="liquid-btn text-white px-4 py-2 rounded-xl font-semibold transition-all hover:scale-105 text-sm sm:text-base" id="exportOptionsBtn">
+        <i class="fas fa-file-export mr-2"></i> Export
+      </button>
+      <div id="exportDropdown" class="hidden absolute right-0 mt-2 w-48 glass-card rounded-xl shadow-lg z-10">
+        <button id="downloadPDF" class="block w-full text-left px-4 py-2 text-white hover:bg-white/20"><i class="fas fa-file-pdf mr-2"></i> Download PDF</button>
+        <button id="printTable" class="block w-full text-left px-4 py-2 text-white hover:bg-white/20"><i class="fas fa-print mr-2"></i> Print</button>
+        <button id="exportExcel" class="block w-full text-left px-4 py-2 text-white hover:bg-white/20"><i class="fas fa-file-excel mr-2"></i> Export to Excel</button>
+        <label class="block w-full text-left px-4 py-2 text-white hover:bg-white/20 cursor-pointer">
+          <i class="fas fa-file-import mr-2"></i> Import from Excel
+          <input type="file" id="importExcel" accept=".xlsx,.xls" class="hidden">
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile search bar -->
+<div id="mobileSearchBar" class="md:hidden mb-4 hidden">
+  <div class="relative">
+    <input type="text" id="searchInputMobile" placeholder="Search students..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+    <button id="mobileSearchButton" class="absolute right-3 top-2 text-white/70 hover:text-white">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Save Location Display -->
+<div id="saveLocation" class="glass-card p-4 mb-6 rounded-2xl text-white/80 hidden">
+  <i class="fas fa-hdd mr-2"></i> File saved at: <span id="savePath"></span>
+</div>
+
+<!-- Loading Indicator -->
+<div id="loadingIndicator" class="glass-card p-6 mb-6 rounded-2xl text-center">
+  <div class="flex items-center justify-center">
+    <i class="fas fa-spinner fa-spin text-purple-400 mr-3"></i>
+    <span class="text-white">Loading students...</span>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="glass-card p-4 mb-6 rounded-2xl animate__animated animate__fadeInUp" id="filtersSection" style="display: none;">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-white/80 mb-2">Class</label>
+      <select id="filterClass" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Classes</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Section</label>
+      <select id="filterSection" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Sections</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Status</label>
+      <select id="filterStatus" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Statuses</option>
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+        <option value="Graduated">Graduated</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- Student Table -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp" id="tableSection" style="display: none;">
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="studentTable">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">Profile</th>
+          <th class="text-left py-3 px-4">Name</th>
+          <th class="text-left py-3 px-4">Class</th>
+          <th class="text-left py-3 px-4">Section</th>
+          <th class="text-left py-3 px-4">Username</th>
+          <th class="text-left py-3 px-4">Parent</th>
+          <th class="text-left py-3 px-4">Contact</th>
+          <th class="text-left py-3 px-4">Email</th>
+          <th class="text-left py-3 px-4">Status</th>
+          <th class="text-left py-3 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Students will be populated here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- No Students Message -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl text-center" id="noStudentsMessage" style="display: none;">
+  <div class="text-white/70">
+    <i class="fas fa-users text-4xl mb-4"></i>
+    <h3 class="text-xl mb-2">No Students Found</h3>
+    <p>Start by adding your first student to the system.</p>
+    <button class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 mt-4" onclick="window.location.href='{% url 'admin_admission_management' %}'">
+      <i class="fas fa-plus mr-2"></i> Add First Student
+    </button>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fixed inset-0 bg-black/50 z-50 hidden justify-center items-center" id="editModal">
+  <div class="glass-card p-6 lg:p-8 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl sm:text-2xl font-semibold text-white">Edit Student</h3>
+      <button id="closeEdit" class="text-white/70 hover:text-white text-2xl">&times;</button>
+    </div>
+    
+    <form id="editStudentForm">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-white/80 mb-2">Full Name</label>
+          <input type="text" id="editName" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" required>
+        </div>
+        <div>
+          <label class="block text-white/80 mb-2">Date of Birth</label>
+          <input type="date" id="editDob" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" max="2025-08-19">
+        </div>
+        <div>
+          <label class="block text-white/80 mb-2">Gender</label>
+          <select id="editGender" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-white/80 mb-2">Class/Grade</label>
+          <input type="text" id="editClass" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" required>
+        </div>
+        <div>
+          <label class="block text-white/80 mb-2">Section</label>
+          <input type="text" id="editSection" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        </div>
+        <div>
+          <label class="block text-white/80 mb-2">Parent Name</label>
+          <input type="text" id="editParent" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" required>
+        </div>
+        <div>
+          <label class="block text-white/80 mb-2">Contact</label>
+          <input type="tel" id="editContact" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" required>
+        </div>
+        <div>
+          <label class="block text-white/80 mb-2">Email</label>
+          <input type="email" id="editEmail" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-white/80 mb-2">Address</label>
+          <input type="text" id="editAddress" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" required>
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-white/80 mb-2">Status</label>
+          <select id="editStatusModal" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Graduated">Graduated</option>
+          </select>
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-white/80 mb-2">Update Photo</label>
+          <div class="glass-card rounded-xl p-4 flex items-center justify-center border-2 border-dashed border-white/20">
+            <input type="file" id="editImage" accept="image/*" class="hidden">
+            <label for="editImage" class="cursor-pointer text-center">
+              <i class="fas fa-camera text-3xl text-purple-400 mb-2"></i>
+              <p class="text-white/70">Click to update photo</p>
+              <p class="text-xs text-white/50 mt-1">JPG, PNG (Max 2MB)</p>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-4 mt-6">
+        <button type="button" id="cancelEdit" class="glass-card text-white px-6 py-3 rounded-xl font-semibold transition-all hover:bg-white/20">
+          Cancel
+        </button>
+        <button type="submit" id="saveEdit" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+          <i class="fas fa-save mr-2"></i> Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+<!-- jsPDF for PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- SheetJS for Excel handling -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+// Utility function for HTML escaping
+function escapeHTML(str) {
+  if (!str) return '';
+  return str.replace(/[&<>"']/g, function(match) {
+    const escape = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    };
+    return escape[match];
+  });
+}
+
+// Generate username
+function generateUsername(fullName) {
+  const cleanName = fullName.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const randomNum = Math.floor(1000 + Math.random() * 9000);
+  let username = cleanName + randomNum;
+  if (username.length < 7) username += 'user'.slice(0, 7 - username.length);
+  return username;
+}
+
+// Validate date of birth
+function isValidDate(dateStr) {
+  if (!dateStr) return true; // Allow empty DOB
+  const date = new Date(dateStr);
+  const today = new Date();
+  // Check if date is valid and not in the future or unreasonably far in the past
+  return !isNaN(date.getTime()) && date <= today && date >= new Date('1900-01-01');
+}
+
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+  authDomain: "uebs-school.firebaseapp.com",
+  databaseURL: "https://uebs-school-default-rtdb.firebaseio.com",
+  projectId: "uebs-school",
+  storageBucket: "uebs-school.firebasestorage.app",
+  messagingSenderId: "740325293639",
+  appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+  measurementId: "G-T7YEBMNHBH"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const storage = firebase.storage();
+const auth = firebase.auth();
+
+let students = {};
+let editUserId = '';
+let isLoading = true;
+const defaultSavePath = "downloads/uebs_students";
+
+// Show/Hide elements based on state
+function updateUI() {
+  const loadingIndicator = document.getElementById('loadingIndicator');
+  const filtersSection = document.getElementById('filtersSection');
+  const tableSection = document.getElementById('tableSection');
+  const noStudentsMessage = document.getElementById('noStudentsMessage');
+  
+  if (isLoading) {
+    loadingIndicator.style.display = 'block';
+    filtersSection.style.display = 'none';
+    tableSection.style.display = 'none';
+    noStudentsMessage.style.display = 'none';
+  } else if (Object.keys(students).length === 0) {
+    loadingIndicator.style.display = 'none';
+    filtersSection.style.display = 'none';
+    tableSection.style.display = 'none';
+    noStudentsMessage.style.display = 'block';
+  } else {
+    loadingIndicator.style.display = 'none';
+    filtersSection.style.display = 'block';
+    tableSection.style.display = 'block';
+    noStudentsMessage.style.display = 'none';
+  }
+}
+
+// Show save location
+function showSaveLocation(filename) {
+  const saveLocation = document.getElementById('saveLocation');
+  const savePath = document.getElementById('savePath');
+  savePath.textContent = `${defaultSavePath}/${filename}`;
+  saveLocation.style.display = 'block';
+  setTimeout(() => {
+    saveLocation.style.display = 'none';
+  }, 5000);
+}
+
+// Fetch Students
+async function fetchStudents() {
+  try {
+    isLoading = true;
+    updateUI();
+    students = {}; // Clear existing data to prevent stale entries
+    const snapshot = await db.ref('students').once('value');
+    students = snapshot.val() || {};
+    // Ensure userId field matches the key
+    Object.keys(students).forEach(key => {
+      if (!students[key].userId) {
+        students[key].userId = key;
+      }
+    });
+    isLoading = false;
+    updateUI();
+    populateTable();
+    populateFilters();
+
+    // Set up real-time listener after initial fetch
+    db.ref('students').on('value', snapshot => {
+      students = snapshot.val() || {};
+      // Re-apply userId fix for real-time updates
+      Object.keys(students).forEach(key => {
+        if (!students[key].userId) {
+          students[key].userId = key;
+        }
+      });
+      populateTable();
+      populateFilters();
+    }, error => {
+      console.error('Error in real-time listener:', error);
+      alert('Error in real-time updates: ' + error.message);
+    });
+  } catch (error) {
+    console.error('Error fetching students:', error);
+    isLoading = false;
+    updateUI();
+    alert('Error loading students: ' + error.message);
+  }
+}
+
+// Populate Table
+function populateTable() {
+  const tbody = document.querySelector('#studentTable tbody');
+  if (!tbody) return;
+  
+  tbody.innerHTML = '';
+  
+  const search = (document.getElementById('searchInput').value || 
+                 document.getElementById('searchInputMobile').value || '').toLowerCase().trim();
+  const filterClass = document.getElementById('filterClass').value;
+  const filterSection = document.getElementById('filterSection').value;
+  const filterStatus = document.getElementById('filterStatus').value;
+
+  let hasVisibleStudents = false;
+
+  Object.keys(students).forEach(userId => {
+    const s = students[userId];
+    if (!s || !s.fullName) return;
+
+    const matchesSearch = !search || 
+      escapeHTML(s.fullName).toLowerCase().includes(search) || 
+      escapeHTML(s.username).toLowerCase().includes(search) || 
+      (s.parentName && escapeHTML(s.parentName).toLowerCase().includes(search)) ||
+      (s.email && escapeHTML(s.email).toLowerCase().includes(search));
+    
+    const matchesClass = !filterClass || s.classGrade === filterClass;
+    const matchesSection = !filterSection || s.section === filterSection;
+    const matchesStatus = !filterStatus || (s.status || 'Active') === filterStatus;
+    
+    if (matchesSearch && matchesClass && matchesSection && matchesStatus) {
+      hasVisibleStudents = true;
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-white/10 hover:bg-white/5';
+      tr.innerHTML = `
+        <td class="py-3 px-4">
+          ${s.imageUrl ? 
+            `<img src="${escapeHTML(s.imageUrl)}" class="w-10 h-10 rounded-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+             <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center" style="display: none;">
+               <i class="fas fa-user text-purple-400"></i>
+             </div>` : 
+            `<div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+               <i class="fas fa-user text-purple-400"></i>
+             </div>`}
+        </td>
+        <td class="py-3 px-4">${escapeHTML(s.fullName)}</td>
+        <td class="py-3 px-4">${escapeHTML(s.classGrade) || '-'}</td>
+        <td class="py-3 px-4">${escapeHTML(s.section) || '-'}</td>
+        <td class="py-3 px-4 font-mono text-sm">${escapeHTML(s.username)}</td>
+        <td class="py-3 px-4">${escapeHTML(s.parentName) || '-'}</td>
+        <td class="py-3 px-4">${escapeHTML(s.contact) || '-'}</td>
+        <td class="py-3 px-4">${escapeHTML(s.email) || '-'}</td>
+        <td class="py-3 px-4">
+          <span class="px-2 py-1 rounded-full text-xs ${getStatusColor(s.status || 'Active')}">
+            ${escapeHTML(s.status || 'Active')}
+          </span>
+        </td>
+        <td class="py-3 px-4">
+          <div class="flex space-x-2">
+            <button onclick="editStudent('${escapeHTML(userId)}')" class="glass-card px-3 py-1 rounded-lg text-blue-400 hover:bg-blue-400/20 transition-all" title="Edit">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button onclick="deleteStudent('${escapeHTML(userId)}')" class="glass-card px-3 py-1 rounded-lg text-red-400 hover:bg-red-400/20 transition-all" title="Delete">
+              <i class="fas fa-trash"></i>
+            </button>
+            <button onclick="resetPassword('${escapeHTML(userId)}')" class="glass-card px-3 py-1 rounded-lg text-green-400 hover:bg-green-400/20 transition-all" title="Reset Password">
+              <i class="fas fa-key"></i>
+            </button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
+  });
+
+  if (!hasVisibleStudents && Object.keys(students).length > 0) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td colspan="10" class="py-8 px-4 text-center text-white/60">
+        <i class="fas fa-search text-2xl mb-2"></i>
+        <p>No students match your search criteria</p>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+
+// Get status color classes
+function getStatusColor(status) {
+  switch(status) {
+    case 'Active': return 'bg-green-500/20 text-green-400';
+    case 'Inactive': return 'bg-red-500/20 text-red-400';
+    case 'Graduated': return 'bg-blue-500/20 text-blue-400';
+    default: return 'bg-gray-500/20 text-gray-400';
+  }
+}
+
+// Populate Filters
+function populateFilters() {
+  const classSet = new Set();
+  const sectionSet = new Set();
+  
+  Object.values(students).forEach(s => {
+    if (s && s.classGrade) classSet.add(escapeHTML(s.classGrade));
+    if (s && s.section) sectionSet.add(escapeHTML(s.section));
+  });
+  
+  const classSelect = document.getElementById('filterClass');
+  const currentClass = classSelect.value;
+  classSelect.innerHTML = '<option value="">All Classes</option>';
+  Array.from(classSet).sort().forEach(c => {
+    const selected = c === currentClass ? 'selected' : '';
+    classSelect.innerHTML += `<option value="${c}" ${selected}>${c}</option>`;
+  });
+  
+  const sectionSelect = document.getElementById('filterSection');
+  const currentSection = sectionSelect.value;
+  sectionSelect.innerHTML = '<option value="">All Sections</option>';
+  Array.from(sectionSet).sort().forEach(s => {
+    const selected = s === currentSection ? 'selected' : '';
+    sectionSelect.innerHTML += `<option value="${s}" ${selected}>${s}</option>`;
+  });
+}
+
+// Search & Filter Events with debouncing
+let searchTimeout;
+function debounceSearch() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(populateTable, 300);
+}
+
+// Mobile search toggle
+function toggleMobileSearch() {
+  const mobileSearchBar = document.getElementById('mobileSearchBar');
+  mobileSearchBar.classList.toggle('hidden');
+  if (!mobileSearchBar.classList.contains('hidden')) {
+    document.getElementById('searchInputMobile').focus();
+  }
+}
+
+// Download as PDF
+function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  doc.setFontSize(18);
+  doc.text('Student Records', 20, 20);
+  
+  const table = document.getElementById('studentTable');
+  const rows = table.querySelectorAll('tbody tr');
+  let y = 30;
+  
+  // Add headers
+  const headers = ['Name', 'Class', 'Section', 'Username', 'Parent', 'Contact', 'Email', 'Status'];
+  doc.setFontSize(12);
+  headers.forEach((header, index) => {
+    doc.text(header, 20 + index * 25, y);
+  });
+  y += 10;
+  
+  // Add data
+  rows.forEach(row => {
+    const cells = row.querySelectorAll('td');
+    if (cells.length < 10) return; // Skip empty or invalid rows
+    doc.text(cells[1].textContent, 20, y);
+    doc.text(cells[2].textContent, 45, y);
+    doc.text(cells[3].textContent, 70, y);
+    doc.text(cells[4].textContent, 95, y);
+    doc.text(cells[5].textContent, 120, y);
+    doc.text(cells[6].textContent, 145, y);
+    doc.text(cells[7].textContent, 170, y);
+    doc.text(cells[8].textContent, 195, y);
+    y += 10;
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
+    }
+  });
+  
+  const filename = `students_${new Date().toISOString().slice(0,10)}.pdf`;
+  doc.save(filename);
+  showSaveLocation(filename);
+}
+
+// Print Table
+function printTable() {
+  const printWindow = window.open('', '_blank');
+  const table = document.getElementById('studentTable').outerHTML;
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Student Records</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          table { width: 100%; border-collapse: collapse; }
+          th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+          th { background-color: #f2f2f2; }
+          .no-print { display: none; }
+        </style>
+      </head>
+      <body>
+        <h2>Student Records</h2>
+        ${table.replace(/<td class="py-3 px-4">.*?(<img|div).*?\/(div|img)><\/td>/g, '').replace(/<td class="py-3 px-4">.*?(button).*?\/div><\/td>/g, '')}
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
+}
+
+// Export to Excel
+function exportToExcel() {
+  const data = [];
+  const headers = ['Name', 'Class', 'Section', 'Username', 'UserId', 'Parent', 'Contact', 'Email', 'Status', 'Address', 'DOB', 'Gender'];
+  data.push(headers);
+  
+  Object.values(students).forEach(s => {
+    data.push([
+      s.fullName || '',
+      s.classGrade || '',
+      s.section || '',
+      s.username || '',
+      s.userId || '',
+      s.parentName || '',
+      s.contact || '',
+      s.email || '',
+      s.status || 'Active',
+      s.address || '',
+      s.dob || '',
+      s.gender || ''
+    ]);
+  });
+  
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Students');
+  const filename = `students_${new Date().toISOString().slice(0,10)}.xlsx`;
+  XLSX.writeFile(wb, filename);
+  showSaveLocation(filename);
+}
+
+// Import from Excel
+async function importFromExcel(event) {
+  const file = event.target.files[0];
+  if (!file) {
+    alert('No file selected');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const json = XLSX.utils.sheet_to_json(sheet);
+      
+      for (const row of json) {
+        // Skip rows without a name
+        if (!row.Name || typeof row.Name !== 'string') {
+          console.warn('Skipping row with missing or invalid Name:', row);
+          continue;
+        }
+
+        // Validate DOB
+        if (row.DOB && !isValidDate(row.DOB)) {
+          console.warn(`Invalid DOB for ${row.Name}: ${row.DOB}`);
+          row.DOB = ''; // Clear invalid DOB
+        }
+
+        // Generate userId and username
+        const userId = db.ref().child('students').push().key;
+        const username = row.Username ? row.Username.toString().toLowerCase().replace(/[^a-z0-9]/g, '') : generateUsername(row.Name);
+        
+        // Check for username conflict
+        const existingStudentSnapshot = await db.ref('students').orderByChild('username').equalTo(username).once('value');
+        if (existingStudentSnapshot.exists()) {
+          console.warn(`Username ${username} already exists, generating new one`);
+          const newUsername = generateUsername(row.Name + Math.random().toString(36).slice(2, 6));
+          row.Username = newUsername;
+        }
+
+        const studentData = {
+          userId: userId,
+          username: row.Username || username,
+          password: 'UEBS@123',
+          fullName: escapeHTML(row.Name) || '',
+          classGrade: escapeHTML(row.Class) || '',
+          section: escapeHTML(row.Section) || '',
+          parentName: escapeHTML(row.Parent) || '',
+          contact: escapeHTML(row.Contact) || '',
+          status: escapeHTML(row.Status) || 'Active',
+          email: row.Email ? escapeHTML(row.Email) : `${username}@uebs.school`,
+          address: escapeHTML(row.Address) || '',
+          dob: escapeHTML(row.DOB) || '',
+          gender: escapeHTML(row.Gender) || '',
+          dateAdded: new Date().toISOString()
+        };
+
+        // Create Firebase auth user
+        try {
+          await auth.createUserWithEmailAndPassword(studentData.email, studentData.password);
+        } catch (authError) {
+          console.warn(`Auth creation failed for ${studentData.email}:`, authError.message);
+          // Continue saving to database even if auth fails
+        }
+
+        // Save to Firebase
+        await db.ref(`students/${userId}`).set(studentData);
+      }
+      
+      alert('Students imported successfully!');
+      document.getElementById('importExcel').value = ''; // Reset file input
+      autoSaveToServer(); // Trigger auto-save after import
+    } catch (error) {
+      console.error('Error importing Excel:', error);
+      alert('Error importing Excel: ' + error.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// Auto-save to server
+async function autoSaveToServer() {
+  try {
+    const data = Object.values(students).map(s => ({
+      Name: s.fullName,
+      Class: s.classGrade,
+      Section: s.section,
+      Username: s.username,
+      UserId: s.userId,
+      Parent: s.parentName,
+      Contact: s.contact,
+      Email: s.email,
+      Status: s.status || 'Active',
+      Address: s.address,
+      DOB: s.dob,
+      Gender: s.gender
+    }));
+    
+    const response = await fetch('{% url "save_students" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+      },
+      body: JSON.stringify({ students: data })
+    });
+    
+    const result = await response.json();
+    if (response.ok) {
+      const filename = `students_backup_${new Date().toISOString().slice(0,10)}.xlsx`;
+      showSaveLocation(filename);
+    } else {
+      throw new Error(result.error || 'Failed to save backup');
+    }
+  } catch (error) {
+    console.error('Error auto-saving:', error);
+    alert('Error auto-saving data: ' + error.message);
+  }
+}
+
+// Edit Student
+function editStudent(userId) {
+  editUserId = userId;
+  const s = students[userId];
+  if (!s) {
+    alert('Student data not found');
+    return;
+  }
+  
+  document.getElementById('editName').value = escapeHTML(s.fullName || '');
+  document.getElementById('editDob').value = isValidDate(s.dob) ? s.dob : '';
+  document.getElementById('editGender').value = escapeHTML(s.gender || '');
+  document.getElementById('editClass').value = escapeHTML(s.classGrade || '');
+  document.getElementById('editSection').value = escapeHTML(s.section || '');
+  document.getElementById('editParent').value = escapeHTML(s.parentName || '');
+  document.getElementById('editContact').value = escapeHTML(s.contact || '');
+  document.getElementById('editEmail').value = escapeHTML(s.email || '');
+  document.getElementById('editAddress').value = escapeHTML(s.address || '');
+  document.getElementById('editStatusModal').value = escapeHTML(s.status || 'Active');
+  document.getElementById('editModal').style.display = 'flex';
+}
+
+// Close Edit Modal
+function closeEditModal() {
+  document.getElementById('editModal').style.display = 'none';
+  document.getElementById('editImage').value = '';
+  document.getElementById('editStudentForm').reset();
+}
+
+// Save Edit
+async function saveEdit(e) {
+  e.preventDefault();
+  
+  if (!editUserId) {
+    alert('No student selected for editing');
+    return;
+  }
+
+  const requiredFields = [
+    { id: 'editName', label: 'Full Name' },
+    { id: 'editClass', label: 'Class/Grade' },
+    { id: 'editParent', label: 'Parent Name' },
+    { id: 'editContact', label: 'Contact' },
+    { id: 'editAddress', label: 'Address' }
+  ];
+
+  for (let field of requiredFields) {
+    if (!document.getElementById(field.id).value.trim()) {
+      alert(`Please fill in ${field.label}`);
+      return;
+    }
+  }
+
+  const dob = document.getElementById('editDob').value;
+  if (dob && !isValidDate(dob)) {
+    alert('Please enter a valid date of birth (not in the future or before 1900).');
+    return;
+  }
+
+  const updated = {
+    ...students[editUserId],
+    fullName: document.getElementById('editName').value.trim(),
+    dob: dob,
+    gender: document.getElementById('editGender').value,
+    classGrade: document.getElementById('editClass').value.trim(),
+    section: document.getElementById('editSection').value.trim(),
+    parentName: document.getElementById('editParent').value.trim(),
+    contact: document.getElementById('editContact').value.trim(),
+    email: document.getElementById('editEmail').value.trim(),
+    address: document.getElementById('editAddress').value.trim(),
+    status: document.getElementById('editStatusModal').value
+  };
+
+  const saveBtn = document.getElementById('saveEdit');
+  const originalText = saveBtn.innerHTML;
+  saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+  saveBtn.disabled = true;
+
+  try {
+    const imageFile = document.getElementById('editImage').files[0];
+    if (imageFile) {
+      if (imageFile.size > 2 * 1024 * 1024) {
+        alert('Image size should be less than 2MB');
+        resetEditButton(saveBtn, originalText);
+        return;
+      }
+
+      if (students[editUserId].imageUrl) {
+        try {
+          await storage.refFromURL(students[editUserId].imageUrl).delete();
+        } catch (error) {
+          console.log('Could not delete old image:', error);
+        }
+      }
+
+      const storageRef = storage.ref(`students/${editUserId}_${Date.now()}_${imageFile.name}`);
+      const snapshot = await storageRef.put(imageFile);
+      updated.imageUrl = await snapshot.ref.getDownloadURL();
+    } else {
+      updated.imageUrl = students[editUserId].imageUrl || '';
+    }
+
+    await db.ref('students/' + editUserId).update(updated);
+    alert('Student updated successfully!');
+    closeEditModal();
+    autoSaveToServer(); // Trigger auto-save after edit
+  } catch (error) {
+    console.error('Error updating student:', error);
+    alert('Error updating student: ' + error.message);
+  } finally {
+    resetEditButton(saveBtn, originalText);
+  }
+}
+
+function resetEditButton(saveBtn, originalText) {
+  saveBtn.innerHTML = originalText;
+  saveBtn.disabled = false;
+}
+
+// Delete Student
+async function deleteStudent(userId) {
+  const student = students[userId];
+  if (!student) {
+    alert('Student not found');
+    return;
+  }
+
+  if (!confirm(`Are you sure you want to delete ${escapeHTML(student.fullName)}? This action cannot be undone.`)) {
+    return;
+  }
+
+  try {
+    if (student.imageUrl) {
+      await storage.refFromURL(student.imageUrl).delete();
+    }
+    await db.ref('students/' + userId).remove();
+    alert('Student deleted successfully!');
+    autoSaveToServer(); // Trigger auto-save after delete
+  } catch (error) {
+    console.error('Error deleting student:', error);
+    alert('Error deleting student: ' + error.message);
+  }
+}
+
+// Reset Password
+async function resetPassword(userId) {
+  const student = students[userId];
+  if (!student) {
+    alert('Student not found');
+    return;
+  }
+
+  if (!confirm(`Reset password for ${escapeHTML(student.fullName)}? The password will be set to UEBS@123 and the student will need to change it on first login.`)) {
+    return;
+  }
+
+  try {
+    await db.ref('students/' + userId + '/password').set('UEBS@123');
+    alert('Password reset successfully!\nNew password: UEBS@123');
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    alert('Error resetting password: ' + error.message);
+  }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  // Event Listeners
+  document.getElementById('searchInput').addEventListener('input', debounceSearch);
+  document.getElementById('searchInputMobile').addEventListener('input', debounceSearch);
+  document.getElementById('filterClass').addEventListener('change', populateTable);
+  document.getElementById('filterSection').addEventListener('change', populateTable);
+  document.getElementById('filterStatus').addEventListener('change', populateTable);
+  document.getElementById('mobileSearchToggle').addEventListener('click', toggleMobileSearch);
+  document.getElementById('searchButton').addEventListener('click', debounceSearch);
+  document.getElementById('mobileSearchButton').addEventListener('click', debounceSearch);
+  document.getElementById('closeEdit').addEventListener('click', closeEditModal);
+  document.getElementById('cancelEdit').addEventListener('click', closeEditModal);
+  document.getElementById('editStudentForm').addEventListener('submit', saveEdit);
+  document.getElementById('downloadPDF').addEventListener('click', downloadPDF);
+  document.getElementById('printTable').addEventListener('click', printTable);
+  document.getElementById('exportExcel').addEventListener('click', exportToExcel);
+  document.getElementById('importExcel').addEventListener('change', importFromExcel);
+  
+  // Export dropdown toggle
+  document.getElementById('exportOptionsBtn').addEventListener('click', () => {
+    document.getElementById('exportDropdown').classList.toggle('hidden');
+  });
+
+  // Click outside to close dropdown
+  document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('exportDropdown');
+    const btn = document.getElementById('exportOptionsBtn');
+    if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.add('hidden');
+    }
+  });
+
+  // Click outside modal to close
+  document.getElementById('editModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeEditModal();
+    }
+  });
+
+  updateUI();
+  fetchStudents();
+
+  // Auto-save every 5 minutes
+  setInterval(autoSaveToServer, 5 * 60 * 1000);
+});
+
+// Handle connection state
+db.ref('.info/connected').on('value', function(snapshot) {
+  if (snapshot.val() === true) {
+    console.log('Firebase connected');
+  } else {
+    console.log('Firebase disconnected');
+    if (!isLoading) {
+      alert('Lost connection to the database. Please check your internet connection.');
+    }
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,188 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Admin Voice Notices - UEBS{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+  <!-- Header -->
+  <div class="mb-6 sm:mb-8">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+      Admin Voice Notices
+    </h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">
+      Upload and manage voice notices for announcements
+    </p>
+  </div>
+
+  <!-- Upload Notice Form -->
+  <div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+      <i class="fas fa-microphone text-green-400 mr-3"></i> Upload Voice Notice
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="md:col-span-2">
+        <label class="block text-white/80 mb-2">Notice Title</label>
+        <input 
+          id="noticeTitle" 
+          type="text" 
+          placeholder="Enter notice title" 
+          class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400"
+        >
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-white/80 mb-2">Audio File</label>
+        <input 
+          id="voiceFile" 
+          type="file" 
+          accept="audio/*" 
+          class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400"
+        >
+      </div>
+    </div>
+    <button 
+      id="uploadBtn" 
+      class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 mt-6"
+      onclick="uploadNotice()"
+    >
+      <i class="fas fa-upload mr-2"></i> Upload Notice
+    </button>
+  </div>
+
+  <!-- Notices List -->
+  <div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+      <i class="fas fa-history text-purple-400 mr-3"></i> All Notices
+    </h3>
+    <div class="overflow-x-auto">
+      <table class="w-full text-white/80" id="noticeList">
+        <thead>
+          <tr class="border-b border-white/20">
+            <th class="text-left py-3 px-4">Title</th>
+            <th class="text-left py-3 px-4">Sent At</th>
+            <th class="text-left py-3 px-4">Audio</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK (Compatibility Version) -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-storage-compat.js"></script>
+
+<script>
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+    authDomain: "uebs-school.firebaseapp.com",
+    projectId: "uebs-school",
+    storageBucket: "uebs-school.firebasestorage.app",
+    messagingSenderId: "740325293639",
+    appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+    measurementId: "G-T7YEBMNHBH"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const storage = firebase.storage();
+
+  // Elements
+  const noticeTitle = document.getElementById("noticeTitle");
+  const voiceFile = document.getElementById("voiceFile");
+  const uploadBtn = document.getElementById("uploadBtn");
+  const noticeList = document.querySelector("#noticeList tbody");
+
+  // Upload Voice Notice
+  function uploadNotice() {
+    const title = noticeTitle.value.trim();
+    const file = voiceFile.files[0];
+
+    if (!title || !file) {
+      alert("Please enter a title and select an audio file!");
+      return;
+    }
+
+    uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Uploading...';
+    uploadBtn.disabled = true;
+
+    const storageRef = storage.ref(`admin_voice_notices/${Date.now()}_${file.name}`);
+    const uploadTask = storageRef.put(file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes * 100).toFixed(2);
+        console.log(`Uploading... ${progress}%`);
+      },
+      (error) => {
+        console.error("Upload failed:", error);
+        alert("Upload failed: " + error.message);
+        uploadBtn.innerHTML = '<i class="fas fa-upload mr-2"></i> Upload Notice';
+        uploadBtn.disabled = false;
+      },
+      () => {
+        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+          const noticeRef = db.ref("admin_voice_notices").push();
+          noticeRef.set({
+            title,
+            audioUrl: downloadURL,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+          })
+          .then(() => {
+            alert("Voice Notice Uploaded Successfully!");
+            noticeTitle.value = "";
+            voiceFile.value = "";
+          })
+          .catch(err => alert("Error saving notice: " + err.message))
+          .finally(() => {
+            uploadBtn.innerHTML = '<i class="fas fa-upload mr-2"></i> Upload Notice';
+            uploadBtn.disabled = false;
+          });
+        });
+      }
+    );
+  }
+
+  // Load Notices in Real-Time
+  db.ref("admin_voice_notices").on("value", (snapshot) => {
+    const data = snapshot.val();
+    noticeList.innerHTML = "";
+    if (data) {
+      const notices = Object.entries(data).map(([id, n]) => ({ id, ...n }));
+      // Sort by timestamp (newest first)
+      notices.sort((a, b) => b.timestamp - a.timestamp);
+      notices.forEach(n => {
+        const tr = document.createElement("tr");
+        tr.className = "border-b border-white/10 hover:bg-white/5";
+        const date = new Date(n.timestamp).toLocaleString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true
+        });
+        tr.innerHTML = `
+          <td class="py-3 px-4">${n.title}</td>
+          <td class="py-3 px-4">${date}</td>
+          <td class="py-3 px-4">
+            <audio controls class="w-full">
+              <source src="${n.audioUrl}" type="audio/mpeg">
+              Your browser does not support the audio element.
+            </audio>
+          </td>
+        `;
+        noticeList.appendChild(tr);
+      });
+    } else {
+      const tr = document.createElement("tr");
+      tr.innerHTML = '<td colspan="3" class="py-3 px-4 text-center text-white/50">No notices found</td>';
+      noticeList.appendChild(tr);
+    }
+  });
+</script>
+{% endblock %}

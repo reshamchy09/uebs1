@@ -1,0 +1,569 @@
+{% extends "Admin-base.html" %}
+{% load static %}
+
+{% block title %}User Subscription - UEBS{% endblock %}
+
+{% block content %}
+<!-- Custom CSS for QR View -->
+<style>
+.qr-view {
+  transition: transform 0.3s ease-in-out;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px;
+  border-radius: 12px;
+}
+.qr-view:hover {
+  transform: scale(1.05);
+}
+.qr-view img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.custom-text {
+  color: rgba(255, 255, 255, 0.8); /* white with 80% opacity */
+  font-size: 14px; /* default */
+}
+
+@media (min-width: 640px) {
+  .custom-text {
+    font-size: 16px; /* at sm breakpoint */
+  }
+}
+
+</style>   
+
+<!-- Top Navbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+  <div class="mt-12 md:mt-0">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">User Subscription</h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">Manage your subscription plans</p>
+  </div>
+  <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+    <button id="downloadPdfBtn" class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all" title="Download as PDF">
+      <i class="fas fa-file-pdf text-sm sm:text-base"></i>
+    </button>
+    <button id="printBtn" class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all" title="Print">
+      <i class="fas fa-print text-sm sm:text-base"></i>
+    </button>
+    <button id="exportExcelBtn" class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all" title="Export to Excel">
+      <i class="fas fa-file-excel text-sm sm:text-base"></i>
+    </button>
+  </div>
+</div>
+
+<!-- QR View -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-qrcode text-purple-400 mr-3"></i> QR View
+  </h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+    <div>
+      <p class="text-white/80 text-sm sm:text-base">Scan the QR code to make a payment</p>
+    </div>
+    <div class="flex flex-col justify-center items-center">
+      <!-- QR Box -->
+      <div class="qr-view w-40 h-40 sm:w-48 sm:h-48 rounded-lg animate__animated animate__fadeInLeft">
+        <img id="qrCode" src="{% static 'image/qr_code.jpg' %}" alt="QR Code">
+      </div>
+      <!-- Name under QR -->
+      <p class="custom-text mt-3">Resam Chaudhary</p>
+    </div>
+  </div>
+  <p class="text-white/60 text-sm mt-4 text-center">
+    Scan the QR code to make a payment for your selected plan
+  </p>
+</div>
+
+
+<!-- Subscription Plans -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-star text-purple-400 mr-3"></i> Available Subscription Plans
+  </h3>
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="planTable">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">Duration</th>
+          <th class="text-left py-3 px-4">Price</th>
+          <th class="text-left py-3 px-4">Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- My Subscriptions -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-user-check text-purple-400 mr-3"></i> My Subscriptions
+  </h3>
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="mySubscriptions">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">Duration</th>
+          <th class="text-left py-3 px-4">Price</th>
+          <th class="text-left py-3 px-4">Status</th>
+          <th class="text-left py-3 px-4">Start Date</th>
+          <th class="text-left py-3 px-4">End Date</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Pending Payments -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-hourglass-half text-purple-400 mr-3"></i> Pending Payments
+  </h3>
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="pendingPayments">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">Duration</th>
+          <th class="text-left py-3 px-4">Price</th>
+          <th class="text-left py-3 px-4">Payment Proof</th>
+          <th class="text-left py-3 px-4">Status</th>
+          <th class="text-left py-3 px-4">Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Upload Payment Proof Modal -->
+<div class="modal fixed inset-0 bg-black/50 z-50 hidden justify-center items-center" id="uploadModal">
+  <div class="glass-card p-6 lg:p-8 rounded-2xl w-full max-w-md">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl sm:text-2xl font-semibold text-white">Upload Payment Proof</h3>
+      <button id="closeUploadModal" class="text-white/70 hover:text-white text-2xl">&times;</button>
+    </div>
+    <div class="mb-6">
+      <label class="block text-white/80 mb-2">Select Image</label>
+      <input type="file" id="paymentProof" accept="image/*" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+      <p class="text-white/60 text-sm mt-2">Supported formats: JPG, PNG (max 3MB)</p>
+    </div>
+    <div class="flex justify-end space-x-4">
+      <button id="uploadProofBtn" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+        Upload
+      </button>
+      <button id="cancelUploadBtn" class="glass-card text-white px-6 py-3 rounded-xl font-semibold transition-all hover:bg-white/20">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-storage-compat.js"></script>
+<!-- jsPDF and html2canvas for PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- XLSX for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+  authDomain: "uebs-school.firebaseapp.com",
+  projectId: "uebs-school",
+  storageBucket: "uebs-school.firebasestorage.app",
+  messagingSenderId: "740325293639",
+  appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+  measurementId: "G-T7YEBMNHBH"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const storage = firebase.storage();
+const { jsPDF } = window.jspdf;
+
+let userId = null;
+let plans = {};
+let mySubs = {};
+let currentSubId = null;
+
+// Check Authentication
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    userId = user.uid;
+    console.log("Authenticated User ID:", userId);
+    loadData();
+  } else {
+    alert("Please log in to access subscriptions.");
+    window.location.href = "/login"; // Adjust to your login page URL
+  }
+});
+
+// Load Data
+function loadData() {
+  // Load Plans
+  db.ref('subscriptionPlans').on('value', snap => {
+    try {
+      console.log("Subscription Plans:", snap.val());
+      plans = snap.val() || {};
+      populatePlanTable();
+    } catch (error) {
+      console.error("Error fetching plans:", error);
+      alert("Failed to load subscription plans. Please try again.");
+    }
+  });
+
+  // Load User Subscriptions
+  db.ref('userSubscriptions/' + userId).on('value', snap => {
+    try {
+      console.log("User Subscriptions:", snap.val());
+      mySubs = snap.val() || {};
+      populateMySubscriptions();
+      populatePendingPayments();
+    } catch (error) {
+      console.error("Error fetching subscriptions:", error);
+      alert("Failed to load your subscriptions. Please try again.");
+    }
+  });
+}
+
+// Populate Plan Table
+function populatePlanTable() {
+  const tbody = document.querySelector('#planTable tbody');
+  tbody.innerHTML = '';
+  Object.keys(plans).forEach(durationCode => {
+    const p = plans[durationCode];
+    if (p.status !== "Active") return;
+
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-white/10 hover:bg-white/5';
+    tr.innerHTML = `
+      <td class="py-3 px-4">${p.label}</td>
+      <td class="py-3 px-4">${p.price.toFixed(2)}</td>
+      <td class="py-3 px-4">
+        <button onclick="subscribe('${durationCode}')" class="liquid-btn text-white px-4 py-2 rounded-xl font-semibold transition-all hover:scale-105">
+          Subscribe
+        </button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Subscribe
+function subscribe(durationCode) {
+  if (!userId) {
+    alert("Please log in to subscribe.");
+    return;
+  }
+
+  const plan = plans[durationCode];
+  const start = new Date();
+  const end = new Date();
+  const durationNum = parseInt(durationCode);
+  const isYear = durationCode.endsWith('Y');
+  if (isYear) {
+    end.setFullYear(end.getFullYear() + durationNum);
+  } else {
+    end.setMonth(end.getMonth() + durationNum);
+  }
+
+  currentSubId = db.ref('userSubscriptions/' + userId).push().key;
+  const modal = document.getElementById('uploadModal');
+  const uploadBtn = document.getElementById('uploadProofBtn');
+  const cancelBtn = document.getElementById('cancelUploadBtn');
+  const closeBtn = document.getElementById('closeUploadModal');
+  modal.classList.remove('hidden');
+
+  uploadBtn.onclick = () => {
+    const fileInput = document.getElementById('paymentProof');
+    const file = fileInput.files[0];
+    if (!file) {
+      alert('Please select an image file');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image size must be less than 5MB');
+      return;
+    }
+
+    uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Uploading...';
+    uploadBtn.disabled = true;
+
+    const storageRef = storage.ref('paymentProofs/' + userId + '/' + currentSubId + '/' + file.name);
+    storageRef.put(file).then(snapshot => {
+      snapshot.ref.getDownloadURL().then(url => {
+        db.ref('userSubscriptions/' + userId + '/' + currentSubId).set({
+          duration: durationCode,
+          label: plan.label,
+          price: plan.price,
+          status: "Pending",
+          startDate: start.toISOString().split('T')[0],
+          endDate: end.toISOString().split('T')[0],
+          proof: url
+        }).then(() => {
+          alert('Subscription sent for approval!');
+          modal.classList.add('hidden');
+          uploadBtn.innerHTML = 'Upload';
+          uploadBtn.disabled = false;
+          fileInput.value = '';
+        });
+      });
+    }).catch(error => {
+      alert('Upload failed: ' + error.message);
+      uploadBtn.innerHTML = 'Upload';
+      uploadBtn.disabled = false;
+    });
+  };
+
+  cancelBtn.onclick = () => {
+    modal.classList.add('hidden');
+    document.getElementById('paymentProof').value = '';
+  };
+  closeBtn.onclick = () => {
+    modal.classList.add('hidden');
+    document.getElementById('paymentProof').value = '';
+  };
+}
+
+// Populate My Subscriptions
+function populateMySubscriptions() {
+  const tbody = document.querySelector('#mySubscriptions tbody');
+  tbody.innerHTML = '';
+  Object.keys(mySubs).forEach(id => {
+    const s = mySubs[id];
+    if (s.status !== "Pending") {
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-white/10 hover:bg-white/5';
+      tr.innerHTML = `
+        <td class="py-3 px-4">${s.label || s.duration}</td>
+        <td class="py-3 px-4">${s.price.toFixed(2)}</td>
+        <td class="py-3 px-4">${s.status}</td>
+        <td class="py-3 px-4">${s.startDate}</td>
+        <td class="py-3 px-4">${s.endDate}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  });
+}
+
+// Populate Pending Payments
+function populatePendingPayments() {
+  const tbody = document.querySelector('#pendingPayments tbody');
+  tbody.innerHTML = '';
+  Object.keys(mySubs).forEach(id => {
+    const s = mySubs[id];
+    if (s.status === "Pending") {
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-white/10 hover:bg-white/5';
+      tr.innerHTML = `
+        <td class="py-3 px-4">${s.label || s.duration}</td>
+        <td class="py-3 px-4">${s.price.toFixed(2)}</td>
+        <td class="py-3 px-4"><img class="w-20 h-20 rounded-lg" src="${s.proof}" alt="Payment Proof"></td>
+        <td class="py-3 px-4">${s.status}</td>
+        <td class="py-3 px-4">
+          <button onclick="updateProof('${id}')" class="glass-card px-3 py-1 rounded-lg text-yellow-400 hover:bg-yellow-400/20">
+            <i class="fas fa-upload"></i> Update Proof
+          </button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
+  });
+}
+
+// Update Payment Proof
+function updateProof(subId) {
+  currentSubId = subId;
+  const modal = document.getElementById('uploadModal');
+  const uploadBtn = document.getElementById('uploadProofBtn');
+  const cancelBtn = document.getElementById('cancelUploadBtn');
+  const closeBtn = document.getElementById('closeUploadModal');
+  modal.classList.remove('hidden');
+
+  uploadBtn.onclick = () => {
+    const fileInput = document.getElementById('paymentProof');
+    const file = fileInput.files[0];
+    if (!file) {
+      alert('Please select an image file');
+      return;
+    }
+    if (file.size > 3 * 1024 * 1024) {
+      alert('Image size must be less than 3MB');
+      return;
+    }
+
+    uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Uploading...';
+    uploadBtn.disabled = true;
+
+    const storageRef = storage.ref('paymentProofs/' + userId + '/' + subId + '/' + file.name);
+    storageRef.put(file).then(snapshot => {
+      snapshot.ref.getDownloadURL().then(url => {
+        db.ref('userSubscriptions/' + userId + '/' + subId).update({
+          proof: url
+        }).then(() => {
+          alert('Payment proof updated!');
+          modal.classList.add('hidden');
+          uploadBtn.innerHTML = 'Upload';
+          uploadBtn.disabled = false;
+          fileInput.value = '';
+        });
+      });
+    }).catch(error => {
+      alert('Upload failed: ' + error.message);
+      uploadBtn.innerHTML = 'Upload';
+      uploadBtn.disabled = false;
+    });
+  };
+
+  cancelBtn.onclick = () => {
+    modal.classList.add('hidden');
+    document.getElementById('paymentProof').value = '';
+  };
+  closeBtn.onclick = () => {
+    modal.classList.add('hidden');
+    document.getElementById('paymentProof').value = '';
+  };
+}
+
+// Download as PDF
+document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+  const btn = document.getElementById('downloadPdfBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.disabled = true;
+
+  const qrView = document.querySelector('.glass-card:nth-child(2)');
+  const planTable = document.getElementById('planTable');
+  const mySubscriptions = document.getElementById('mySubscriptions');
+  const pendingPayments = document.getElementById('pendingPayments');
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = Math.max(qrView.offsetWidth, planTable.offsetWidth, mySubscriptions.offsetWidth, pendingPayments.offsetWidth);
+  canvas.height = qrView.offsetHeight + planTable.offsetHeight + mySubscriptions.offsetHeight + pendingPayments.offsetHeight + 80;
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  let yOffset = 0;
+  html2canvas(qrView, { backgroundColor: null }).then(qrCanvas => {
+    ctx.drawImage(qrCanvas, 0, yOffset);
+    yOffset += qrCanvas.height + 20;
+    html2canvas(planTable, { backgroundColor: null }).then(planCanvas => {
+      ctx.drawImage(planCanvas, 0, yOffset);
+      yOffset += planCanvas.height + 20;
+      html2canvas(mySubscriptions, { backgroundColor: null }).then(subCanvas => {
+        ctx.drawImage(subCanvas, 0, yOffset);
+        yOffset += subCanvas.height + 20;
+        html2canvas(pendingPayments, { backgroundColor: null }).then(pendingCanvas => {
+          ctx.drawImage(pendingCanvas, 0, yOffset);
+          const doc = new jsPDF('p', 'mm', 'a4');
+          const imgData = canvas.toDataURL('image/png');
+          const imgProps = doc.getImageProperties(imgData);
+          const pdfWidth = doc.internal.pageSize.getWidth();
+          const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+          doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+          doc.save('subscription_report.pdf');
+          btn.innerHTML = '<i class="fas fa-file-pdf"></i>';
+          btn.disabled = false;
+        });
+      });
+    });
+  }).catch(error => {
+    alert('PDF generation failed: ' + error.message);
+    btn.innerHTML = '<i class="fas fa-file-pdf"></i>';
+    btn.disabled = false;
+  });
+});
+
+// Print Subscriptions
+document.getElementById('printBtn').addEventListener('click', () => {
+  const qrView = document.querySelector('.glass-card:nth-child(2)').outerHTML;
+  const printContent = `
+    <h2>QR View</h2>
+    ${qrView}
+    <h2>Subscription Plans</h2>
+    ${document.getElementById('planTable').outerHTML}
+    <h2>My Subscriptions</h2>
+    ${document.getElementById('mySubscriptions').outerHTML}
+    <h2>Pending Payments</h2>
+    ${document.getElementById('pendingPayments').outerHTML}
+  `;
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Subscriptions</title>
+        <style>
+          body { font-family: Arial, sans-serif; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+          th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+          th { background: #007bff; color: white; }
+          h2 { text-align: center; margin: 20px 0; }
+          img { width: 128px; height: 128px; }
+        </style>
+      </head>
+      <body>${printContent}</body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
+});
+
+// Export to Excel
+document.getElementById('exportExcelBtn').addEventListener('click', () => {
+  const btn = document.getElementById('exportExcelBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.disabled = true;
+
+  const data = [];
+  data.push(['Subscription Plans']);
+  data.push(['Duration', 'Price']);
+  Object.keys(plans).forEach(durationCode => {
+    const p = plans[durationCode];
+    if (p.status === "Active") {
+      data.push([p.label, p.price.toFixed(2)]);
+    }
+  });
+
+  data.push([]);
+  data.push(['My Subscriptions']);
+  data.push(['Duration', 'Price', 'Status', 'Start Date', 'End Date']);
+  Object.keys(mySubs).forEach(id => {
+    const s = mySubs[id];
+    if (s.status !== "Pending") {
+      data.push([s.label || s.duration, s.price.toFixed(2), s.status, s.startDate, s.endDate]);
+    }
+  });
+
+  data.push([]);
+  data.push(['Pending Payments']);
+  data.push(['Duration', 'Price', 'Status']);
+  Object.keys(mySubs).forEach(id => {
+    const s = mySubs[id];
+    if (s.status === "Pending") {
+      data.push([s.label || s.duration, s.price.toFixed(2), s.status]);
+    }
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Subscriptions');
+  XLSX.writeFile(wb, 'subscription_report.xlsx');
+  btn.innerHTML = '<i class="fas fa-file-excel"></i>';
+  btn.disabled = false;
+});
+</script>
+{% endblock %}

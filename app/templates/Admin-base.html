@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}School Management System{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      overflow-x: hidden;
+      background: #1a1a2e;
+    }
+    
+    .starry-bg {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at bottom, #1a1a2e 0%, #0b0b13 100%);
+      z-index: -2;
+      overflow: hidden;
+    }
+    
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 5s infinite;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    
+    .shape {
+      position: absolute;
+      opacity: 0.15;
+      animation: drift 25s linear infinite;
+    }
+    
+    @keyframes drift {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(20px, -30px) rotate(45deg); }
+      50% { transform: translate(0, -60px) rotate(90deg); }
+      75% { transform: translate(-20px, -30px) rotate(135deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+    
+    .floating-icon {
+      position: fixed;
+      font-size: 2rem;
+      color: rgba(255, 255, 255, 0.15);
+      animation: floatIcon 20s linear infinite;
+      z-index: -1;
+    }
+    
+    @keyframes floatIcon {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+    
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .glass-dark {
+      background: rgba(15, 15, 35, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+    
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    }
+    
+    .liquid-btn {
+      background: #4b4b7c;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .liquid-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shine 3s infinite;
+    }
+    
+    @keyframes shine {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
+    .pulse-ring {
+      position: absolute;
+      width: 100%; height: 100%;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+    
+    .sidebar-scroll {
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #4b4b7c rgba(255, 255, 255, 0.1);
+    }
+    
+    .sidebar-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .sidebar-scroll::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+    
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+      background: #4b4b7c;
+      border-radius: 3px;
+    }
+    
+    .mobile-toggle {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 50;
+    }
+    
+    .sidebar-divider {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      margin: 1.5rem 0 1rem 0;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .sidebar-divider::before,
+    .sidebar-divider::after {
+      content: '';
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      flex: 1;
+    }
+    
+    .sidebar-divider::before {
+      margin-right: 1rem;
+    }
+    
+    .sidebar-divider::after {
+      margin-left: 1rem;
+    }
+
+    .main-content {
+      min-height: 100vh;
+    }
+
+    .search-input {
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
+    }
+
+    @media (max-width: 768px) {
+      .mobile-toggle {
+        display: block;
+      }
+      
+      .sidebar-mobile-open {
+        transform: translateX(0) !important;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .mobile-toggle {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .grid-responsive {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .grid-responsive {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1025px) {
+      .grid-responsive {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    /* Glass card base style for dropdowns */
+.glass-card {
+  background: rgba(255, 255, 255, 0.1); /* Semi-transparent white for glass effect */
+  backdrop-filter: blur(10px); /* Blur effect for glassmorphism */
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+  border-radius: 12px; /* Matches rounded-xl from HTML */
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Specific styles for select elements */
+.glass-card select {
+  background: rgba(255, 255, 255, 0.15); /* Slightly lighter background for dropdowns */
+  color: #ffffff; /* White text for visibility */
+  padding: 8px 12px; /* Matches px-4 py-2 from HTML */
+  border: none; /* Remove default border */
+  border-radius: 12px; /* Consistent with glass-card */
+  appearance: none; /* Remove default dropdown arrow */
+  -webkit-appearance: none; /* Safari */
+  -moz-appearance: none; /* Firefox */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  cursor: pointer;
+}
+
+/* Hover effect for dropdowns */
+.glass-card select:hover {
+  background: rgba(255, 255, 255, 0.2); /* Slightly brighter on hover */
+}
+
+/* Focus state for accessibility */
+.glass-card select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.5); /* Matches focus:ring-purple-400 */
+  background: rgba(255, 255, 255, 0.25); /* Subtle background change on focus */
+}
+
+/* Option styles for consistency */
+.glass-card select option {
+  background: #1f2937; /* Dark background for options (tailwind gray-800 equivalent) */
+  color: #ffffff; /* White text for options */
+  padding: 8px; /* Better spacing in dropdown */
+}
+
+/* Ensure dropdowns are full-width */
+.glass-card select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Dark theme compatibility */
+@media (prefers-color-scheme: dark) {
+  .glass-card select {
+    background: rgba(255, 255, 255, 0.1); /* Maintain glass effect in dark mode */
+  }
+  .glass-card select option {
+    background: #1f2937; /* Consistent dark background for options */
+  }
+}
+
+/* Light theme compatibility (if needed) */
+@media (prefers-color-scheme: light) {
+  .glass-card select {
+    background: rgba(0, 0, 0, 0.1); /* Darker glass effect for light mode */
+    color: #1f2937; /* Dark text for light mode */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f2937' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  .glass-card select option {
+    background: #ffffff; /* White background for options in light mode */
+    color: #1f2937; /* Dark text for options */
+  }
+}
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="font-sans text-white">
+  <!-- Background Elements -->
+  <div class="starry-bg">
+    <div class="star w-1 h-1" style="top: 10%; left: 20%; animation-delay: 0s;"></div>
+    <div class="star w-2 h-2" style="top: 30%; left: 50%; animation-delay: -1s;"></div>
+    <div class="star w-1 h-1" style="top: 50%; left: 70%; animation-delay: -2s;"></div>
+    <div class="star w-2 h-2" style="top: 70%; left: 30%; animation-delay: -3s;"></div>
+    <div class="star w-1 h-1" style="top: 20%; left: 80%; animation-delay: -4s;"></div>
+  </div>
+  
+  <div class="shape w-20 h-20 bg-gray-300 rounded-full"></div>
+  <div class="shape w-16 h-16 bg-gray-400 rounded-lg rotate-45"></div>
+  <div class="shape w-24 h-24 bg-gray-200 rounded-full"></div>
+  <div class="shape w-12 h-12 bg-gray-500 rounded-lg"></div>
+  <div class="shape w-18 h-18 bg-gray-300 rounded-full"></div>
+
+  <!-- Mobile Toggle Button -->
+  <button id="toggleSidebar" class="mobile-toggle glass-card p-3 rounded-xl text-white hover:bg-white/20 transition-all md:hidden">
+    <i class="fas fa-bars text-xl"></i>
+  </button>
+
+  <!-- Overlay for mobile -->
+  <div id="overlay" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden"></div>
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-72 glass-dark text-white flex flex-col fixed md:relative z-40 transform md:translate-x-0 -translate-x-full transition-all duration-300 ease-out h-screen md:h-auto">
+      <div class="p-4 sm:p-6 text-center border-b border-white/20">
+        <div class="relative">
+          <h1 class="text-3xl sm:text-4xl font-bold animate__animated animate__fadeInDown bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">UEBS</h1>
+          <div class="absolute -top-2 -right-2 w-4 h-4 bg-green-400 rounded-full pulse-ring"></div>
+        </div>
+        <p class="text-sm text-white/70 mt-2">Smart Education Management</p>
+      </div>
+      
+      <!-- Sidebar Search -->
+      <div class="px-4 py-3 border-b border-white/20">
+        <div class="relative">
+          <input type="text" placeholder="Search menu..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+          <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Scrollable Sidebar Content -->
+      <nav class="flex-1 overflow-y-auto py-4 sm:py-6 sidebar-scroll">
+        <ul class="space-y-2 px-3 sm:px-4">
+          <!-- Main Section -->
+          <li class="sidebar-divider">Main</li>
+          <li class="group">
+          <a href="{% url 'home' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+            <i class="fas fa-home w-5 sm:w-6 text-purple-400 group-hover:scale-110 transition-transform"></i>
+            <span class="ml-3 font-medium text-sm sm:text-base">Home</span>
+          </a>
+         </li>
+          <li class="group">
+            <a href="{% url 'admin_dashboard' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-tachometer-alt w-5 sm:w-6 text-purple-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Dashboard</span>
+            </a>
+          </li>
+
+           <li class="group">
+            <a href="{% url 'search' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-tachometer-alt w-5 sm:w-6 text-purple-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Search</span>
+            </a>
+          </li>
+
+          <!-- Student Section -->
+          <li class="sidebar-divider">Student</li>
+          <li class="group">
+            <a href="{% url 'admin_admission_management' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-users w-5 sm:w-6 text-blue-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">New Admission</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_students_management' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-users w-5 sm:w-6 text-blue-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Student Management</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_class_management' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-graduation-cap w-5 sm:w-6 text-orange-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Class Management</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_fee_management' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-dollar-sign w-5 sm:w-6 text-green-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Fee Management</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_attendance' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-check-circle w-5 sm:w-6 text-green-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Attendance</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_grades' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-clipboard-check w-5 sm:w-6 text-yellow-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Grades</span>
+            </a>
+          </li>
+
+          <!-- Staff Section -->
+          <li class="sidebar-divider">Staff</li>
+          <li class="group">
+            <a href="{% url 'admin_teacher_management' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-chalkboard-teacher w-5 sm:w-6 text-pink-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Staff Management</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_timetable_generator' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-calendar-alt w-5 sm:w-6 text-indigo-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Timetable Generator</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_salary_management' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-graduation-cap w-5 sm:w-6 text-orange-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Salary Management </span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_staff_attendance' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-user-check w-5 sm:w-6 text-cyan-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Staff Attendance</span>
+            </a>
+          </li>
+
+          <!-- Finance Section -->
+          <li class="sidebar-divider">Finance</li>
+          <li class="group">
+            <a href="{% url 'admin_journal_management' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-book w-5 sm:w-6 text-blue-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Journal Entry</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_daily_book' %}" 
+            class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+            <i class="fas fa-book w-5 sm:w-6 text-blue-500 group-hover:scale-110 transition-transform"></i>
+            <span class="ml-3 font-medium text-sm sm:text-base">Daily Book</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_balancesheet_management' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-file-invoice-dollar w-5 sm:w-6 text-green-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">View BalanceSheet</span>
+            </a>
+          </li>
+          
+          <li class="group">
+            <a href="{% url 'admin_ledger_management' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-landmark w-5 sm:w-6 text-purple-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">View Ledger</span>
+            </a>
+          </li>
+          
+
+          <!-- Billing Section -->
+          <li class="sidebar-divider">Billing & Payments</li>
+          <li class="group">
+            <a href="{% url 'admin_invoice' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-file-invoice w-5 sm:w-6 text-orange-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Invoice</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_invoice_reports' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-chart-line w-5 sm:w-6 text-green-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Invoice Reports</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_payments' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-credit-card w-5 sm:w-6 text-blue-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Online Payments</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_refunds' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-undo-alt w-5 sm:w-6 text-red-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Refunds</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_subscription_payments' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-receipt w-5 sm:w-6 text-purple-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Subscription Payments</span>
+            </a>
+          </li>
+
+          <!-- Generation Section -->
+          <li class="sidebar-divider">Generation</li>
+          <li class="group">
+            <a href="{% url 'admin_certificate_generator' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-certificate w-5 sm:w-6 text-yellow-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Certificate Generator</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_marks_sheet_generator' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-file-alt w-5 sm:w-6 text-blue-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Marks Sheet Generator</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_student_id_generator' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-id-card w-5 sm:w-6 text-green-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Student ID Card Generator</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_staff_id_generator' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-id-badge w-5 sm:w-6 text-purple-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Staff ID Card Generator</span>
+            </a>
+          </li>
+
+          <!-- Admin Section -->
+          <li class="sidebar-divider">Academic</li>
+          <li class="group">
+            <a href="{% url 'admin_exam_management' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-graduation-cap w-5 sm:w-6 text-orange-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Exam Management</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_inventory_management' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-boxes w-5 sm:w-6 text-green-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Inventory Management</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_user_management' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-users-cog w-5 sm:w-6 text-purple-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">User Management</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_academic_resources' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-book w-5 sm:w-6 text-blue-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Academic Resources</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_scholarship_tracking' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-graduation-cap w-5 sm:w-6 text-yellow-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Scholarship Tracking</span>
+            </a>
+          </li>
+           <li class="group">
+            <a href="{% url 'planing' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-bus w-5 sm:w-6 text-blue-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Plan Management</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_bulk_upload' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-file-excel w-5 sm:w-6 text-green-600 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Bulk Upload via Excel</span>
+            </a>
+          </li>
+
+          <!-- Reports Section -->
+          <li class="sidebar-divider">Analytics & Reports</li>
+          <li class="group">
+            <a href="{% url 'admin_reports' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-chart-line w-5 sm:w-6 text-purple-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Reports</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_finance_reports' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-file-invoice-dollar w-5 sm:w-6 text-green-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Finance Reports</span>
+            </a>
+          </li>
+
+          <!-- Notices Section -->
+          <li class="sidebar-divider">Notices & Alerts</li>
+          <li class="group">
+            <a href="{% url 'admin_notices_alerts' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-bell w-5 sm:w-6 text-red-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Mobile Notifications</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_voice_notices' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-microphone w-5 sm:w-6 text-purple-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Voice Notices</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_sms_notices' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-sms w-5 sm:w-6 text-green-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">SMS Notices</span>
+            </a>
+          </li>
+
+          <!-- Refer & Marketing -->
+          <li class="sidebar-divider">Refer & Marketing </li>
+            <li class="group">
+            <a href="{% url 'refer_program' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+           <i class="fas fa-bus w-5 sm:w-6 text-blue-500 group-hover:scale-110 transition-transform"></i>
+            <span class="ml-3 font-medium text-sm sm:text-base">Referral Program</span>
+             </a>
+           </li>
+
+
+          <li class="group">
+            <a href="{% url 'marketing' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-bus w-5 sm:w-6 text-blue-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Marketing Program</span>
+            </a>
+          </li>
+         
+          <!-- vehicles Section -->
+          <li class="sidebar-divider">Vehicles</li>
+          <li class="group">
+            <a href="{% url 'admin_vehicles_management' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-bus w-5 sm:w-6 text-blue-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Vehicles Management</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_vehicles_track' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-map-marker-alt w-5 sm:w-6 text-green-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Vehicles Track</span>
+            </a>
+          </li>
+         <!-- <li class="group">
+            <a href="{% url 'admin_fuel_maintenance_logs' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-tools w-5 sm:w-6 text-orange-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Fuel & Maintenance Logs</span>
+            </a>
+          </li> -->
+
+          <!-- Contact & Community Section -->
+          <li class="sidebar-divider">Contact & Community </li>
+          <li class="group">
+            <a href="{% url 'admin_parent_contact' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-user-friends w-5 sm:w-6 text-blue-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Parent Contact</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_staff_contact' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-users w-5 sm:w-6 text-green-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Staff Contact</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_community' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-comments w-5 sm:w-6 text-orange-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Community</span>
+            </a>
+          </li>
+
+          <!-- Tools Section -->
+          <li class="sidebar-divider">Tools</li>
+          <li class="group">
+            <a href="{% url 'admin_ai_tools' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-robot w-5 sm:w-6 text-blue-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">AI Tools</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'ai_agent' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-robot w-5 sm:w-6 text-blue-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">AI Agent</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_smart_calendar' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-calendar-alt w-5 sm:w-6 text-purple-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Smart Calendar</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_elearning_platform' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-book-open w-5 sm:w-6 text-green-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">E-Learning Platform</span>
+            </a>
+          </li>
+           <li class="group">
+            <a href="{% url 'blog' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-book-open w-5 sm:w-6 text-green-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Blogs</span>
+            </a>
+          </li>
+           <li class="group">
+            <a href="{% url 'notes' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-book-open w-5 sm:w-6 text-green-500 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Notes</span>
+            </a>
+          </li>
+
+          <!-- Others Section -->
+          <li class="sidebar-divider">Helps & Others</li>          
+          <li class="group">
+            <a href="{% url 'home' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-globe w-5 sm:w-6 text-green-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Website Management</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_ai_chat_assistant' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-robot w-5 sm:w-6 text-purple-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">AI Chat Assistant</span>
+            </a>
+          </li>
+           <li class="group">
+            <a href="{% url 'developer' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-life-ring w-5 sm:w-6 text-orange-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Developer Support</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_help_support' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-life-ring w-5 sm:w-6 text-orange-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Help & Support</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'admin_settings' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-cogs w-5 sm:w-6 text-gray-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Settings</span>
+            </a>
+          </li>
+          <li class="group">
+            <a href="{% url 'logout' %}" class="flex items-center px-3 sm:px-4 py-3 glass-card rounded-xl cursor-pointer transition-all duration-300 hover:bg-white/20">
+              <i class="fas fa-sign-out-alt w-5 sm:w-6 text-red-400 group-hover:scale-110 transition-transform"></i>
+              <span class="ml-3 font-medium text-sm sm:text-base">Logout</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 main-content p-4 sm:p-6 lg:p-8 overflow-y-auto relative md:ml-0">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script>
+    // Create stars dynamically
+    function createStars() {
+      const starryBg = document.querySelector('.starry-bg');
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = `${Math.random() * 2 + 1}px`;
+        star.style.height = star.style.width;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.animationDelay = `-${Math.random() * 5}s`;
+        starryBg.appendChild(star);
+      }
+    }
+    createStars();
+
+    // Floating icons animation
+    const icons = ['fas fa-book', 'fas fa-graduation-cap', 'fas fa-pencil-alt', 'fas fa-calculator', 'fas fa-flask', 'fas fa-globe', 'fas fa-music', 'fas fa-palette'];
+    
+    function createFloatingIcon() {
+      const icon = document.createElement('div');
+      icon.className = 'floating-icon';
+      icon.innerHTML = `<i class="${icons[Math.floor(Math.random() * icons.length)]}"></i>`;
+      icon.style.left = Math.random() * window.innerWidth + 'px';
+      icon.style.animationDuration = (Math.random() * 10 + 15) + 's';
+      icon.style.animationDelay = Math.random() * 5 + 's';
+      document.body.appendChild(icon);
+      
+      setTimeout(() => {
+        icon.remove();
+      }, 20000);
+    }
+    
+    setInterval(createFloatingIcon, 3000);
+    
+    // Mobile sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggleSidebar');
+    const overlay = document.getElementById('overlay');
+
+    function openSidebar() {
+      sidebar.classList.add('sidebar-mobile-open');
+      overlay.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('sidebar-mobile-open');
+      overlay.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    toggleBtn?.addEventListener('click', () => {
+      if (sidebar.classList.contains('sidebar-mobile-open')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    });
+
+    overlay?.addEventListener('click', closeSidebar);
+
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth < 769 && 
+          !sidebar.contains(e.target) && 
+          !toggleBtn.contains(e.target) && 
+          sidebar.classList.contains('sidebar-mobile-open')) {
+        closeSidebar();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 769) {
+        closeSidebar();
+      }
+    });
+
+    const sidebarLinks = sidebar.querySelectorAll('a');
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth < 769) {
+          setTimeout(closeSidebar, 300);
+        }
+      });
+    });
+
+    // Search functionality
+    const searchInputs = document.querySelectorAll('.search-input');
+    searchInputs.forEach(input => {
+      input.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        if (searchTerm.length > 0) {
+          console.log(`Searching for: ${searchTerm}`);
+          // Implement your search functionality here
+        }
+      });
+    });
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

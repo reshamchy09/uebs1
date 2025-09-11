@@ -1,0 +1,461 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Student Portal - Unison English Boarding School{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Student Portal Specific Styles */
+    .portal-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .portal-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .portal-header h1 {
+        margin-bottom: 0.5rem;
+        font-size: 2.5rem;
+    }
+
+    .portal-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .portal-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .portal-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .portal-card h3 {
+        color: #1e3c72;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+    }
+
+    .portal-card h3 i {
+        margin-right: 10px;
+        font-size: 1.2rem;
+    }
+
+    .portal-card ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .portal-card li {
+        padding: 0.7rem 0;
+        border-bottom: 1px solid #f5f5f5;
+        transition: background-color 0.2s;
+    }
+
+    .portal-card li:hover {
+        background-color: #f9f9f9;
+    }
+
+    .portal-card li:last-child {
+        border-bottom: none;
+    }
+
+    .portal-card a {
+        color: #2a5298;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        transition: color 0.3s ease;
+        width: 100%;
+    }
+
+    .portal-card a:hover {
+        color: #1e3c72;
+    }
+
+    .portal-card a i {
+        margin-right: 0.8rem;
+        width: 20px;
+        text-align: center;
+    }
+
+    .login-form-container {
+        max-width: 500px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-form h2 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #1e3c72;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+
+    .form-group input:focus {
+        border-color: #2a5298;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.2);
+    }
+
+    .btn-login {
+        width: 100%;
+        padding: 0.75rem;
+        background: #1e3c72;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-weight: 500;
+    }
+
+    .btn-login:hover {
+        background: #2a5298;
+    }
+
+    .portal-announcements {
+        background: #fff8e1;
+        border-left: 4px solid #ffc107;
+        padding: 1.2rem;
+        margin-bottom: 2rem;
+        border-radius: 4px;
+    }
+
+    .portal-announcements h3 {
+        display: flex;
+        align-items: center;
+        margin-top: 0;
+        color: #7d6608;
+    }
+
+    .portal-announcements h3 i {
+        margin-right: 10px;
+    }
+
+    .activity-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .activity-list li {
+        padding: 0.8rem 0;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+    }
+
+    .activity-list li:last-child {
+        border-bottom: none;
+    }
+
+    .text-success {
+        color: #28a745;
+    }
+
+    .text-warning {
+        color: #ffc107;
+    }
+
+    .text-info {
+        color: #17a2b8;
+    }
+
+    .text-primary {
+        color: #007bff;
+    }
+
+    .login-links {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+
+    .login-links a {
+        color: #2a5298;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+    .login-links a:hover {
+        text-decoration: underline;
+    }
+
+    .user-welcome {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin-bottom: 1rem;
+        padding: 0.5rem 1rem;
+        background: #f8f9fa;
+        border-radius: 5px;
+    }
+
+    .user-welcome span {
+        margin-right: 10px;
+        color: #1e3c72;
+        font-weight: 500;
+    }
+
+    .btn-logout {
+        padding: 0.3rem 0.8rem;
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: background 0.3s;
+    }
+
+    .btn-logout:hover {
+        background: #c82333;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .portal-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .portal-container {
+            padding: 1rem;
+        }
+        
+        .portal-header h1 {
+            font-size: 2rem;
+        }
+        
+        .login-links {
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    }
+
+    /* Status indicators */
+    .status-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .status-new {
+        background-color: #28a745;
+    }
+
+    .status-update {
+        background-color: #ffc107;
+    }
+
+    .status-reminder {
+        background-color: #17a2b8;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="portal-container">
+    <div class="portal-header" data-aos="fade-down">
+        <h1><i class="fas fa-graduation-cap"></i> Student Portal</h1>
+        <p>Access your academic resources, grades, and school information</p>
+    </div>
+
+    {% if not user.is_authenticated %}
+    <div class="login-form-container" data-aos="fade-up">
+        <div class="login-form">
+            <h2><i class="fas fa-sign-in-alt"></i> Student Login</h2>
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> Student ID/Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn-login">Login to Portal</button>
+            </form>
+            <div class="login-links">
+                <a href="#"><i class="fas fa-key"></i> Forgot Password?</a>
+                <a href="#"><i class="fas fa-user-plus"></i> First Time Login?</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="user-welcome" data-aos="fade-left">
+        <span>Welcome, {{ user.first_name|default:user.username }}!</span>
+        <button class="btn-logout" onclick="location.href='{% url 'logout' %}'">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </div>
+
+    <div class="portal-announcements" data-aos="fade-up">
+        <h3><i class="fas fa-bullhorn"></i> Important Announcements</h3>
+        <p>Mid-term examinations will begin from next Monday. Please check your schedule in the portal. The exam timetable has been updated in the Academic Resources section.</p>
+    </div>
+
+    <div class="portal-grid">
+        <div class="portal-card" data-aos="fade-up" data-aos-delay="100">
+            <h3><i class="fas fa-book"></i> Academic Resources</h3>
+            <ul>
+                <li><a href="#"><i class="fas fa-book"></i> Course Materials</a></li>
+                <li><a href="#"><i class="fas fa-file-pdf"></i> Lecture Notes</a></li>
+                <li><a href="#"><i class="fas fa-tasks"></i> Assignments</a></li>
+                <li><a href="#"><i class="fas fa-calendar-alt"></i> Class Schedule</a></li>
+                <li><a href="#"><i class="fas fa-book-open"></i> E-Library</a></li>
+            </ul>
+        </div>
+
+        <div class="portal-card" data-aos="fade-up" data-aos-delay="200">
+            <h3><i class="fas fa-chart-line"></i> Grades & Performance</h3>
+            <ul>
+                <li><a href="#"><i class="fas fa-chart-line"></i> View Grades</a></li>
+                <li><a href="#"><i class="fas fa-file-alt"></i> Report Cards</a></li>
+                <li><a href="#"><i class="fas fa-clipboard-list"></i> Test Results</a></li>
+                <li><a href="#"><i class="fas fa-trophy"></i> Achievement Records</a></li>
+                <li><a href="#"><i class="fas fa-chart-pie"></i> Performance Analytics</a></li>
+            </ul>
+        </div>
+
+        <div class="portal-card" data-aos="fade-up" data-aos-delay="300">
+            <h3><i class="fas fa-concierge-bell"></i> School Services</h3>
+            <ul>
+                <li><a href="#"><i class="fas fa-utensils"></i> Meal Plans</a></li>
+                <li><a href="#"><i class="fas fa-bus"></i> Transportation</a></li>
+                <li><a href="#"><i class="fas fa-first-aid"></i> Health Services</a></li>
+                <li><a href="#"><i class="fas fa-calendar-check"></i> Event Registration</a></li>
+                <li><a href="#"><i class="fas fa-hands-helping"></i> Counseling Appointment</a></li>
+            </ul>
+        </div>
+
+        <div class="portal-card" data-aos="fade-up" data-aos-delay="400">
+            <h3><i class="fas fa-cog"></i> Account & Settings</h3>
+            <ul>
+                <li><a href="#"><i class="fas fa-user-cog"></i> Profile Settings</a></li>
+                <li><a href="#"><i class="fas fa-lock"></i> Change Password</a></li>
+                <li><a href="#"><i class="fas fa-bell"></i> Notification Preferences</a></li>
+                <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Fee Statements</a></li>
+                <li><a href="#"><i class="fas fa-question-circle"></i> Help & Support</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="portal-card" data-aos="fade-up">
+        <h3><i class="fas fa-history"></i> Recent Activities</h3>
+        <ul class="activity-list">
+            <li><span class="status-indicator status-new"></span><i class="fas fa-check-circle text-success"></i> Assignment submitted - Mathematics (Oct 15)</li>
+            <li><span class="status-indicator status-update"></span><i class="fas fa-exclamation-circle text-warning"></i> Grade posted - Science Test (Oct 12)</li>
+            <li><span class="status-indicator status-reminder"></span><i class="fas fa-calendar-plus text-info"></i> Parent-Teacher meeting scheduled (Oct 20)</li>
+            <li><span class="status-indicator status-new"></span><i class="fas fa-book text-primary"></i> New study material added - Social Studies (Oct 10)</li>
+            <li><span class="status-indicator status-reminder"></span><i class="fas fa-bell text-warning"></i> Library book due for return (Oct 18)</li>
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // JavaScript for student portal functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation for portal cards
+        const portalCards = document.querySelectorAll('.portal-card');
+        portalCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 * index);
+        });
+
+        // Simulate login functionality for demo
+        const loginForm = document.querySelector('.login-form form');
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                // Simple validation
+                if (!username || !password) {
+                    alert('Please enter both username and password');
+                    return;
+                }
+                
+                // Simulate authentication (in a real application, this would be handled by the backend)
+                if (username === 'student' && password === 'password') {
+                    // In a real application, this would redirect after successful login
+                    alert('Login successful! Welcome to the student portal.');
+                    // For demo purposes, we'll reload the page to show the logged-in state
+                    window.location.reload();
+                } else {
+                    alert('Invalid credentials. Please try again.');
+                }
+            });
+        }
+        
+        // Initialize AOS animations
+        if (typeof AOS !== 'undefined') {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
+        }
+    });
+</script>
+{% endblock %}

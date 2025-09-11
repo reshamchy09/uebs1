@@ -1,0 +1,757 @@
+{% extends 'base.html' %}
+
+{% block title %}Admissions - Unison English Boarding School{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Admissions Page Specific Styles */
+    .admissions-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 120px 0 80px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .admissions-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23ffffff" stop-opacity="0.1"/><stop offset="100%" stop-color="%23ffffff" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="80" fill="url(%23a)"/><circle cx="600" cy="700" r="120" fill="url(%23a)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .admissions-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+    .admissions-hero p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+        position: relative;
+    }
+
+    .admissions-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Process Section */
+    .process-section {
+        padding: 80px 0;
+        background: #f8fafc;
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .section-title h2 {
+        font-size: 2.5rem;
+        color: #2d3748;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .section-title p {
+        color: #718096;
+        font-size: 1.1rem;
+    }
+
+    .process-steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .process-step {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .process-step:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .step-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        color: white;
+    }
+
+    .step-number {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: #ff6b6b;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    /* Requirements Section */
+    .requirements-section {
+        padding: 80px 0;
+    }
+
+    .requirements-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .requirement-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-left: 5px solid #667eea;
+    }
+
+    .requirement-card h3 {
+        color: #2d3748;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+
+    .requirement-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .requirement-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+    }
+
+    .requirement-list li:last-child {
+        border-bottom: none;
+    }
+
+    .requirement-list li::before {
+        content: '✓';
+        color: #48bb78;
+        font-weight: bold;
+        margin-right: 0.8rem;
+        font-size: 1.1rem;
+    }
+
+    /* Application Form Section */
+    .application-section {
+        padding: 80px 0;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .application-form {
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .submit-btn {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 1rem 3rem;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Fees Section */
+    .fees-section {
+        padding: 80px 0;
+        background: #f8fafc;
+    }
+
+    .fees-table {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-top: 3rem;
+    }
+
+    .fees-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .fees-table th,
+    .fees-table td {
+        padding: 1.5rem;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .fees-table th {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+
+    .fees-table td {
+        font-size: 1rem;
+    }
+
+    .fees-table tr:hover {
+        background: #f8fafc;
+    }
+
+    /* Contact Info */
+    .contact-info-section {
+        padding: 80px 0;
+        text-align: center;
+    }
+
+    .contact-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .contact-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .contact-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .contact-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .admissions-hero h1 {
+            font-size: 2.5rem;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+        }
+
+        .application-form {
+            padding: 2rem;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .fees-table {
+            overflow-x: auto;
+        }
+
+        .fees-table table {
+            min-width: 500px;
+        }
+    }
+
+    /* Animation Classes */
+    .fade-in-up {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 0.6s ease;
+    }
+
+    .fade-in-up.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="admissions-hero">
+    <div class="admissions-container">
+        <h1 data-aos="fade-down">Join Our Family</h1>
+        <p data-aos="fade-up" data-aos-delay="200">Begin your journey towards excellence at Unison English Boarding School</p>
+    </div>
+</section>
+
+<!-- Admission Process Section -->
+<section class="process-section">
+    <div class="admissions-container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Admission Process</h2>
+            <p>Follow these simple steps to secure your child's future</p>
+        </div>
+
+        <div class="process-steps">
+            <div class="process-step" data-aos="fade-up" data-aos-delay="100">
+                <div class="step-number">1</div>
+                <div class="step-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h3>Submit Application</h3>
+                <p>Fill out the online application form with all required documents and information.</p>
+            </div>
+
+            <div class="process-step" data-aos="fade-up" data-aos-delay="200">
+                <div class="step-number">2</div>
+                <div class="step-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <h3>Document Verification</h3>
+                <p>Our admissions team will review and verify all submitted documents.</p>
+            </div>
+
+            <div class="process-step" data-aos="fade-up" data-aos-delay="300">
+                <div class="step-number">3</div>
+                <div class="step-icon">
+                    <i class="fas fa-pencil-alt"></i>
+                </div>
+                <h3>Entrance Test</h3>
+                <p>Students take an age-appropriate entrance examination and interview.</p>
+            </div>
+
+            <div class="process-step" data-aos="fade-up" data-aos-delay="400">
+                <div class="step-number">4</div>
+                <div class="step-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Admission Confirmation</h3>
+                <p>Receive admission decision and complete enrollment procedures.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Requirements Section -->
+<section class="requirements-section">
+    <div class="admissions-container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Admission Requirements</h2>
+            <p>Everything you need to know about our admission criteria</p>
+        </div>
+
+        <div class="requirements-grid">
+            <div class="requirement-card" data-aos="fade-right">
+                <h3>Academic Requirements</h3>
+                <ul class="requirement-list">
+                    <li>Previous academic transcripts</li>
+                    <li>Minimum 60% in previous grade</li>
+                    <li>Teacher recommendation letter</li>
+                    <li>English proficiency assessment</li>
+                </ul>
+            </div>
+
+            <div class="requirement-card" data-aos="fade-up" data-aos-delay="100">
+                <h3>Required Documents</h3>
+                <ul class="requirement-list">
+                    <li>Birth certificate (original)</li>
+                    <li>Passport size photographs (4 copies)</li>
+                    <li>Medical certificate</li>
+                    <li>Transfer certificate (if applicable)</li>
+                </ul>
+            </div>
+
+            <div class="requirement-card" data-aos="fade-left" data-aos-delay="200">
+                <h3>Age Criteria</h3>
+                <ul class="requirement-list">
+                    <li>Nursery: 3-4 years</li>
+                    <li>Primary: 5-10 years</li>
+                    <li>Secondary: 11-15 years</li>
+                    <li>Higher Secondary: 16-18 years</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Application Form Section -->
+<section class="application-section">
+    <div class="admissions-container">
+        <div class="section-title" data-aos="fade-up">
+            <h2 style="color: white;">Online Application Form</h2>
+            <p style="color: rgba(255,255,255,0.9);">Take the first step towards your child's bright future</p>
+        </div>
+
+        <div class="application-form" data-aos="fade-up" data-aos-delay="200">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="student_name">Student Full Name *</label>
+                        <input type="text" id="student_name" name="student_name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date_of_birth">Date of Birth *</label>
+                        <input type="date" id="date_of_birth" name="date_of_birth" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender">Gender *</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="grade_applying">Grade Applying For *</label>
+                        <select id="grade_applying" name="grade_applying" required>
+                            <option value="">Select Grade</option>
+                            <option value="nursery">Nursery</option>
+                            <option value="lkg">LKG</option>
+                            <option value="ukg">UKG</option>
+                            <option value="1">Grade 1</option>
+                            <option value="2">Grade 2</option>
+                            <option value="3">Grade 3</option>
+                            <option value="4">Grade 4</option>
+                            <option value="5">Grade 5</option>
+                            <option value="6">Grade 6</option>
+                            <option value="7">Grade 7</option>
+                            <option value="8">Grade 8</option>
+                            <option value="9">Grade 9</option>
+                            <option value="10">Grade 10</option>
+                            <option value="11">Grade 11</option>
+                            <option value="12">Grade 12</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="father_name">Father's Name *</label>
+                        <input type="text" id="father_name" name="father_name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mother_name">Mother's Name *</label>
+                        <input type="text" id="mother_name" name="mother_name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="parent_phone">Parent's Phone *</label>
+                        <input type="tel" id="parent_phone" name="parent_phone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="parent_email">Parent's Email *</label>
+                        <input type="email" id="parent_email" name="parent_email" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="address">Current Address *</label>
+                        <textarea id="address" name="address" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="previous_school">Previous School</label>
+                        <input type="text" id="previous_school" name="previous_school">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="boarding_type">Boarding Type *</label>
+                        <select id="boarding_type" name="boarding_type" required>
+                            <option value="">Select Type</option>
+                            <option value="day_scholar">Day Scholar</option>
+                            <option value="boarding">Full Boarding</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="medical_conditions">Medical Conditions (if any)</label>
+                        <textarea id="medical_conditions" name="medical_conditions" rows="3" placeholder="Please mention any allergies, medications, or special medical needs"></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="additional_info">Additional Information</label>
+                        <textarea id="additional_info" name="additional_info" rows="3" placeholder="Any additional information you'd like to share"></textarea>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button type="submit" class="submit-btn">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Fee Structure Section -->
+<section class="fees-section">
+    <div class="admissions-container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Fee Structure</h2>
+            <p>Transparent and affordable education for all</p>
+        </div>
+
+        <div class="fees-table" data-aos="fade-up" data-aos-delay="200">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Grade Level</th>
+                        <th>Day Scholar (Monthly)</th>
+                        <th>Boarding (Monthly)</th>
+                        <th>Admission Fee</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Nursery - UKG</td>
+                        <td>NPR 8,000</td>
+                        <td>NPR 25,000</td>
+                        <td>NPR 15,000</td>
+                    </tr>
+                    <tr>
+                        <td>Grade 1 - 5</td>
+                        <td>NPR 10,000</td>
+                        <td>NPR 28,000</td>
+                        <td>NPR 18,000</td>
+                    </tr>
+                    <tr>
+                        <td>Grade 6 - 8</td>
+                        <td>NPR 12,000</td>
+                        <td>NPR 32,000</td>
+                        <td>NPR 20,000</td>
+                    </tr>
+                    <tr>
+                        <td>Grade 9 - 10</td>
+                        <td>NPR 15,000</td>
+                        <td>NPR 35,000</td>
+                        <td>NPR 25,000</td>
+                    </tr>
+                    <tr>
+                        <td>Grade 11 - 12</td>
+                        <td>NPR 18,000</td>
+                        <td>NPR 40,000</td>
+                        <td>NPR 30,000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <p style="color: #718096; font-style: italic;">
+                * Fees include books, uniforms, and basic stationery. Additional charges may apply for special activities and trips.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Information Section -->
+<section class="contact-info-section">
+    <div class="admissions-container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Need Help with Admissions?</h2>
+            <p>Our friendly admissions team is here to guide you through the process</p>
+        </div>
+
+        <div class="contact-cards">
+            <div class="contact-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="contact-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <h3>Call Us</h3>
+                <p>+977-91-12345</p>
+                <p>Sun-Fri: 8:00 AM - 5:00 PM</p>
+            </div>
+
+            <div class="contact-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h3>Email Us</h3>
+                <p>admissions@uebs.edu.np</p>
+                <p>We respond within 24 hours</p>
+            </div>
+
+            <div class="contact-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3>Visit Us</h3>
+                <p>Dhangadhi 19, Sub Metro</p>
+                <p>Pitlian City, Kailali</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize AOS
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+    });
+
+    // Form validation and submission
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Basic validation
+        const requiredFields = this.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.style.borderColor = '#ff6b6b';
+                isValid = false;
+            } else {
+                field.style.borderColor = '#e2e8f0';
+            }
+        });
+        
+        if (isValid) {
+            // Show success message (you can customize this)
+            alert('Application submitted successfully! We will contact you within 2-3 business days.');
+            // In a real application, you would submit the form data here
+            // this.submit();
+        } else {
+            alert('Please fill in all required fields.');
+        }
+    });
+
+    // Smooth scroll for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Add animation to elements when they come into view
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in-up').forEach(el => {
+        observer.observe(el);
+    });
+</script>
+{% endblock %}

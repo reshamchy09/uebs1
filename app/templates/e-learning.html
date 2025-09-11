@@ -1,0 +1,758 @@
+{% extends 'base.html' %}
+
+{% block title %}E-Learning Platform - Unison English Boarding School{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* E-Learning Platform Styles */
+    .elearning-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 120px 0 80px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .elearning-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M20 20c0 11.046-8.954 20-20 20s-20-8.954-20-20 8.954-20 20-20 20 8.954 20 20zm10 0c0-5.523-4.477-10-10-10s-10 4.477-10 10 4.477 10 10 10 10-4.477 10-10z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+    }
+
+    .hero-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        background: linear-gradient(45deg, #fff, #e3f2fd);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        opacity: 0.9;
+        margin-bottom: 30px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-top: 40px;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        display: block;
+        color: #fff;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin-top: 5px;
+    }
+
+    /* Platform Features */
+    .platform-features {
+        padding: 80px 0;
+        background: #f8faff;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .section-subtitle {
+        text-align: center;
+        color: #7f8c8d;
+        font-size: 1.1rem;
+        margin-bottom: 60px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 60px;
+    }
+
+    .feature-card {
+        background: white;
+        border-radius: 15px;
+        padding: 40px 30px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        transition: left 0.5s ease;
+    }
+
+    .feature-card:hover::before {
+        left: 0;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    }
+
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        font-size: 2rem;
+        color: white;
+    }
+
+    .feature-title {
+        font-size: 1.3rem;
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .feature-description {
+        color: #7f8c8d;
+        line-height: 1.6;
+    }
+
+    /* Course Categories */
+    .course-categories {
+        padding: 80px 0;
+        background: white;
+    }
+
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+    }
+
+    .category-card {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border-radius: 15px;
+        padding: 30px 20px;
+        text-align: center;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .category-card:nth-child(2) {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .category-card:nth-child(3) {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+
+    .category-card:nth-child(4) {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    }
+
+    .category-card:nth-child(5) {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        color: #2c3e50;
+    }
+
+    .category-card:nth-child(6) {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .category-card:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        text-decoration: none;
+        color: white;
+    }
+
+    .category-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .category-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .category-count {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    /* Learning Tools */
+    .learning-tools {
+        padding: 80px 0;
+        background: #f8faff;
+    }
+
+    .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+    }
+
+    .tool-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .tool-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        border-color: #667eea;
+    }
+
+    .tool-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 1.8rem;
+        color: white;
+    }
+
+    .tool-title {
+        font-size: 1.2rem;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    .tool-description {
+        color: #7f8c8d;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .tool-btn {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 10px 25px;
+        border: none;
+        border-radius: 25px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .tool-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        text-decoration: none;
+        color: white;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        color: white;
+        padding: 80px 0;
+        text-align: center;
+    }
+
+    .cta-title {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .cta-description {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 40px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .cta-btn {
+        padding: 15px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .cta-btn-primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: 2px solid transparent;
+    }
+
+    .cta-btn-secondary {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .cta-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        text-decoration: none;
+    }
+
+    .cta-btn-primary:hover {
+        color: white;
+    }
+
+    .cta-btn-secondary:hover {
+        background: white;
+        color: #2c3e50;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-stats {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .features-grid,
+        .categories-grid,
+        .tools-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .cta-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+
+    /* Animation Classes */
+    .fade-in {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeInUp 0.8s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    .stagger-5 { animation-delay: 0.5s; }
+    .stagger-6 { animation-delay: 0.6s; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- E-Learning Hero Section -->
+<section class="elearning-hero">
+    <div class="hero-content">
+        <h1 class="hero-title fade-in">Digital Learning Platform</h1>
+        <p class="hero-subtitle fade-in stagger-1">
+            Experience the future of education with our comprehensive e-learning platform. 
+            Access courses, assignments, and resources anytime, anywhere.
+        </p>
+        
+        <div class="hero-stats fade-in stagger-2">
+            <div class="stat-item">
+                <span class="stat-number">500+</span>
+                <div class="stat-label">Online Courses</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">1,200+</span>
+                <div class="stat-label">Active Students</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">24/7</span>
+                <div class="stat-label">Access</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Platform Features -->
+<section class="platform-features">
+    <div class="container">
+        <h2 class="section-title fade-in">Platform Features</h2>
+        <p class="section-subtitle fade-in stagger-1">
+            Discover the powerful tools and features that make learning engaging and effective
+        </p>
+        
+        <div class="features-grid">
+            <div class="feature-card fade-in stagger-1">
+                <div class="feature-icon">
+                    <i class="fas fa-video"></i>
+                </div>
+                <h3 class="feature-title">Interactive Videos</h3>
+                <p class="feature-description">
+                    High-quality video lessons with interactive elements, quizzes, and note-taking capabilities
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in stagger-2">
+                <div class="feature-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <h3 class="feature-title">Assignment Management</h3>
+                <p class="feature-description">
+                    Submit assignments, track progress, and receive instant feedback from instructors
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in stagger-3">
+                <div class="feature-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3 class="feature-title">Discussion Forums</h3>
+                <p class="feature-description">
+                    Engage with classmates and teachers through interactive discussion boards and Q&A sessions
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in stagger-4">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="feature-title">Progress Tracking</h3>
+                <p class="feature-description">
+                    Monitor your learning journey with detailed analytics and performance insights
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in stagger-5">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 class="feature-title">Mobile Learning</h3>
+                <p class="feature-description">
+                    Learn on-the-go with our mobile-optimized platform accessible on any device
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in stagger-6">
+                <div class="feature-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <h3 class="feature-title">Certifications</h3>
+                <p class="feature-description">
+                    Earn digital certificates and badges upon course completion and achievement milestones
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Course Categories -->
+<section class="course-categories">
+    <div class="container">
+        <h2 class="section-title fade-in">Course Categories</h2>
+        <p class="section-subtitle fade-in stagger-1">
+            Explore our diverse range of subjects and find the perfect course for your learning goals
+        </p>
+        
+        <div class="categories-grid">
+            <a href="#" class="category-card fade-in stagger-1">
+                <span class="category-icon">📚</span>
+                <div class="category-name">Core Subjects</div>
+                <div class="category-count">120+ Courses</div>
+            </a>
+            
+            <a href="#" class="category-card fade-in stagger-2">
+                <span class="category-icon">🔬</span>
+                <div class="category-name">Sciences</div>
+                <div class="category-count">85+ Courses</div>
+            </a>
+            
+            <a href="#" class="category-card fade-in stagger-3">
+                <span class="category-icon">🎨</span>
+                <div class="category-name">Arts & Humanities</div>
+                <div class="category-count">65+ Courses</div>
+            </a>
+            
+            <a href="#" class="category-card fade-in stagger-4">
+                <span class="category-icon">💻</span>
+                <div class="category-name">Technology</div>
+                <div class="category-count">95+ Courses</div>
+            </a>
+            
+            <a href="#" class="category-card fade-in stagger-5">
+                <span class="category-icon">🏃‍♂️</span>
+                <div class="category-name">Sports & Health</div>
+                <div class="category-count">45+ Courses</div>
+            </a>
+            
+            <a href="#" class="category-card fade-in stagger-6">
+                <span class="category-icon">🌍</span>
+                <div class="category-name">Languages</div>
+                <div class="category-count">55+ Courses</div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Learning Tools -->
+<section class="learning-tools">
+    <div class="container">
+        <h2 class="section-title fade-in">Learning Tools</h2>
+        <p class="section-subtitle fade-in stagger-1">
+            Powerful tools designed to enhance your learning experience and boost productivity
+        </p>
+        
+        <div class="tools-grid">
+            <div class="tool-card fade-in stagger-1">
+                <div class="tool-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3 class="tool-title">Study Planner</h3>
+                <p class="tool-description">
+                    Organize your study schedule, set reminders, and track your daily learning goals
+                </p>
+                <a href="#" class="tool-btn">Try Now</a>
+            </div>
+            
+            <div class="tool-card fade-in stagger-2">
+                <div class="tool-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="tool-title">Quiz Builder</h3>
+                <p class="tool-description">
+                    Create custom quizzes and practice tests to reinforce your learning
+                </p>
+                <a href="#" class="tool-btn">Create Quiz</a>
+            </div>
+            
+            <div class="tool-card fade-in stagger-3">
+                <div class="tool-icon">
+                    <i class="fas fa-sticky-note"></i>
+                </div>
+                <h3 class="tool-title">Digital Notes</h3>
+                <p class="tool-description">
+                    Take notes, create flashcards, and organize your study materials digitally
+                </p>
+                <a href="#" class="tool-btn">Start Notes</a>
+            </div>
+            
+            <div class="tool-card fade-in stagger-4">
+                <div class="tool-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="tool-title">Study Groups</h3>
+                <p class="tool-description">
+                    Join or create study groups to collaborate and learn with your peers
+                </p>
+                <a href="#" class="tool-btn">Join Group</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section">
+    <div class="container">
+        <h2 class="cta-title fade-in">Ready to Start Your Digital Learning Journey?</h2>
+        <p class="cta-description fade-in stagger-1">
+            Join thousands of students who are already experiencing the future of education. 
+            Access our comprehensive e-learning platform today!
+        </p>
+        
+        <div class="cta-buttons fade-in stagger-2">
+            <a href="{% url 'student_portal' %}" class="cta-btn cta-btn-primary">Access Platform</a>
+            <a href="{% url 'contact' %}" class="cta-btn cta-btn-secondary">Get Support</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Intersection Observer for fade-in animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observe all fade-in elements
+    document.querySelectorAll('.fade-in').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Add hover effects to cards
+    document.querySelectorAll('.feature-card, .tool-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-10px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Add loading states to buttons
+    document.querySelectorAll('.tool-btn, .cta-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            if (this.href === '#' || this.href.includes('#')) {
+                e.preventDefault();
+                
+                const originalText = this.textContent;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                this.style.pointerEvents = 'none';
+                
+                setTimeout(() => {
+                    this.textContent = originalText;
+                    this.style.pointerEvents = 'auto';
+                }, 1500);
+            }
+        });
+    });
+
+    // Counter animation for stats
+    function animateCounter(element, target) {
+        let current = 0;
+        const increment = target / 100;
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                element.textContent = target + (target === 500 ? '+' : target === 1200 ? '+' : '');
+                clearInterval(timer);
+            } else {
+                element.textContent = Math.floor(current) + (target === 500 || target === 1200 ? '+' : '');
+            }
+        }, 20);
+    }
+
+    // Trigger counter animation when stats come into view
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const statNumbers = entry.target.querySelectorAll('.stat-number');
+                statNumbers.forEach((stat, index) => {
+                    const targets = [500, 1200, 24];
+                    setTimeout(() => {
+                        if (index < 2) {
+                            animateCounter(stat, targets[index]);
+                        } else {
+                            stat.textContent = '24/7';
+                        }
+                    }, index * 200);
+                });
+                statsObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    const heroStats = document.querySelector('.hero-stats');
+    if (heroStats) {
+        statsObserver.observe(heroStats);
+    }
+});
+</script>
+{% endblock %}

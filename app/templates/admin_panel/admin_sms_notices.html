@@ -1,0 +1,192 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Admin SMS Notices - UEBS{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+  <!-- Header -->
+  <div class="mb-6 sm:mb-8">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+      Admin SMS Notices
+    </h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">
+      Create and manage SMS notices for announcements
+    </p>
+  </div>
+
+  <!-- Compose SMS Notice Form -->
+  <div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+      <i class="fas fa-sms text-blue-400 mr-3"></i> Compose SMS Notice
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="md:col-span-2">
+        <label class="block text-white/80 mb-2">Notice Title</label>
+        <input 
+          id="smsTitle" 
+          type="text" 
+          placeholder="Enter notice title" 
+          class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400"
+        >
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-white/80 mb-2">SMS Message</label>
+        <textarea 
+          id="smsMessage" 
+          placeholder="Enter SMS message (max 160 characters)" 
+          class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 min-h-[100px]"
+          maxlength="160"
+        ></textarea>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-white/80 mb-2">Phone Numbers (comma-separated)</label>
+        <input 
+          id="smsNumbers" 
+          type="text" 
+          placeholder="e.g., +1234567890, +0987654321" 
+          class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400"
+        >
+      </div>
+    </div>
+    <button 
+      id="saveBtn" 
+      class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 mt-6"
+      onclick="sendSMSNotice()"
+    >
+      <i class="fas fa-save mr-2"></i> Save SMS Notice
+    </button>
+  </div>
+
+  <!-- SMS Notices List -->
+  <div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+      <i class="fas fa-history text-purple-400 mr-3"></i> All SMS Notices
+    </h3>
+    <div class="overflow-x-auto">
+      <table class="w-full text-white/80" id="noticeList">
+        <thead>
+          <tr class="border-b border-white/20">
+            <th class="text-left py-3 px-4">Title</th>
+            <th class="text-left py-3 px-4">Message</th>
+            <th class="text-left py-3 px-4">Phone Numbers</th>
+            <th class="text-left py-3 px-4">Sent At</th>
+            <th class="text-left py-3 px-4">Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK (Compatibility Version) -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+
+<script>
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+    authDomain: "uebs-school.firebaseapp.com",
+    projectId: "uebs-school",
+    storageBucket: "uebs-school.firebasestorage.app",
+    messagingSenderId: "740325293639",
+    appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+    measurementId: "G-T7YEBMNHBH"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // Elements
+  const smsTitle = document.getElementById("smsTitle");
+  const smsMessage = document.getElementById("smsMessage");
+  const smsNumbers = document.getElementById("smsNumbers");
+  const saveBtn = document.getElementById("saveBtn");
+  const noticeList = document.querySelector("#noticeList tbody");
+
+  // Save SMS Notice
+  function sendSMSNotice() {
+    const title = smsTitle.value.trim();
+    const message = smsMessage.value.trim();
+    const numbers = smsNumbers.value.trim();
+
+    if (!title || !message || !numbers) {
+      alert("Please fill all fields!");
+      return;
+    }
+
+    // Validate phone numbers (basic check for format)
+    const numberArray = numbers.split(",").map(n => n.trim()).filter(n => n);
+    const validNumbers = numberArray.every(n => /^\+?\d{10,15}$/.test(n.trim()));
+    if (!validNumbers) {
+      alert("Please enter valid phone numbers (e.g., +1234567890, +0987654321)");
+      return;
+    }
+
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+    saveBtn.disabled = true;
+
+    const noticeRef = db.ref("admin_sms_notices").push();
+    noticeRef.set({
+      title,
+      message,
+      numbers: numberArray,
+      timestamp: firebase.database.ServerValue.TIMESTAMP,
+      sent: false
+    })
+    .then(() => {
+      alert("SMS Notice Saved! A backend will send SMS automatically.");
+      smsTitle.value = "";
+      smsMessage.value = "";
+      smsNumbers.value = "";
+    })
+    .catch(err => alert("Error saving notice: " + err.message))
+    .finally(() => {
+      saveBtn.innerHTML = '<i class="fas fa-save mr-2"></i> Save SMS Notice';
+      saveBtn.disabled = false;
+    });
+  }
+
+  // Load SMS Notices
+  db.ref("admin_sms_notices").on("value", (snapshot) => {
+    noticeList.innerHTML = "";
+    const data = snapshot.val();
+    if (data) {
+      const notices = Object.entries(data).map(([id, n]) => ({ id, ...n }));
+      // Sort by timestamp (newest first)
+      notices.sort((a, b) => b.timestamp - a.timestamp);
+      notices.forEach(n => {
+        const tr = document.createElement("tr");
+        tr.className = "border-b border-white/10 hover:bg-white/5";
+        const date = new Date(n.timestamp).toLocaleString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true
+        });
+        const status = n.sent ? "Sent" : "Pending";
+        tr.innerHTML = `
+          <td class="py-3 px-4">${n.title}</td>
+          <td class="py-3 px-4">${n.message}</td>
+          <td class="py-3 px-4">${n.numbers.join(", ")}</td>
+          <td class="py-3 px-4">${date}</td>
+          <td class="py-3 px-4">
+            <span class="px-2 py-1 rounded-full text-xs ${
+              n.sent ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
+            }">${status}</span>
+          </td>
+        `;
+        noticeList.appendChild(tr);
+      });
+    } else {
+      const tr = document.createElement("tr");
+      tr.innerHTML = '<td colspan="5" class="py-3 px-4 text-center text-white/50">No SMS notices found</td>';
+      noticeList.appendChild(tr);
+    }
+  });
+</script>
+{% endblock %}

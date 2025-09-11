@@ -1,0 +1,1068 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subscription - UEBS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+  color: #fff;
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Animated background elements */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(255, 118, 117, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 40% 80%, rgba(255, 206, 84, 0.1) 0%, transparent 50%);
+  z-index: -1;
+  animation: backgroundFloat 20s ease-in-out infinite;
+}
+
+@keyframes backgroundFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+/* Enhanced header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.header-left h2 {
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+  animation: titleGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+  from { filter: drop-shadow(0 0 5px rgba(102, 126, 234, 0.3)); }
+  to { filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.6)); }
+}
+
+.header-left p {
+  color: #bbb;
+  font-size: 1.1rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.action-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.action-btn:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+/* Enhanced glass card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(15px);
+  padding: 30px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transition: left 0.8s ease;
+}
+
+.glass-card:hover::before {
+  left: 100%;
+}
+
+.glass-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.glass-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.glass-card h3 i {
+  color: #a855f7;
+  font-size: 1.3rem;
+}
+
+/* Enhanced QR view */
+.qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.qr-view {
+  width: 200px;
+  height: 200px;
+  border: 3px solid transparent;
+  background: linear-gradient(135deg, #667eea, #764ba2) padding-box,
+              linear-gradient(135deg, #667eea, #764ba2) border-box;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin: 20px auto;
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+.qr-view::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 20px;
+  padding: 2px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: borderRotate 3s linear infinite;
+}
+
+@keyframes borderRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.qr-view img {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+  border-radius: 15px;
+}
+
+.qr-view:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+}
+
+.user-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 15px 0 5px 0;
+  color: #e2e8f0;
+}
+
+.qr-description {
+  color: #aaa;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* Enhanced home button */
+.home-button-container {
+  text-align: right;
+  margin-bottom: 30px;
+}
+
+.liquid-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 15px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.liquid-btn:hover::before {
+  left: 100%;
+}
+
+.liquid-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.liquid-btn:active {
+  transform: translateY(-1px);
+}
+
+/* Enhanced tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.03);
+}
+
+th {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+  padding: 18px 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #e2e8f0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+td {
+  padding: 15px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: all 0.3s ease;
+}
+
+tr:hover td {
+  background: rgba(255,255,255,0.08);
+  transform: scale(1.01);
+}
+
+.table-btn {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.table-btn:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-1px);
+}
+
+.update-btn {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.update-btn:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+img.proof {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.2);
+  transition: transform 0.3s ease;
+}
+
+img.proof:hover {
+  transform: scale(1.5);
+  cursor: pointer;
+}
+
+/* Status badges */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-active {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.status-pending {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+}
+
+.status-expired {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+/* Enhanced modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(5px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: modalFadeIn 0.3s ease;
+}
+
+.modal.active {
+  display: flex;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(20px);
+  padding: 40px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.2);
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from { transform: translateY(-50px) scale(0.9); }
+  to { transform: translateY(0) scale(1); }
+}
+
+.modal-content h3 {
+  margin-bottom: 20px;
+  color: #e2e8f0;
+  font-size: 1.5rem;
+}
+
+.modal-content input[type="file"] {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.1);
+  border: 2px dashed rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.modal-content input[type="file"]:hover {
+  border-color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.15);
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  background: rgba(255,255,255,0.2);
+  transform: rotate(90deg);
+}
+
+.modal-actions {
+  margin-top: 25px;
+  text-align: right;
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+}
+
+.cancel-btn {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  padding: 12px 24px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .header-left h2 {
+    font-size: 2rem;
+  }
+  
+  .glass-card {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .qr-view {
+    width: 150px;
+    height: 150px;
+  }
+  
+  table {
+    font-size: 0.9rem;
+  }
+  
+  th, td {
+    padding: 10px 8px;
+  }
+}
+
+/* Scroll animations */
+@keyframes slideInUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.glass-card {
+  animation: slideInUp 0.6s ease forwards;
+}
+
+.glass-card:nth-child(2) { animation-delay: 0.1s; }
+.glass-card:nth-child(3) { animation-delay: 0.2s; }
+.glass-card:nth-child(4) { animation-delay: 0.3s; }
+.glass-card:nth-child(5) { animation-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<!-- Enhanced Header -->
+<div class="header">
+  <div class="header-left">
+    <h2>Subscription</h2>
+    <p>Manage your subscription plans with style</p>
+  </div>
+  <div class="header-actions">
+    <button class="action-btn" id="downloadPdfBtn" title="Download PDF">
+      <i class="fas fa-file-pdf"></i>
+    </button>
+    <button class="action-btn" id="printBtn" title="Print">
+      <i class="fas fa-print"></i>
+    </button>
+    <button class="action-btn" id="exportExcelBtn" title="Export Excel">
+      <i class="fas fa-file-excel"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Enhanced QR View -->
+<div class="glass-card">
+  <h3><i class="fas fa-qrcode"></i> QR Payment Code</h3>
+  <div class="qr-container">
+    <div class="qr-view">
+      <img id="qrCode" src="{% static 'image/qr_code.jpg' %}" alt="QR Code">
+    </div>
+    <p class="user-name" id="userName">Resham Chaudhary</p>
+    <p class="qr-description">Scan the QR code to make a secure payment for your selected subscription plan</p>
+  </div>
+</div>
+
+<!-- Enhanced Home Button -->
+<div class="home-button-container">
+  <button class="liquid-btn" onclick="goHome()">
+    <i class="fas fa-home"></i> Go Home
+  </button>
+</div>
+
+<!-- Enhanced Subscription Plans -->
+<div class="glass-card">
+  <h3><i class="fas fa-star"></i> Available Subscription Plans</h3>
+  <table id="planTable">
+    <thead>
+      <tr>
+        <th>Duration</th>
+        <th>Price</th>
+        <th>Features</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Plans will be loaded dynamically -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Enhanced My Subscriptions -->
+<div class="glass-card">
+  <h3><i class="fas fa-user-check"></i> My Active Subscriptions</h3>
+  <table id="mySubscriptions">
+    <thead>
+      <tr>
+        <th>Plan</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Days Remaining</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Subscriptions will be loaded dynamically -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Enhanced Pending Payments -->
+<div class="glass-card">
+  <h3><i class="fas fa-hourglass-half"></i> Pending Payments</h3>
+  <table id="pendingPayments">
+    <thead>
+      <tr>
+        <th>Plan</th>
+        <th>Price</th>
+        <th>Payment Proof</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Pending payments will be loaded dynamically -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Enhanced Upload Payment Proof Modal -->
+<div class="modal" id="uploadModal">
+  <div class="modal-content">
+    <button class="close-btn" id="closeUploadModal">&times;</button>
+    <h3>Upload Payment Proof</h3>
+    <p style="color: #aaa; margin-bottom: 20px;">Please upload a clear image of your payment receipt or screenshot</p>
+    <input type="file" id="paymentProof" accept="image/*" placeholder="Choose image file...">
+    <div class="modal-actions">
+      <button class="cancel-btn" id="cancelUploadBtn">Cancel</button>
+      <button class="liquid-btn" id="uploadProofBtn">
+        <i class="fas fa-upload"></i> Upload Proof
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-storage-compat.js"></script>
+<!-- jsPDF & html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- XLSX -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+  authDomain: "uebs-school.firebaseapp.com",
+  projectId: "uebs-school",
+  storageBucket: "uebs-school.firebasestorage.app",
+  messagingSenderId: "740325293639",
+  appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+  measurementId: "G-T7YEBMNHBH"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const storage = firebase.storage();
+const { jsPDF } = window.jspdf;
+
+let userId = null;
+let plans = {};
+let mySubs = {};
+let currentSubId = null;
+let currentDurationCode = null;
+
+// Auth check
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    userId = user.uid;
+    
+    loadData();
+  } else {
+    alert("Please log in to access subscriptions.");
+    window.location.href = "{% url 'login' %}"; // Adjust to your login page URL
+  }
+});
+
+// Load subscription plans & user subscriptions
+function loadData() {
+  // Load subscription plans from Firebase
+  db.ref('subscriptionPlans').on('value', snap => {
+    plans = snap.val() || {};
+    populatePlanTable();
+  });
+  
+  // Load user subscriptions from Firebase
+  db.ref('userSubscriptions/' + userId).on('value', snap => {
+    mySubs = snap.val() || {};
+    populateMySubscriptions();
+    populatePendingPayments();
+  });
+}
+
+// Calculate Days Remaining
+function calculateDaysRemaining(endDate) {
+  const today = new Date();
+  const expiry = new Date(endDate);
+  const diffTime = expiry - today;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays >= 0 ? diffDays : "Expired";
+}
+
+// Populate tables dynamically
+function populatePlanTable() {
+  const tbody = document.querySelector('#planTable tbody');
+  tbody.innerHTML = '';
+  
+  Object.keys(plans).forEach(key => {
+    const p = plans[key];
+    if (p.status !== "Active") return;
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${p.label || key}</td>
+      <td>${p.price ? p.price.toFixed(2) : '0.00'}</td>
+      <td>${p.features || 'Standard features'}</td>
+      <td><button class="table-btn" onclick="subscribe('${key}')">Subscribe</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+  
+  // Show message if no plans available
+  if (Object.keys(plans).length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #aaa;">No subscription plans available</td></tr>';
+  }
+}
+
+function populateMySubscriptions() {
+  const tbody = document.querySelector('#mySubscriptions tbody');
+  tbody.innerHTML = '';
+  
+  let hasActiveSubscriptions = false;
+  Object.keys(mySubs).forEach(id => {
+    const s = mySubs[id];
+    if (s.status === "Active") {
+      hasActiveSubscriptions = true;
+      const daysRemaining = calculateDaysRemaining(s.endDate);
+      const statusClass = s.status === 'Active' ? 'status-active' : 
+                         s.status === 'Expired' ? 'status-expired' : 'status-pending';
+      
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${s.label || s.duration}</td>
+        <td>${s.price ? s.price.toFixed(2) : '0.00'}</td>
+        <td><span class="status-badge ${statusClass}">${s.status}</span></td>
+        <td>${s.startDate || 'N/A'}</td>
+        <td>${s.endDate || 'N/A'}</td>
+        <td>${daysRemaining}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  });
+  
+  // Show message if no active subscriptions
+  if (!hasActiveSubscriptions) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #aaa;">No active subscriptions</td></tr>';
+  }
+}
+
+function populatePendingPayments() {
+  const tbody = document.querySelector('#pendingPayments tbody');
+  tbody.innerHTML = '';
+  
+  let hasPendingPayments = false;
+  Object.keys(mySubs).forEach(id => {
+    const s = mySubs[id];
+    if (s.status === "Pending") {
+      hasPendingPayments = true;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${s.label || s.duration}</td>
+        <td>${s.price ? s.price.toFixed(2) : '0.00'}</td>
+        <td><img class="proof" src="${s.proof || '{% static "image/default-proof.jpg" %}'}" alt="Payment proof" onerror="this.src='{% static "image/default-proof.jpg" %}'"></td>
+        <td><span class="status-badge status-pending">${s.status}</span></td>
+        <td><button class="table-btn update-btn" onclick="updateProof('${id}')">Update Proof</button></td>
+      `;
+      tbody.appendChild(tr);
+    }
+  });
+  
+  // Show message if no pending payments
+  if (!hasPendingPayments) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #aaa;">No pending payments</td></tr>';
+  }
+}
+
+// Subscribe function
+function subscribe(durationCode) {
+  if (!userId) {
+    alert("Please log in to subscribe.");
+    return;
+  }
+  
+  const plan = plans[durationCode];
+  if (!plan) {
+    alert('Plan not found!');
+    return;
+  }
+  
+  currentSubId = db.ref('userSubscriptions/' + userId).push().key;
+  currentDurationCode = durationCode;
+  showModal();
+}
+
+// Update proof function
+function updateProof(subId) {
+  currentSubId = subId;
+  currentDurationCode = mySubs[subId].duration;
+  showModal();
+}
+
+// Modal handling
+const modal = document.getElementById('uploadModal');
+const uploadBtn = document.getElementById('uploadProofBtn');
+const cancelBtn = document.getElementById('cancelUploadBtn');
+const closeBtn = document.getElementById('closeUploadModal');
+
+function showModal() {
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function hideModal() {
+  modal.classList.remove('active');
+  document.body.style.overflow = 'auto';
+  document.getElementById('paymentProof').value = '';
+}
+
+uploadBtn.onclick = function() {
+  const fileInput = document.getElementById('paymentProof');
+  const file = fileInput.files[0];
+  
+  if (!file) { 
+    alert("Please select an image file"); 
+    return; 
+  }
+  
+  if (file.size > 5 * 1024 * 1024) { 
+    alert("File size must be less than 5MB"); 
+    return; 
+  }
+
+  // Show loading state
+  uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+  uploadBtn.disabled = true;
+  
+  // Upload to Firebase Storage
+  const storageRef = storage.ref('paymentProofs/' + userId + '/' + currentSubId + '/' + file.name);
+  storageRef.put(file).then(snapshot => {
+    return snapshot.ref.getDownloadURL();
+  }).then(url => {
+    // Get selected plan details
+    const selectedPlan = plans[currentDurationCode] || mySubs[currentSubId] || {};
+    const start = new Date();
+    const end = new Date();
+    
+    // Calculate end date based on duration
+    const durationNum = parseInt(currentDurationCode.replace(/[^\d]/g, ''));
+    const isYear = currentDurationCode.includes('Y');
+    if (isYear) { 
+      end.setFullYear(end.getFullYear() + durationNum); 
+    } else { 
+      end.setMonth(end.getMonth() + durationNum); 
+    }
+    
+    // Save subscription data to Firebase
+    const subscriptionData = {
+      duration: currentDurationCode,
+      label: selectedPlan.label || currentDurationCode,
+      price: selectedPlan.price || 0,
+      status: "Pending",
+      startDate: start.toISOString().split('T')[0],
+      endDate: end.toISOString().split('T')[0],
+      proof: url,
+      createdAt: firebase.database.ServerValue.TIMESTAMP
+    };
+    
+    return db.ref('userSubscriptions/' + userId + '/' + currentSubId).set(subscriptionData);
+  }).then(() => {
+    hideModal();
+    uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload Proof';
+    uploadBtn.disabled = false;
+    alert("Payment proof uploaded successfully! Your subscription is now pending approval.");
+  }).catch(error => {
+    console.error('Upload error:', error);
+    uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload Proof';
+    uploadBtn.disabled = false;
+    alert("Error uploading payment proof: " + error.message);
+  });
+};
+
+cancelBtn.onclick = closeBtn.onclick = hideModal;
+
+// Close modal on outside click
+modal.onclick = function(e) {
+  if (e.target === modal) {
+    hideModal();
+  }
+};
+
+// Go Home function
+function goHome() {
+  // Check for active subscription before redirecting
+  db.ref('userSubscriptions/' + userId).once('value', snap => {
+    const subscriptions = snap.val() || {};
+    let hasActiveSubscription = false;
+    Object.keys(subscriptions).forEach(subId => {
+      if (subscriptions[subId].status === "Active") {
+        hasActiveSubscription = true;
+      }
+    });
+    
+    document.body.style.transition = 'opacity 0.3s ease';
+    document.body.style.opacity = '0';
+    
+    setTimeout(() => {
+      if (hasActiveSubscription) {
+        window.location.href = "{% url 'home' %}";
+      } else {
+        alert("No active subscription found. Please complete your subscription.");
+      }
+    }, 300);
+  });
+}
+
+// PDF Download functionality
+document.getElementById('downloadPdfBtn').onclick = function() {
+  const qrSection = document.querySelector('.glass-card:nth-child(2)');
+  const planTable = document.getElementById('planTable');
+  const mySubscriptions = document.getElementById('mySubscriptions');
+  const pendingPayments = document.getElementById('pendingPayments');
+  
+  const btn = document.getElementById('downloadPdfBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.disabled = true;
+  
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  
+  canvas.width = Math.max(qrSection.offsetWidth, planTable.offsetWidth, mySubscriptions.offsetWidth, pendingPayments.offsetWidth);
+  canvas.height = qrSection.offsetHeight + planTable.offsetHeight + mySubscriptions.offsetHeight + pendingPayments.offsetHeight + 80;
+  
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  let yOffset = 0;
+  html2canvas(qrSection, { backgroundColor: null }).then(qrCanvas => {
+    ctx.drawImage(qrCanvas, 0, yOffset);
+    yOffset += qrCanvas.height + 20;
+    html2canvas(planTable, { backgroundColor: null }).then(planCanvas => {
+      ctx.drawImage(planCanvas, 0, yOffset);
+      yOffset += planCanvas.height + 20;
+      html2canvas(mySubscriptions, { backgroundColor: null }).then(subCanvas => {
+        ctx.drawImage(subCanvas, 0, yOffset);
+        yOffset += subCanvas.height + 20;
+        html2canvas(pendingPayments, { backgroundColor: null }).then(pendingCanvas => {
+          ctx.drawImage(pendingCanvas, 0, yOffset);
+          const doc = new jsPDF('p', 'mm', 'a4');
+          const imgData = canvas.toDataURL('image/png');
+          const imgProps = doc.getImageProperties(imgData);
+          const pdfWidth = doc.internal.pageSize.getWidth();
+          const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+          doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+          doc.save('subscription_report.pdf');
+          btn.innerHTML = '<i class="fas fa-file-pdf"></i>';
+          btn.disabled = false;
+        });
+      });
+    });
+  }).catch(error => {
+    console.error('PDF generation error:', error);
+    btn.innerHTML = '<i class="fas fa-file-pdf"></i>';
+    btn.disabled = false;
+    alert("Error generating PDF: " + error.message);
+  });
+};
+
+// Excel Export functionality
+document.getElementById('exportExcelBtn').onclick = function() {
+  const btn = document.getElementById('exportExcelBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.disabled = true;
+  
+  const data = [];
+  data.push(['Subscription Plans']);
+  data.push(['Duration', 'Price', 'Features']);
+  Object.keys(plans).forEach(key => {
+    const p = plans[key];
+    if (p.status === "Active") {
+      data.push([p.label || key, p.price ? p.price.toFixed(2) : '0.00', p.features || 'Standard features']);
+    }
+  });
+  
+  data.push([]);
+  data.push(['My Active Subscriptions']);
+  data.push(['Plan', 'Price', 'Status', 'Start Date', 'End Date', 'Days Remaining']);
+  Object.keys(mySubs).forEach(id => {
+    const s = mySubs[id];
+    if (s.status === "Active") {
+      const daysRemaining = calculateDaysRemaining(s.endDate);
+      data.push([s.label || s.duration, s.price ? s.price.toFixed(2) : '0.00', s.status, s.startDate || 'N/A', s.endDate || 'N/A', daysRemaining]);
+    }
+  });
+  
+  data.push([]);
+  data.push(['Pending Payments']);
+  data.push(['Plan', 'Price', 'Status']);
+  Object.keys(mySubs).forEach(id => {
+    const s = mySubs[id];
+    if (s.status === "Pending") {
+      data.push([s.label || s.duration, s.price ? s.price.toFixed(2) : '0.00', s.status]);
+    }
+  });
+  
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Subscriptions');
+  XLSX.writeFile(wb, 'subscription_report.xlsx');
+  btn.innerHTML = '<i class="fas fa-file-excel"></i>';
+  btn.disabled = false;
+};
+
+// Print functionality
+document.getElementById('printBtn').onclick = function() {
+  const printContent = `
+    <h2>Subscription Report</h2>
+    <h3>QR Payment Code</h3>
+    ${document.querySelector('.glass-card:nth-child(2)').outerHTML}
+    <h3>Subscription Plans</h3>
+    ${document.getElementById('planTable').outerHTML}
+    <h3>My Active Subscriptions</h3>
+    ${document.getElementById('mySubscriptions').outerHTML}
+    <h3>Pending Payments</h3>
+    ${document.getElementById('pendingPayments').outerHTML}
+  `;
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Subscriptions</title>
+        <style>
+          body { font-family: Arial, sans-serif; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+          th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+          th { background: #007bff; color: white; }
+          h2, h3 { text-align: center; margin: 20px 0; }
+          img { width: 128px; height: 128px; }
+          .qr-container { text-align: center; }
+          .status-badge { padding: 6px 12px; border-radius: 20px; }
+          .status-active { background: #10b981; color: white; }
+          .status-pending { background: #f59e0b; color: white; }
+          .status-expired { background: #ef4444; color: white; }
+        </style>
+      </head>
+      <body>${printContent}</body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
+};
+
+// Add smooth scrolling and entrance animations
+window.addEventListener('load', () => {
+  const cards = document.querySelectorAll('.glass-card');
+  cards.forEach((card, index) => {
+    card.style.animationDelay = `${index * 0.1}s`;
+  });
+});
+
+// Add keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && modal.classList.contains('active')) {
+    hideModal();
+  }
+  if (e.key === 'h' && e.ctrlKey) {
+    e.preventDefault();
+    goHome();
+  }
+});
+</script>
+
+</body>
+</html>

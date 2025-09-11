@@ -1,0 +1,651 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Daily Book - UEBS{% endblock %}
+
+{% block content %}
+<!-- Top Navbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+  <div class="mt-12 md:mt-0">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Daily Book</h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">Cash / Bank Day Book with filters, daily summary & CSV export</p>
+  </div>
+  <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+    <div class="hidden md:block relative flex-1 max-w-md">
+      <input type="text" id="searchDesc" placeholder="Search description..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+      <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative md:hidden">
+      <i class="fas fa-search text-sm sm:text-base"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile search bar -->
+<div class="md:hidden mb-4">
+  <div class="relative">
+    <input type="text" id="searchDescMobile" placeholder="Search description..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+    <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Filters & Summary -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+  <div class="glass-card p-4 rounded-2xl animate__animated animate__fadeInUp">
+    <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+      <i class="fas fa-filter text-purple-400 mr-3"></i> Filters
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-white/80 mb-2">From</label>
+        <input type="date" id="fFrom" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">To</label>
+        <input type="date" id="fTo" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Account</label>
+        <select id="fAccount" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option value="">All</option>
+          <option value="Cash">Cash</option>
+          <option value="Bank">Bank</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Category</label>
+        <select id="fCategory" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option value="">All</option>
+          <option>Tuition Fees</option>
+          <option>Admission Fees</option>
+          <option>Donations</option>
+          <option>Teacher Salaries</option>
+          <option>Utilities</option>
+          <option>Stationery</option>
+          <option>Maintenance</option>
+          <option>Events</option>
+          <option>Custom</option>
+        </select>
+      </div>
+    </div>
+    <div class="flex space-x-2 mt-4">
+      <button id="btnApply" class="liquid-btn text-white px-4 py-2 rounded-xl font-semibold transition-all hover:scale-105">
+        <i class="fas fa-check mr-2"></i> Apply
+      </button>
+      <button id="btnReset" class="glass-card text-white px-4 py-2 rounded-xl font-semibold hover:bg-white/20">
+        <i class="fas fa-undo mr-2"></i> Reset
+      </button>
+      <button id="btnExport" class="glass-card text-white px-4 py-2 rounded-xl font-semibold hover:bg-white/20">
+        <i class="fas fa-download mr-2"></i> Export CSV
+      </button>
+    </div>
+  </div>
+
+  <div class="glass-card p-4 rounded-2xl animate__animated animate__fadeInUp">
+    <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+      <i class="fas fa-wallet text-green-400 mr-3"></i> Opening
+    </h3>
+    <div class="glass-card p-3">
+      <div class="flex justify-between mb-2">
+        <span class="text-white/80">Cash</span>
+        <span id="opCash" class="text-white">0.00</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-white/80">Bank</span>
+        <span id="opBank" class="text-white">0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass-card p-4 rounded-2xl animate__animated animate__fadeInUp">
+    <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+      <i class="fas fa-exchange-alt text-blue-400 mr-3"></i> Receipts & Payments
+    </h3>
+    <div class="glass-card p-3">
+      <div class="flex justify-between mb-2">
+        <span class="text-white/80">Receipts (Credit)</span>
+        <span id="sumCr" class="text-green-400">0.00</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-white/80">Payments (Debit)</span>
+        <span id="sumDr" class="text-red-400">0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass-card p-4 rounded-2xl animate__animated animate__fadeInUp">
+    <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+      <i class="fas fa-balance-scale text-yellow-400 mr-3"></i> Closing
+    </h3>
+    <div class="glass-card p-3">
+      <div class="flex justify-between mb-2">
+        <span class="text-white/80">Cash</span>
+        <span id="clCash" class="text-white">0.00</span>
+      </div>
+      <div class="flex justify-between mb-2">
+        <span class="text-white/80">Bank</span>
+        <span id="clBank" class="text-white">0.00</span>
+      </div>
+      <div class="flex justify-between border-t border-white/20 pt-2">
+        <span class="text-white/80 font-semibold">Total</span>
+        <span id="clTotal" class="text-white font-semibold">0.00</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add / Edit Transaction -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mt-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-plus-circle text-green-400 mr-3"></i> New Transaction
+  </h3>
+  <form id="txForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div>
+      <label class="block text-white/80 mb-2">Date</label>
+      <input type="date" id="txDate" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" required>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Account</label>
+      <select id="txAccount" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" required>
+        <option>Cash</option>
+        <option>Bank</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Category</label>
+      <select id="txCategory" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" required>
+        <option>Tuition Fees</option>
+        <option>Admission Fees</option>
+        <option>Donations</option>
+        <option>Teacher Salaries</option>
+        <option>Utilities</option>
+        <option>Stationery</option>
+        <option>Maintenance</option>
+        <option>Events</option>
+        <option>Custom</option>
+      </select>
+    </div>
+    <div id="customCategoryDiv" class="hidden">
+      <label class="block text-white/80 mb-2">Custom Category</label>
+      <input id="txCustomCategory" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Enter custom category">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Payment Mode</label>
+      <select id="txMode" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option>Cash</option>
+        <option>UPI</option>
+        <option>Cheque</option>
+        <option>Transfer</option>
+      </select>
+    </div>
+    <div class="md:col-span-2">
+      <label class="block text-white/80 mb-2">Description</label>
+      <input id="txDesc" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Narration / Counterparty" required>
+    </div>
+    <div class="md:col-span-2">
+      <label class="block text-white/80 mb-2">Reference (optional)</label>
+      <input id="txRef" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Invoice # / Cheque #">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Debit (Payment)</label>
+      <input type="number" id="txDr" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" min="0" step="0.01" value="0">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Credit (Receipt)</label>
+      <input type="number" id="txCr" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" min="0" step="0.01" value="0">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">&nbsp;</label>
+      <button type="submit" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 w-full">
+        <i class="fas fa-save mr-2"></i> Save
+      </button>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">&nbsp;</label>
+      <button type="button" id="btnClear" class="glass-card text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/20 w-full">
+        <i class="fas fa-undo mr-2"></i> Clear
+      </button>
+    </div>
+  </form>
+  <p class="text-white/70 text-sm mt-2">Tip: Enter an amount in either <strong>Debit</strong> or <strong>Credit</strong>. For predefined categories, the appropriate field is auto-selected.</p>
+</div>
+
+<!-- Transactions Table -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mt-6">
+  <div class="flex justify-between items-center mb-6">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white flex items-center">
+      <i class="fas fa-table text-purple-400 mr-3"></i> Transactions
+    </h3>
+    <p class="text-white/70 text-sm">Double-click a row to edit. Use <i class="fas fa-trash"></i> to delete.</p>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="txTable">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">Date</th>
+          <th class="text-left py-3 px-4">Account</th>
+          <th class="text-left py-3 px-4">Category</th>
+          <th class="text-left py-3 px-4">Description</th>
+          <th class="text-left py-3 px-4">Mode</th>
+          <th class="text-right py-3 px-4">Debit</th>
+          <th class="text-right py-3 px-4">Credit</th>
+          <th class="text-right py-3 px-4">Balance</th>
+          <th class="text-left py-3 px-4">Ref</th>
+          <th class="text-left py-3 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="txBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="text-center text-white/70 text-sm mt-6">
+  Built with ❤️ on Firebase Realtime Database
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+
+<script>
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+    authDomain: "uebs-school.firebaseapp.com",
+    projectId: "uebs-school",
+    storageBucket: "uebs-school.firebasestorage.app",
+    messagingSenderId: "740325293639",
+    appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+    measurementId: "G-T7YEBMNHBH"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // UI Elements
+  const fFrom = document.getElementById('fFrom');
+  const fTo = document.getElementById('fTo');
+  const fAccount = document.getElementById('fAccount');
+  const fCategory = document.getElementById('fCategory');
+  const btnApply = document.getElementById('btnApply');
+  const btnReset = document.getElementById('btnReset');
+  const btnExport = document.getElementById('btnExport');
+  const txDate = document.getElementById('txDate');
+  const txAccount = document.getElementById('txAccount');
+  const txCategory = document.getElementById('txCategory');
+  const txCustomCategory = document.getElementById('txCustomCategory');
+  const customCategoryDiv = document.getElementById('customCategoryDiv');
+  const txMode = document.getElementById('txMode');
+  const txDesc = document.getElementById('txDesc');
+  const txRef = document.getElementById('txRef');
+  const txDr = document.getElementById('txDr');
+  const txCr = document.getElementById('txCr');
+  const txForm = document.getElementById('txForm');
+  const btnClear = document.getElementById('btnClear');
+  const txBody = document.getElementById('txBody');
+  const opCash = document.getElementById('opCash');
+  const opBank = document.getElementById('opBank');
+  const sumCr = document.getElementById('sumCr');
+  const sumDr = document.getElementById('sumDr');
+  const clCash = document.getElementById('clCash');
+  const clBank = document.getElementById('clBank');
+  const clTotal = document.getElementById('clTotal');
+  const searchDesc = document.getElementById('searchDesc');
+  const searchDescMobile = document.getElementById('searchDescMobile');
+
+  // State
+  let ALL = [];
+  let VIEW = [];
+  let editingId = null;
+
+  // Helpers
+  const fmt = n => (Number(n || 0)).toFixed(2);
+  const asISO = d => new Date(d).toISOString().slice(0, 10);
+  const todayISO = asISO(new Date());
+  const onlyOneOf = (a, b) => (Number(a) > 0 && Number(b) === 0) || (Number(b) > 0 && Number(a) === 0);
+  const escapeHtml = s => (s || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+
+  const incomeCategories = ['Tuition Fees', 'Admission Fees', 'Donations'];
+  const expenseCategories = ['Teacher Salaries', 'Utilities', 'Stationery', 'Maintenance', 'Events'];
+
+  const ensureDateInputs = () => {
+    if (!fFrom.value) fFrom.value = todayISO;
+    if (!fTo.value) fTo.value = todayISO;
+    if (!txDate.value) txDate.value = todayISO;
+  };
+
+  // Auto-select Debit/Credit based on category
+  function updateDebitCredit() {
+    const category = txCategory.value;
+    const amount = Number(txDr.value) || Number(txCr.value);
+    
+    if (category === 'Custom') {
+      customCategoryDiv.classList.remove('hidden');
+      // Allow manual entry, no auto-selection
+      return;
+    } else {
+      customCategoryDiv.classList.add('hidden');
+    }
+
+    if (incomeCategories.includes(category)) {
+      txCr.value = amount || 0;
+      txDr.value = 0;
+    } else if (expenseCategories.includes(category)) {
+      txDr.value = amount || 0;
+      txCr.value = 0;
+    }
+  }
+
+  // Map journal data to Daily Book format
+  function mapJournalToTransaction(j) {
+    return {
+      id: j.id,
+      date: j.date,
+      account: j.account || 'Cash',
+      category: j.category,
+      mode: j.paymentMethod,
+      description: j.note,
+      ref: j.ref || '',
+      debit: j.type === 'Debit' ? j.amount : 0,
+      credit: j.type === 'Credit' ? j.amount : 0,
+      createdAt: j.createdAt || 0,
+      serverAt: j.serverAt || 0
+    };
+  }
+
+  // Map Daily Book transaction to journal format
+  function mapTransactionToJournal(t, id) {
+    return {
+      date: t.date,
+      type: t.debit > 0 ? 'Debit' : 'Credit',
+      paymentMethod: t.mode,
+      category: t.category === 'Custom' ? t.customCategory || 'Custom' : t.category,
+      amount: t.debit > 0 ? t.debit : t.credit,
+      note: t.description,
+      account: t.account,
+      ref: t.ref,
+      createdAt: t.createdAt,
+      serverAt: t.serverAt
+    };
+  }
+
+  // Compute Summaries
+  function computeSummaries(rows) {
+    rows.sort((a, b) => {
+      if (a.date === b.date) {
+        return (a.createdAt || 0) - (b.createdAt || 0);
+      }
+      return a.date.localeCompare(b.date);
+    });
+
+    const from = fFrom.value || '0000-01-01';
+    let opC = 0, opB = 0;
+    for (const r of ALL) {
+      if (r.date < from) {
+        if (r.account === 'Cash') {
+          opC += Number(r.credit || 0) - Number(r.debit || 0);
+        } else if (r.account === 'Bank') {
+          opB += Number(r.credit || 0) - Number(r.debit || 0);
+        }
+      }
+    }
+
+    let balC = opC, balB = opB;
+    let totalCr = 0, totalDr = 0;
+
+    const withBal = rows.map(r => {
+      let bal;
+      if (r.account === 'Cash') {
+        balC += Number(r.credit || 0) - Number(r.debit || 0);
+        bal = balC;
+      } else {
+        balB += Number(r.credit || 0) - Number(r.debit || 0);
+        bal = balB;
+      }
+      totalCr += Number(r.credit || 0);
+      totalDr += Number(r.debit || 0);
+      return { ...r, balance: bal };
+    });
+
+    opCash.textContent = fmt(opC);
+    opBank.textContent = fmt(opB);
+    sumCr.textContent = fmt(totalCr);
+    sumDr.textContent = fmt(totalDr);
+    clCash.textContent = fmt(balC);
+    clBank.textContent = fmt(balB);
+    clTotal.textContent = fmt(balC + balB);
+
+    return withBal;
+  }
+
+  // Render Transactions
+  function render() {
+    const from = fFrom.value || '0000-01-01';
+    const to = fTo.value || '9999-12-31';
+    const acc = fAccount.value;
+    const cat = fCategory.value;
+    const search = (searchDesc.value || searchDescMobile.value || '').toLowerCase();
+
+    VIEW = ALL.filter(r =>
+      r.date >= from && r.date <= to &&
+      (acc ? r.account === acc : true) &&
+      (cat ? r.category === cat : true) &&
+      (search ? (r.description || '').toLowerCase().includes(search) : true)
+    );
+
+    const rows = computeSummaries([...VIEW]);
+
+    txBody.innerHTML = '';
+    for (const r of rows) {
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-white/10 hover:bg-white/5';
+      tr.innerHTML = `
+        <td class="py-3 px-4">${r.date}</td>
+        <td class="py-3 px-4">${r.account}</td>
+        <td class="py-3 px-4">${escapeHtml(r.category)}</td>
+        <td class="py-3 px-4">${escapeHtml(r.description || '')}</td>
+        <td class="py-3 px-4">${r.mode || ''}</td>
+        <td class="py-3 px-4 text-right text-red-400">${fmt(r.debit || 0)}</td>
+        <td class="py-3 px-4 text-right text-green-400">${fmt(r.credit || 0)}</td>
+        <td class="py-3 px-4 text-right">${fmt(r.balance || 0)}</td>
+        <td class="py-3 px-4 text-sm">${escapeHtml(r.ref || '')}</td>
+        <td class="py-3 px-4">
+          <div class="flex space-x-2">
+            <button onclick="startEdit('${r.id}')" class="glass-card px-3 py-1 rounded-lg text-blue-400 hover:bg-blue-400/20">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button onclick="deleteTransaction('${r.id}')" class="glass-card px-3 py-1 rounded-lg text-red-400 hover:bg-red-400/20">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      `;
+      tr.addEventListener('dblclick', () => startEdit(r.id));
+      txBody.appendChild(tr);
+    }
+  }
+
+  // Edit Transaction
+  function startEdit(id) {
+    const r = ALL.find(x => x.id === id);
+    if (!r) return;
+    editingId = id;
+    txDate.value = r.date;
+    txAccount.value = r.account;
+    txCategory.value = incomeCategories.includes(r.category) || expenseCategories.includes(r.category) ? r.category : 'Custom';
+    txCustomCategory.value = txCategory.value === 'Custom' ? r.category : '';
+    customCategoryDiv.classList.toggle('hidden', txCategory.value !== 'Custom');
+    txMode.value = r.mode || 'Cash';
+    txDesc.value = r.description || '';
+    txRef.value = r.ref || '';
+    txDr.value = r.debit || 0;
+    txCr.value = r.credit || 0;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Clear Form
+  function clearForm() {
+    editingId = null;
+    txDate.value = todayISO;
+    txAccount.value = 'Cash';
+    txCategory.value = 'Tuition Fees';
+    txCustomCategory.value = '';
+    customCategoryDiv.classList.add('hidden');
+    txMode.value = 'Cash';
+    txDesc.value = '';
+    txRef.value = '';
+    txDr.value = 0;
+    txCr.value = 0;
+    updateDebitCredit();
+  }
+
+  // Export CSV
+  function exportCSV() {
+    const headers = ["Date", "Account", "Category", "Description", "Mode", "Debit", "Credit", "Balance", "Ref"];
+    const rows = [...document.querySelectorAll('#txBody tr')].map(tr => {
+      const tds = tr.querySelectorAll('td');
+      return Array.from(tds).slice(0, 9).map(td => `"${(td.textContent || '').replace(/"/g, '""')}"`).join(',');
+    });
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `daily-book-${todayISO}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Delete Transaction
+  function deleteTransaction(id) {
+    if (confirm('Delete this transaction?')) {
+      Promise.all([
+        db.ref(`transactions/${id}`).remove(),
+        db.ref(`journal/${id}`).remove()
+      ])
+        .then(() => alert('Transaction deleted successfully!'))
+        .catch(err => alert('Delete failed: ' + err.message));
+    }
+  }
+
+  // Firebase Listener
+  function attachLiveListener() {
+    db.ref('transactions').on('value', snap => {
+      const val = snap.val() || {};
+      const transactions = Object.entries(val).map(([id, v]) => ({ id, ...v }));
+      
+      db.ref('journal').once('value').then(journalSnap => {
+        const journalVal = journalSnap.val() || {};
+        const journalEntries = Object.entries(journalVal).map(([id, v]) => mapJournalToTransaction({ id, ...v }));
+        
+        const transactionMap = new Map(transactions.map(t => [t.id, t]));
+        const journalMap = new Map(journalEntries.map(j => [j.id, j]));
+        
+        ALL = [...transactionMap.values()];
+        journalMap.forEach((j, id) => {
+          if (!transactionMap.has(id)) {
+            ALL.push(j);
+          }
+        });
+        
+        render();
+      });
+    });
+
+    db.ref('journal').on('value', snap => {
+      const val = snap.val() || {};
+      const journalEntries = Object.entries(val).map(([id, v]) => mapJournalToTransaction({ id, ...v }));
+      
+      const transactionMap = new Map(ALL.filter(t => t.source !== 'journal').map(t => [t.id, t]));
+      const journalMap = new Map(journalEntries.map(j => [j.id, { ...j, source: 'journal' }]));
+      
+      ALL = [...transactionMap.values()];
+      journalMap.forEach((j, id) => {
+        if (!transactionMap.has(id)) {
+          ALL.push(j);
+        }
+      });
+      
+      render();
+    });
+  }
+
+  // Form Submission
+  txForm.addEventListener('submit', e => {
+    e.preventDefault();
+    ensureDateInputs();
+
+    const dr = Number(txDr.value || 0), cr = Number(txCr.value || 0);
+    if (!(onlyOneOf(dr, cr) || (dr === 0 && cr === 0))) {
+      alert('Enter either Debit OR Credit (not both). If both are 0, it will be treated as 0 entry.');
+      return;
+    }
+
+    if (txCategory.value === 'Custom' && !txCustomCategory.value.trim()) {
+      alert('Please enter a custom category.');
+      return;
+    }
+
+    const data = {
+      date: txDate.value,
+      account: txAccount.value,
+      category: txCategory.value === 'Custom' ? txCustomCategory.value.trim() : txCategory.value,
+      customCategory: txCategory.value === 'Custom' ? txCustomCategory.value.trim() : null,
+      mode: txMode.value,
+      description: txDesc.value,
+      ref: txRef.value || '',
+      debit: dr,
+      credit: cr,
+      createdAt: Date.now(),
+      serverAt: firebase.database.ServerValue.TIMESTAMP
+    };
+
+    const journalData = mapTransactionToJournal(data, editingId);
+
+    const refPath = editingId ? `transactions/${editingId}` : 'transactions';
+    const dbRef = editingId ? db.ref(refPath) : db.ref(refPath).push();
+    const journalRefPath = editingId ? `journal/${editingId}` : 'journal';
+    const journalDbRef = editingId ? db.ref(journalRefPath) : db.ref(journalRefPath).push();
+
+    Promise.all([
+      dbRef.set(data),
+      journalDbRef.set(journalData)
+    ])
+      .then(() => {
+        alert(editingId ? 'Transaction updated successfully!' : 'Transaction saved successfully!');
+        clearForm();
+      })
+      .catch(err => alert('Save failed: ' + err.message));
+  });
+
+  // Event Listeners
+  btnClear.addEventListener('click', clearForm);
+  btnApply.addEventListener('click', render);
+  btnReset.addEventListener('click', () => {
+    fFrom.value = todayISO;
+    fTo.value = todayISO;
+    fAccount.value = '';
+    fCategory.value = '';
+    searchDesc.value = '';
+    searchDescMobile.value = '';
+    render();
+  });
+  btnExport.addEventListener('click', exportCSV);
+  searchDesc.addEventListener('input', render);
+  searchDescMobile.addEventListener('input', render);
+  txCategory.addEventListener('change', updateDebitCredit);
+  txDr.addEventListener('input', updateDebitCredit);
+  txCr.addEventListener('input', updateDebitCredit);
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', () => {
+    ensureDateInputs();
+    clearForm();
+    attachLiveListener();
+  });
+</script>
+{% endblock %}

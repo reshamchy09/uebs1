@@ -1,0 +1,376 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Staff ID Card Management - UEBS{% endblock %}
+
+{% block content %}
+<!-- Top Navbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+  <div class="mt-12 md:mt-0">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Staff ID Card Management</h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">Generate and manage staff ID cards</p>
+  </div>
+  <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+    <div class="hidden md:block relative flex-1 max-w-md">
+      <input type="text" id="searchStaff" placeholder="Search staff..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+      <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative md:hidden" onclick="document.getElementById('searchStaffMobile').focus()">
+      <i class="fas fa-search text-sm sm:text-base"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile search bar -->
+<div class="md:hidden mb-4">
+  <div class="relative">
+    <input type="text" id="searchStaffMobile" placeholder="Search staff..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+    <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="glass-card p-4 mb-6 rounded-2xl animate__animated animate__fadeInUp">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label class="block text-white/80 mb-2">Role</label>
+      <select id="filterRole" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Roles</option>
+      </select>
+    </div>
+  </div>
+  <div class="flex space-x-4 mt-6">
+    <button id="generateAllBtn" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+      <i class="fas fa-id-card mr-2"></i> Generate All
+    </button>
+    <button id="downloadAllBtn" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+      <i class="fas fa-download mr-2"></i> Download All PDF
+    </button>
+  </div>
+</div>
+
+<!-- Staff List -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-users text-purple-400 mr-3"></i> Staff
+  </h3>
+  
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="staffTable">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">#</th>
+          <th class="text-left py-3 px-4">Name</th>
+          <th class="text-left py-3 px-4">Role</th>
+          <th class="text-left py-3 px-4">Department</th>
+          <th class="text-left py-3 px-4">Phone</th>
+          <th class="text-left py-3 px-4">Address</th>
+          <th class="text-left py-3 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Single ID Card -->
+<div id="idCard" class="glass-card p-4 rounded-2xl animate__animated animate__fadeInUp hidden w-[300px] h-[220px] relative">
+  <img src="/static/images/school-logo.png" alt="School Logo" class="absolute top-4 right-4 w-16 h-16">
+  <div class="photo w-16 h-16 border border-white/20 rounded-lg mt-4 overflow-hidden" id="staffPhoto"></div>
+  <h3 id="staffName" class="text-lg font-semibold text-white mt-2"></h3>
+  <p class="text-white/80 text-sm">ID: <span id="staffID"></span></p>
+  <p class="text-white/80 text-sm">Role: <span id="staffRole"></span></p>
+  <p class="text-white/80 text-sm">Department: <span id="staffDept"></span></p>
+  <p class="text-white/80 text-sm">Phone: <span id="staffPhone"></span></p>
+  <p class="text-white/80 text-sm">Address: <span id="staffAddress"></span></p>
+</div>
+
+<!-- Bulk ID Cards -->
+<div class="bulkCards flex flex-wrap gap-4" id="bulkCardsContainer" style="display: none;"></div>
+
+<!-- Confirmation Modal (Placeholder for consistency) -->
+<div class="modal fixed inset-0 bg-black/50 z-50 hidden justify-center items-center" id="confirmModal">
+  <div class="glass-card p-6 lg:p-8 rounded-2xl w-full max-w-md">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl sm:text-2xl font-semibold text-white" id="modalTitle">Confirm Action</h3>
+      <button id="closeModal" class="text-white/70 hover:text-white text-2xl">&times;</button>
+    </div>
+    <p class="text-white/80 mb-6" id="modalMessage">Are you sure you want to perform this action?</p>
+    <div class="flex justify-end space-x-4">
+      <button id="confirmAction" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+        Confirm
+      </button>
+      <button id="cancelAction" class="glass-card text-white px-6 py-3 rounded-xl font-semibold transition-all hover:bg-white/20">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+// Initialize Firebase with your config
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let staff = {};
+
+// Load staff from Firebase
+db.ref('staff').on('value', snap => {
+  staff = snap.val() || {};
+  populateFilters();
+  populateStaffTable();
+});
+
+// Populate role filter
+function populateFilters() {
+  const roleSet = new Set();
+  Object.values(staff).forEach(s => {
+    if (s.role) roleSet.add(s.role);
+  });
+  const roleSelect = document.getElementById('filterRole');
+  roleSelect.innerHTML = '<option value="">All Roles</option>' + 
+                         Array.from(roleSet).map(r => `<option value="${r}">${r}</option>`).join('');
+}
+
+// Filtered staff
+function getFilteredStaff() {
+  const role = document.getElementById('filterRole').value;
+  const search = document.getElementById('searchStaff').value.toLowerCase() || 
+                 document.getElementById('searchStaffMobile').value.toLowerCase();
+  return Object.keys(staff).filter(id => {
+    const s = staff[id];
+    if (role && s.role !== role) return false;
+    if (search && !s.fullName.toLowerCase().includes(search)) return false;
+    return true;
+  });
+}
+
+// Populate staff table
+function populateStaffTable() {
+  const tbody = document.querySelector('#staffTable tbody');
+  tbody.innerHTML = '';
+  const filtered = getFilteredStaff();
+  filtered.forEach((id, idx) => {
+    const s = staff[id];
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-white/10 hover:bg-white/5';
+    tr.innerHTML = `
+      <td class="py-3 px-4">${idx + 1}</td>
+      <td class="py-3 px-4">
+        <div class="font-medium text-white">${s.fullName}</div>
+        <div class="text-sm text-white/60">${s.email || '-'}</div>
+      </td>
+      <td class="py-3 px-4">${s.role}</td>
+      <td class="py-3 px-4">${s.department || '-'}</td>
+      <td class="py-3 px-4">${s.phone || '-'}</td>
+      <td class="py-3 px-4">${s.address || '-'}</td>
+      <td class="py-3 px-4">
+        <div class="flex space-x-2">
+          <button onclick="generateID('${id}')" class="glass-card px-3 py-1 rounded-lg text-green-400 hover:bg-green-400/20">
+            <i class="fas fa-id-card"></i>
+          </button>
+          <button onclick="printID('${id}')" class="glass-card px-3 py-1 rounded-lg text-yellow-400 hover:bg-yellow-400/20">
+            <i class="fas fa-print"></i>
+          </button>
+          <button onclick="downloadPDF('${id}')" class="glass-card px-3 py-1 rounded-lg text-blue-400 hover:bg-blue-400/20">
+            <i class="fas fa-download"></i>
+          </button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Single ID Card
+function generateID(id) {
+  const btn = event.currentTarget;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.disabled = true;
+
+  const s = staff[id];
+  document.getElementById('staffName').textContent = s.fullName;
+  document.getElementById('staffID').textContent = s.staffID || id;
+  document.getElementById('staffRole').textContent = s.role;
+  document.getElementById('staffDept').textContent = s.department || '-';
+  document.getElementById('staffPhone').textContent = s.phone || '-';
+  document.getElementById('staffAddress').textContent = s.address || '-';
+  document.getElementById('staffPhoto').innerHTML = s.photoUrl ? `<img src="${s.photoUrl}" class="w-16 h-16 object-cover">` : '<div class="w-16 h-16 bg-white/10 flex items-center justify-center text-white/50">No Photo</div>';
+  document.getElementById('idCard').style.display = 'block';
+
+  // Save history
+  const key = db.ref('staffIDcards').push().key;
+  db.ref('staffIDcards/' + key).set({
+    staffId: id,
+    generatedAt: firebase.database.ServerValue.TIMESTAMP
+  }).finally(() => {
+    btn.innerHTML = '<i class="fas fa-id-card"></i>';
+    btn.disabled = false;
+  });
+}
+
+// Print Single ID Card
+function printID(id) {
+  generateID(id);
+  const content = document.getElementById('idCard').outerHTML;
+  const win = window.open('', '', 'height=500,width=400');
+  win.document.write(`
+    <html>
+      <head>
+        <title>Staff ID Card</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; }
+          .idCard { width: 300px; height: 220px; border: 2px solid #6b7280; padding: 16px; border-radius: 8px; position: relative; background: #e9ecef; }
+          img { position: absolute; top: 16px; right: 16px; width: 64px; height: 64px; }
+          .photo { width: 64px; height: 64px; border: 1px solid #ccc; border-radius: 8px; margin-top: 16px; overflow: hidden; }
+          .photo img { width: 100%; height: 100%; object-fit: cover; }
+          h3 { font-size: 18px; margin: 8px 0 4px; }
+          p { font-size: 14px; margin: 4px 0; }
+        </style>
+      </head>
+      <body><div class="idCard">${content}</div></body>
+    </html>
+  `);
+  win.document.close();
+  win.print();
+}
+
+// Download Single PDF
+function downloadPDF(id) {
+  generateID(id);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'pt', [300, 220]);
+  doc.html(document.getElementById('idCard'), {
+    callback: function(pdf) {
+      pdf.save(`StaffIDCard_${staff[id].fullName}.pdf`);
+    },
+    x: 10,
+    y: 10,
+    html2canvas: { scale: 1 }
+  });
+}
+
+// Generate All ID Cards
+document.getElementById('generateAllBtn').addEventListener('click', () => {
+  const btn = document.getElementById('generateAllBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating...';
+  btn.disabled = true;
+
+  const container = document.getElementById('bulkCardsContainer');
+  container.innerHTML = '';
+  const filtered = getFilteredStaff();
+  if (filtered.length === 0) {
+    alert("No staff found for the selected filters");
+    btn.innerHTML = '<i class="fas fa-id-card mr-2"></i> Generate All';
+    btn.disabled = false;
+    return;
+  }
+
+  filtered.forEach(id => {
+    const s = staff[id];
+    const div = document.createElement('div');
+    div.className = 'glass-card p-4 rounded-2xl w-[300px] h-[220px] relative';
+    div.innerHTML = `
+      <img src="/static/images/school-logo.png" alt="School Logo" class="absolute top-4 right-4 w-16 h-16">
+      <div class="photo w-16 h-16 border border-white/20 rounded-lg mt-4 overflow-hidden">${s.photoUrl ? `<img src="${s.photoUrl}" class="w-16 h-16 object-cover">` : '<div class="w-16 h-16 bg-white/10 flex items-center justify-center text-white/50">No Photo</div>'}</div>
+      <h3 class="text-lg font-semibold text-white mt-2">${s.fullName}</h3>
+      <p class="text-white/80 text-sm">ID: ${s.staffID || id}</p>
+      <p class="text-white/80 text-sm">Role: ${s.role}</p>
+      <p class="text-white/80 text-sm">Department: ${s.department || '-'}</p>
+      <p class="text-white/80 text-sm">Phone: ${s.phone || '-'}</p>
+      <p class="text-white/80 text-sm">Address: ${s.address || '-'}</p>
+    `;
+    container.appendChild(div);
+
+    // Save history
+    const key = db.ref('staffIDcards').push().key;
+    db.ref('staffIDcards/' + key).set({
+      staffId: id,
+      generatedAt: firebase.database.ServerValue.TIMESTAMP
+    });
+  });
+  container.style.display = 'flex';
+  btn.innerHTML = '<i class="fas fa-id-card mr-2"></i> Generate All';
+  btn.disabled = false;
+});
+
+// Download All PDF
+document.getElementById('downloadAllBtn').addEventListener('click', () => {
+  const btn = document.getElementById('downloadAllBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Downloading...';
+  btn.disabled = true;
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'pt', 'a4');
+  const cards = document.querySelectorAll('#bulkCardsContainer .glass-card');
+  if (cards.length === 0) {
+    alert("Please generate ID cards first");
+    btn.innerHTML = '<i class="fas fa-download mr-2"></i> Download All PDF';
+    btn.disabled = false;
+    return;
+  }
+
+  let y = 10;
+  cards.forEach((card, idx) => {
+    doc.html(card, {
+      x: 10,
+      y: y,
+      html2canvas: { scale: 1 }
+    });
+    y += 230;
+    if (y > 800) {
+      doc.addPage();
+      y = 10;
+    }
+  });
+  doc.save('AllStaffIDCards.pdf');
+  btn.innerHTML = '<i class="fas fa-download mr-2"></i> Download All PDF';
+  btn.disabled = false;
+});
+
+// Debounced search
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+const debouncedPopulateTable = debounce(populateStaffTable, 300);
+document.getElementById('searchStaff').addEventListener('keyup', debouncedPopulateTable);
+document.getElementById('searchStaffMobile').addEventListener('keyup', debouncedPopulateTable);
+document.getElementById('filterRole').addEventListener('change', populateStaffTable);
+
+// Initial load
+populateFilters();
+populateStaffTable();
+</script>
+{% endblock %}

@@ -1,0 +1,244 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Fuel & Maintenance - School Management System{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 sm:py-12">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+    <div class="mt-12 md:mt-0">
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+        Fuel & Maintenance
+      </h2>
+      <p class="text-white/70 mt-1 text-sm sm:text-base">Track Vehicle Fuel and Maintenance Records</p>
+    </div>
+    <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+      <!-- Search bar for larger screens -->
+      <div class="hidden md:block relative flex-1 max-w-md">
+        <input type="text" id="searchInput" placeholder="Search vehicles, maintenance, dates..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" aria-label="Search vehicles, maintenance records, or dates">
+        <button class="absolute right-3 top-2 text-white/70 hover:text-white" aria-label="Search">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+      <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative md:hidden" aria-label="Toggle search">
+        <i class="fas fa-search text-sm sm:text-base"></i>
+      </button>
+      <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative" aria-label="Notifications">
+        <i class="fas fa-bell text-sm sm:text-base"></i>
+        <span class="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full"></span>
+      </button>
+      <button class="liquid-btn text-white px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all hover:scale-105 text-sm sm:text-base" aria-label="View Profile">
+        Profile
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile search bar -->
+  <div class="md:hidden mb-4">
+    <div class="relative">
+      <input type="text" id="searchInputMobile" placeholder="Search vehicles, maintenance, dates..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" aria-label="Search vehicles, maintenance records, or dates">
+      <button class="absolute right-3 top-2 text-white/70 hover:text-white" aria-label="Search">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Fuel & Maintenance Input Form -->
+  <div class="glass-card p-4 sm:p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6 sm:mb-8">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-4 sm:mb-6">Add Fuel/Maintenance Record</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <select id="vehicleSelect" class="glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" aria-label="Select Vehicle">
+        <option value="">Select Vehicle</option>
+      </select>
+      <input type="number" id="fuel" placeholder="Fuel Amount (liters, optional)" class="glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" aria-label="Fuel Amount (optional)" min="0" step="0.1">
+      <input type="text" id="maintenance" placeholder="Maintenance Details (optional, e.g., Oil Change)" class="glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" aria-label="Maintenance Details (optional)">
+      <input type="number" id="cost" placeholder="Cost (optional, e.g., $100)" class="glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" aria-label="Cost of Fuel or Maintenance (optional)" min="0" step="0.01">
+      <input type="date" id="recordDate" class="glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" aria-label="Date of Fuel or Maintenance (defaults to today)">
+    </div>
+    <button onclick="addFuelMaintenance()" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 mt-4" aria-label="Add Fuel or Maintenance Record">
+      <i class="fas fa-plus-circle mr-2"></i>Add Record
+    </button>
+  </div>
+
+  <!-- Fuel & Maintenance Table -->
+  <div class="glass-card p-4 sm:p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-4 sm:mb-6">Record List</h3>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="bg-white/10">
+            <th class="p-3 sm:p-4 text-white/80 text-left text-sm sm:text-base">Vehicle</th>
+            <th class="p-3 sm:p-4 text-white/80 text-left text-sm sm:text-base">Fuel (Amount)</th>
+            <th class="p-3 sm:p-4 text-white/80 text-left text-sm sm:text-base">Maintenance</th>
+            <th class="p-3 sm:p-4 text-white/80 text-left text-sm sm:text-base">Cost</th>
+            <th class="p-3 sm:p-4 text-white/80 text-left text-sm sm:text-base">Date</th>
+            <th class="p-3 sm:p-4 text-white/80 text-left text-sm sm:text-base">Action</th>
+          </tr>
+        </thead>
+        <tbody id="fmTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+
+<script>
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+  authDomain: "uebs-school.firebaseapp.com",
+  projectId: "uebs-school",
+  storageBucket: "uebs-school.firebasestorage.app",
+  messagingSenderId: "740325293639",
+  appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+  measurementId: "G-T7YEBMNHBH"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Check Authentication
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) {
+    console.log("No user logged in, redirecting to login...");
+    window.location.href = "{% url 'login' %}";
+  }
+});
+
+// Populate Vehicle Dropdown
+const vehicleSelect = document.getElementById("vehicleSelect");
+let vehiclesCache = {};
+db.ref("vehicles").on("value", snapshot => {
+  vehiclesCache = snapshot.val() || {};
+  vehicleSelect.innerHTML = '<option value="">Select Vehicle</option>';
+  for (let key in vehiclesCache) {
+    vehicleSelect.innerHTML += `<option value="${key}">${vehiclesCache[key].vehicleNumber}</option>`;
+  }
+});
+
+// Auto-set Date to Today
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("recordDate").value = new Date().toISOString().split('T')[0];
+  setupSearch();
+});
+
+// Add Fuel/Maintenance Record
+function addFuelMaintenance() {
+  const vehicleId = document.getElementById("vehicleSelect").value;
+  const fuel = document.getElementById("fuel").value.trim() ? parseFloat(document.getElementById("fuel").value.trim()) : null;
+  const maintenance = document.getElementById("maintenance").value.trim() || null;
+  const cost = document.getElementById("cost").value.trim() ? parseFloat(document.getElementById("cost").value.trim()) : null;
+  const recordDate = document.getElementById("recordDate").value;
+  
+  if (vehicleId && recordDate) {
+    if (fuel && fuel < 0) {
+      alert("Fuel amount cannot be negative.");
+      return;
+    }
+    if (cost && cost < 0) {
+      alert("Cost cannot be negative.");
+      return;
+    }
+    const today = new Date().toISOString().split('T')[0];
+    if (recordDate > today) {
+      alert("Record date cannot be in the future.");
+      return;
+    }
+    const newKey = db.ref("fuelMaintenance").push().key;
+    db.ref("fuelMaintenance/" + newKey).set({
+      vehicleId,
+      fuel,
+      maintenance,
+      cost,
+      recordDate
+    }).then(() => {
+      document.getElementById("fuel").value = '';
+      document.getElementById("maintenance").value = '';
+      document.getElementById("cost").value = '';
+      document.getElementById("recordDate").value = new Date().toISOString().split('T')[0]; // Reset to today
+    }).catch(error => {
+      console.error("Error adding record:", error);
+      alert("Failed to add record. Please try again.");
+    });
+  } else {
+    alert("Please select a vehicle and provide a date.");
+  }
+}
+
+// Display Fuel/Maintenance Records
+db.ref("fuelMaintenance").on("value", snapshot => {
+  const data = snapshot.val();
+  const table = document.getElementById("fmTable");
+  table.innerHTML = '';
+  if (data) {
+    for (let key in data) {
+      const vehicle = vehiclesCache[data[key].vehicleId]?.vehicleNumber || 'Unknown Vehicle';
+      const row = `
+        <tr class="hover:bg-white/10 transition-all">
+          <td class="p-3 sm:p-4 text-white text-sm sm:text-base">${vehicle}</td>
+          <td class="p-3 sm:p-4 text-white text-sm sm:text-base">${data[key].fuel || '-'}</td>
+          <td class="p-3 sm:p-4 text-white text-sm sm:text-base">${data[key].maintenance || '-'}</td>
+          <td class="p-3 sm:p-4 text-white text-sm sm:text-base">${data[key].cost ? 'Rs' + data[key].cost.toFixed(2) : '-'}</td>
+          <td class="p-3 sm:p-4 text-white text-sm sm:text-base">${data[key].recordDate || '-'}</td>
+          <td class="p-3 sm:p-4">
+            <button onclick="deleteRecord('${key}')" class="glass-card p-2 rounded-xl text-red-400 hover:bg-red-400/20 transition-all" aria-label="Delete record for vehicle ${vehicle} on ${data[key].recordDate || 'unknown date'}">
+              <i class="fas fa-trash-alt"></i> Delete
+            </button>
+          </td>
+        </tr>`;
+      table.innerHTML += row;
+    }
+  } else {
+    table.innerHTML = `<tr><td colspan="6" class="p-3 sm:p-4 text-white/70 text-center">No records found.</td></tr>`;
+  }
+});
+
+// Delete Record
+function deleteRecord(key) {
+  if (confirm("Are you sure you want to delete this record?")) {
+    db.ref("fuelMaintenance/" + key).remove().catch(error => {
+      console.error("Error deleting record:", error);
+      alert("Failed to delete record. Please try again.");
+    });
+  }
+}
+
+// Search Functionality
+function setupSearch() {
+  const searchInputs = [document.getElementById("searchInput"), document.getElementById("searchInputMobile")];
+  searchInputs.forEach(input => {
+    if (input) {
+      input.addEventListener("input", () => {
+        const query = input.value.toLowerCase();
+        const rows = document.querySelectorAll("#fmTable tr");
+        rows.forEach(row => {
+          const cells = row.querySelectorAll("td");
+          if (cells.length > 0) {
+            const vehicle = cells[0].textContent.toLowerCase();
+            const fuel = cells[1].textContent.toLowerCase();
+            const maintenance = cells[2].textContent.toLowerCase();
+            const cost = cells[3].textContent.toLowerCase();
+            const recordDate = cells[4].textContent.toLowerCase();
+            row.style.display = (
+              vehicle.includes(query) ||
+              fuel.includes(query) ||
+              maintenance.includes(query) ||
+              cost.includes(query) ||
+              recordDate.includes(query)
+            ) ? "" : "none";
+          }
+        });
+      });
+    }
+  });
+}
+
+console.log('Fuel & Maintenance page loaded');
+</script>
+{% endblock %}

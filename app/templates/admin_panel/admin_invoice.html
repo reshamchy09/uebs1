@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Fee Management</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;padding:18px}
+    .wrap{max-width:1100px;margin:18px auto}
+    .card{background:#fff;padding:14px;border-radius:12px;box-shadow:0 6px 18px rgba(7,17,43,.06)}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    input,select{padding:10px;border-radius:8px;border:1px solid #e6ecf8}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:10px;border-bottom:1px solid #eef2f8;text-align:left}
+    .btn{padding:8px 12px;border-radius:8px;border:none;background:#1f3a93;color:#fff;font-weight:700;cursor:pointer}
+    .small{font-size:13px;color:#666}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h2>Fee Management</h2>
+      <p class="small">Set total fee for student, view paid & remaining. Use the Export button to download CSV.</p>
+
+      <div style="margin-top:10px">
+        <label>Student ID</label>
+        <input id="stuId" placeholder="e.g. 2023-001" />
+        <label>Student Name</label>
+        <input id="stuName" placeholder="Full name" />
+        <label>Total Fee (NPR)</label>
+        <input id="totalFee" type="number" min="0" placeholder="Total payable fee" />
+        <button id="setFeeBtn" class="btn">Set / Update Fee</button>
+        <span id="feeMsg" class="small"></span>
+      </div>
+
+      <h3 style="margin-top:18px">Students</h3>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="search" placeholder="Search by id or name" />
+        <button id="refreshBtn" class="btn">Refresh</button>
+        <button id="exportBtn" class="btn">Export CSV</button>
+      </div>
+
+      <table id="studentsTable">
+        <thead><tr><th>Student ID</th><th>Name</th><th>Total Fee</th><th>Paid</th><th>Remaining</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Firebase v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script>
+    // TODO: replace
+    var firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      databaseURL: "https://YOUR_DB.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const setFeeBtn = document.getElementById('setFeeBtn');
+    const feeMsg = document.getElementById('feeMsg');
+
+    setFeeBtn.addEventListener('click', async ()=>{
+      const sid = document.getElementById('stuId').value.trim();
+      const sname = document.getElementById('stuName').value.trim();
+      const totalFee = Number(document.getElementById('totalFee').value || 0);
+      if(!sid || !sname || !totalFee){
+        feeMsg.textContent = 'Please enter student id, name and total fee.';
+        return;
+      }
+      try{
+        const ref = db.ref('students/' + sid);
+        const snap = await ref.once('value');
+        const prev = snap.val() || {};
+        const paid = Number(prev.paid || 0);
+        const remaining = Math.max(0, totalFee - paid);
+        await ref.update({ name: sname, totalFee, paid, remaining });
+        feeMsg.textContent = 'Saved.';
+        loadStudents();
+      }catch(err){
+        feeMsg.textContent = 'Error: ' + err.message;
+      }
+    });
+
+    async function loadStudents(){
+      const search = document.getElementById('search').value.trim().toLowerCase();
+      const snap = await db.ref('students').once('value');
+      const tbody = document.querySelector('#studentsTable tbody');
+      tbody.innerHTML = '';
+      if(!snap.exists()) return;
+      const data = snap.val();
+      Object.keys(data).sort().forEach(k=>{
+        const s = data[k];
+        const name = (s.name || '').toString();
+        if(search && !(k.toLowerCase().includes(search) || name.toLowerCase().includes(search))) return;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${k}</td><td>${name}</td><td>${s.totalFee || 0}</td><td>${s.paid || 0}</td><td>${s.remaining || 0}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', loadStudents);
+    document.getElementById('search').addEventListener('input', loadStudents);
+
+    document.getElementById('exportBtn').addEventListener('click', async ()=>{
+      const snap = await db.ref('students').once('value');
+      if(!snap.exists()){ alert('No student data'); return; }
+      const arr = [];
+      snap.forEach(child=>{
+        const k = child.key;
+        const s = child.val();
+        arr.push({ studentId: k, name: s.name || '', totalFee: s.totalFee || 0, paid: s.paid || 0, remaining: s.remaining || 0 });
+      });
+      // convert to CSV
+      const header = 'Student ID,Name,Total Fee,Paid,Remaining\n';
+      const csv = header + arr.map(r=>`${r.studentId},"${r.name.replace(/"/g,'""')}",${r.totalFee},${r.paid},${r.remaining}`).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'students_fee_export.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // initial load
+    loadStudents();
+  </script>
+</body>
+</html>

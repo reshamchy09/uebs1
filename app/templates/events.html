@@ -1,0 +1,1181 @@
+{% extends 'base.html' %}
+
+{% block title %}Events - Unison English Boarding School{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Events Page Specific Styles */
+    .events-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 120px 0 80px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .events-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23ffffff" stop-opacity="0.1"/><stop offset="100%" stop-color="%23ffffff" stop-opacity="0"/></radialGradient></defs><circle cx="300" cy="200" r="120" fill="url(%23a)"/><circle cx="700" cy="400" r="100" fill="url(%23a)"/><circle cx="500" cy="700" r="140" fill="url(%23a)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .events-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+    .events-hero p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+        position: relative;
+    }
+
+    .events-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Event Filter Section */
+    .event-filters {
+        padding: 60px 0 40px;
+        background: #f8fafc;
+        text-align: center;
+    }
+
+    .filter-buttons {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .filter-btn {
+        padding: 12px 24px;
+        border: 2px solid #667eea;
+        background: white;
+        color: #667eea;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        text-transform: capitalize;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    /* Section Styles */
+    .section {
+        padding: 80px 0;
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .section-title h2 {
+        font-size: 2.5rem;
+        color: #2d3748;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .section-title p {
+        color: #718096;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Event Cards */
+    .events-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .event-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .event-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .event-image {
+        height: 200px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: white;
+        overflow: hidden;
+    }
+
+    .event-image::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .event-date-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.95);
+        color: #2d3748;
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-align: center;
+        min-width: 70px;
+    }
+
+    .event-content {
+        padding: 2rem;
+    }
+
+    .event-category {
+        display: inline-block;
+        background: #667eea;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+    }
+
+    .event-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+    }
+
+    .event-description {
+        color: #718096;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .event-meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+        color: #718096;
+    }
+
+    .event-meta i {
+        color: #667eea;
+        width: 16px;
+    }
+
+    .event-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 500;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+        font-size: 0.9rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-outline {
+        border: 2px solid #667eea;
+        color: #667eea;
+        background: transparent;
+    }
+
+    .btn-outline:hover {
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Calendar Section */
+    .calendar-section {
+        background: #f8fafc;
+    }
+
+    .calendar-container {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .calendar-nav {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .calendar-nav:hover {
+        background: #5a6fd8;
+        transform: translateY(-1px);
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1px;
+        background: #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .calendar-day {
+        background: white;
+        padding: 1rem;
+        text-align: center;
+        min-height: 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .calendar-day:hover {
+        background: #f8fafc;
+    }
+
+    .calendar-day.has-event {
+        background: #eef2ff;
+        color: #667eea;
+        font-weight: 600;
+    }
+
+    .calendar-day.has-event::after {
+        content: '';
+        position: absolute;
+        bottom: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 6px;
+        height: 6px;
+        background: #667eea;
+        border-radius: 50%;
+    }
+
+    .calendar-day-header {
+        background: #667eea;
+        color: white;
+        font-weight: 600;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    /* Event Registration Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background: white;
+        margin: 5% auto;
+        padding: 0;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 600px;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+        position: relative;
+        animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 2rem;
+        border-radius: 20px 20px 0 0;
+        text-align: center;
+    }
+
+    .modal-body {
+        padding: 2rem;
+    }
+
+    .close {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: opacity 0.3s ease;
+    }
+
+    .close:hover {
+        opacity: 0.7;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    /* Past Events Section */
+    .past-events-section {
+        background: #2d3748;
+        color: white;
+    }
+
+    .past-events-section .section-title h2,
+    .past-events-section .section-title p {
+        color: white;
+    }
+
+    .past-event-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .past-event-card:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .past-event-card .event-category {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .past-event-card .event-title {
+        color: white;
+    }
+
+    .past-event-card .event-description {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .past-event-card .event-meta {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .events-hero h1 {
+            font-size: 2.5rem;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+        }
+
+        .events-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .filter-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .calendar-grid {
+            font-size: 0.9rem;
+        }
+
+        .calendar-day {
+            min-height: 50px;
+            padding: 0.5rem;
+        }
+
+        .modal-content {
+            margin: 10% auto;
+            width: 95%;
+        }
+
+        .modal-header,
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .event-actions {
+            flex-direction: column;
+        }
+    }
+
+    /* Animation Classes */
+    .fade-in-up {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 0.6s ease;
+    }
+
+    .fade-in-up.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Event Status Badges */
+    .event-status {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-upcoming {
+        background: #48bb78;
+        color: white;
+    }
+
+    .status-ongoing {
+        background: #ed8936;
+        color: white;
+    }
+
+    .status-completed {
+        background: #718096;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="events-hero">
+    <div class="events-container">
+        <h1 data-aos="fade-down">School Events</h1>
+        <p data-aos="fade-up" data-aos-delay="200">Discover exciting activities, competitions, and celebrations at our school</p>
+    </div>
+</section>
+
+<!-- Event Filters -->
+<section class="event-filters">
+    <div class="events-container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Browse Events</h2>
+            <p>Filter events by category to find what interests you most</p>
+        </div>
+        
+        <div class="filter-buttons" data-aos="fade-up" data-aos-delay="200">
+            <button class="filter-btn active" data-filter="all">All Events</button>
+            <button class="filter-btn" data-filter="academic">Academic</button>
+            <button class="filter-btn" data-filter="sports">Sports</button>
+            <button class="filter-btn" data-filter="cultural">Cultural</button>
+            <button class="filter-btn" data-filter="competition">Competitions</button>
+            <button class="filter-btn" data-filter="celebration">Celebrations</button>
+        </div>
+    </div>
+</section>
+
+<!-- Upcoming Events Section -->
+<section class="section">
+    <div class="events-container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Upcoming Events</h2>
+            <p>Don't miss these exciting upcoming events and activities</p>
+        </div>
+
+        <div class="events-grid" id="upcoming-events">
+            <!-- Event Card 1 -->
+            <div class="event-card" data-aos="fade-up" data-aos-delay="100" data-category="academic">
+                <div class="event-image">
+                    <div class="event-status status-upcoming">Upcoming</div>
+                    <div class="event-date-badge">
+                        <div>Dec 15</div>
+                        <div style="font-size: 0.7rem;">2025</div>
+                    </div>
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="event-content">
+                    <span class="event-category">Academic</span>
+                    <h3 class="event-title">Annual Science Exhibition</h3>
+                    <p class="event-description">
+                        Students showcase their innovative science projects and experiments. A day filled with discovery and learning.
+                    </p>
+                    <div class="event-meta">
+                        <div><i class="fas fa-clock"></i> 9:00 AM - 4:00 PM</div>
+                        <div><i class="fas fa-map-marker-alt"></i> Main Campus</div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn btn-primary" onclick="openRegistrationModal('Annual Science Exhibition')">Register Now</button>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Card 2 -->
+            <div class="event-card" data-aos="fade-up" data-aos-delay="200" data-category="sports">
+                <div class="event-image">
+                    <div class="event-status status-upcoming">Upcoming</div>
+                    <div class="event-date-badge">
+                        <div>Dec 22</div>
+                        <div style="font-size: 0.7rem;">2025</div>
+                    </div>
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="event-content">
+                    <span class="event-category">Sports</span>
+                    <h3 class="event-title">Inter-House Sports Day</h3>
+                    <p class="event-description">
+                        Annual sports competition between school houses featuring athletics, team sports, and fun activities.
+                    </p>
+                    <div class="event-meta">
+                        <div><i class="fas fa-clock"></i> 8:00 AM - 5:00 PM</div>
+                        <div><i class="fas fa-map-marker-alt"></i> Sports Ground</div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn btn-primary" onclick="openRegistrationModal('Inter-House Sports Day')">Register Now</button>
+                        <a href="#" class="btn btn-outline">View Schedule</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Card 3 -->
+            <div class="event-card" data-aos="fade-up" data-aos-delay="300" data-category="cultural">
+                <div class="event-image">
+                    <div class="event-status status-upcoming">Upcoming</div>
+                    <div class="event-date-badge">
+                        <div>Jan 10</div>
+                        <div style="font-size: 0.7rem;">2025</div>
+                    </div>
+                    <i class="fas fa-theater-masks"></i>
+                </div>
+                <div class="event-content">
+                    <span class="event-category">Cultural</span>
+                    <h3 class="event-title">Winter Cultural Festival</h3>
+                    <p class="event-description">
+                        A celebration of arts, music, dance, and drama featuring performances by students from all grades.
+                    </p>
+                    <div class="event-meta">
+                        <div><i class="fas fa-clock"></i> 6:00 PM - 9:00 PM</div>
+                        <div><i class="fas fa-map-marker-alt"></i> School Auditorium</div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn btn-primary" onclick="openRegistrationModal('Winter Cultural Festival')">Get Tickets</button>
+                        <a href="#" class="btn btn-outline">View Program</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Card 4 -->
+            <div class="event-card" data-aos="fade-up" data-aos-delay="400" data-category="competition">
+                <div class="event-image">
+                    <div class="event-status status-upcoming">Upcoming</div>
+                    <div class="event-date-badge">
+                        <div>Jan 18</div>
+                        <div style="font-size: 0.7rem;">2025</div>
+                    </div>
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="event-content">
+                    <span class="event-category">Competition</span>
+                    <h3 class="event-title">Math Olympiad</h3>
+                    <p class="event-description">
+                        Challenge your mathematical skills in this exciting competition open to students from grades 6-12.
+                    </p>
+                    <div class="event-meta">
+                        <div><i class="fas fa-clock"></i> 10:00 AM - 12:00 PM</div>
+                        <div><i class="fas fa-map-marker-alt"></i> Examination Hall</div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn btn-primary" onclick="openRegistrationModal('Math Olympiad')">Register Now</button>
+                        <a href="#" class="btn btn-outline">Competition Rules</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Card 5 -->
+            <div class="event-card" data-aos="fade-up" data-aos-delay="500" data-category="celebration">
+                <div class="event-image">
+                    <div class="event-status status-upcoming">Upcoming</div>
+                    <div class="event-date-badge">
+                        <div>Feb 14</div>
+                        <div style="font-size: 0.7rem;">2025</div>
+                    </div>
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="event-content">
+                    <span class="event-category">Celebration</span>
+                    <h3 class="event-title">Founder's Day Celebration</h3>
+                    <p class="event-description">
+                        Celebrating our school's founding with special ceremonies, awards, and community gatherings.
+                    </p>
+                    <div class="event-meta">
+                        <div><i class="fas fa-clock"></i> 11:00 AM - 3:00 PM</div>
+                        <div><i class="fas fa-map-marker-alt"></i> Main Campus</div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn btn-primary" onclick="openRegistrationModal('Founders Day Celebration')">RSVP</button>
+                        <a href="#" class="btn btn-outline">Event History</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Card 6 -->
+            <div class="event-card" data-aos="fade-up" data-aos-delay="600" data-category="academic">
+                <div class="event-image">
+                    <div class="event-status status-upcoming">Upcoming</div>
+                    <div class="event-date-badge">
+                        <div>Feb 28</div>
+                        <div style="font-size: 0.7rem;">2025</div>
+                    </div>
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="event-content">
+                    <span class="event-category">Academic</span>
+                    <h3 class="event-title">Parent-Teacher Conference</h3>
+                    <p class="event-description">
+                        Meet with teachers to discuss your child's academic progress and development throughout the year.
+                    </p>
+                    <div class="event-meta">
+                        <div><i class="fas fa-clock"></i> 2:00 PM - 6:00 PM</div>
+                        <div><i class="fas fa-map-marker-alt"></i> Classrooms</div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn btn-primary" onclick="openRegistrationModal('Parent-Teacher Conference')">Book Appointment</button>
+                        <a href="#" class="btn btn-outline">Guidelines</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Event Calendar Section -->
+<section class="section calendar-section">
+    <div class="events-container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Event Calendar</h2>
+            <p>View all events in our interactive calendar</p>
+        </div>
+
+        <div class="calendar-container" data-aos="fade-up" data-aos-delay="200">
+            <div class="calendar-header">
+                <button class="calendar-nav" onclick="previousMonth()">&lt;</button>
+                <h3 id="calendar-month-year">December 2025</h3>
+                <button class="calendar-nav" onclick="nextMonth()">&gt;</button>
+            </div>
+            
+            <div class="calendar-grid" id="calendar">
+                <!-- Calendar will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Past Events Section -->
+<section class="section past-events-section">
+    <div class="events-container">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Past Events</h2>
+            <p>Take a look at some of our memorable past events</p>
+        </div>
+
+        <div class="events-grid">
+            <div class="event-card past-event-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="event-image">
+                    <div class="event-status status-completed">Completed</div>
+                    <div class="event-date-badge">
+                        <div>Nov 25</div>
+                        <div style="font-size: 0.7rem;">2024</div>
+                    </div>
+                    <i class="fas fa-music"></i>
+                </div>
+                <div class="event-content">
+                    <span class="event-category">Cultural</span>
+                    <h3 class="event-title">Annual Music Concert</h3>
+                    <p class="event-description">
+                        A spectacular evening of musical performances by our talented students and faculty.
+                    </p>
+                    <div class="event-meta">
+                        <div><i class="fas fa-users"></i> 500+ Attendees</div>
+                        <div><i class="fas fa-star"></i> Highly Rated</div>
+                    </div>
+                    <div class="event-actions">
+                        <a href="#" class="btn btn-outline">View Gallery</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-card past-event-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="event-image">
+                    <div class="event-status status-completed">Completed</div>
+                    <div class="event-date-badge">
+                        <div>Oct 15</div>
+                        <div style="font-size: 0.7rem;">2024</div>
+                    </div>
+                    <i class="fas fa-running"></i>
+                </div>
+                <div class="event-content">
+                    <span class="event-category">Sports</span>
+                    <h3 class="event-title">Marathon for Charity</h3>
+                    <p class="event-description">
+                        Students and staff participated in a charity marathon to raise funds for local community projects.
+                    </p>
+                    <div class="event-meta">
+                        <div><i class="fas fa-users"></i> 300+ Participants</div>
+                        <div><i class="fas fa-heart"></i> NPR 50,000 Raised</div>
+                    </div>
+                    <div class="event-actions">
+                        <a href="#" class="btn btn-outline">Read More</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-card past-event-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="event-image">
+                    <div class="event-status status-completed">Completed</div>
+                    <div class="event-date-badge">
+                        <div>Sep 10</div>
+                        <div style="font-size: 0.7rem;">2024</div>
+                    </div>
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="event-content">
+                    <span class="event-category">Academic</span>
+                    <h3 class="event-title">Innovation Fair</h3>
+                    <p class="event-description">
+                        Students presented their innovative ideas and inventions to judges and visitors from various industries.
+                    </p>
+                    <div class="event-meta">
+                        <div><i class="fas fa-users"></i> 200+ Projects</div>
+                        <div><i class="fas fa-award"></i> 50 Winners</div>
+                    </div>
+                    <div class="event-actions">
+                        <a href="#" class="btn btn-outline">View Winners</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Registration Modal -->
+<div id="registrationModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" onclick="closeRegistrationModal()">&times;</span>
+            <h2 id="modal-title">Event Registration</h2>
+            <p>Fill out the form below to register for this event</p>
+        </div>
+        <div class="modal-body">
+            <form id="registration-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="participant-name">Full Name *</label>
+                    <input type="text" id="participant-name" name="participant_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="participant-email">Email Address *</label>
+                    <input type="email" id="participant-email" name="participant_email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="participant-phone">Phone Number *</label>
+                    <input type="tel" id="participant-phone" name="participant_phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="participant-grade">Grade/Class</label>
+                    <select id="participant-grade" name="participant_grade">
+                        <option value="">Select Grade</option>
+                        <option value="nursery">Nursery</option>
+                        <option value="lkg">LKG</option>
+                        <option value="ukg">UKG</option>
+                        <option value="1">Grade 1</option>
+                        <option value="2">Grade 2</option>
+                        <option value="3">Grade 3</option>
+                        <option value="4">Grade 4</option>
+                        <option value="5">Grade 5</option>
+                        <option value="6">Grade 6</option>
+                        <option value="7">Grade 7</option>
+                        <option value="8">Grade 8</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
+                        <option value="11">Grade 11</option>
+                        <option value="12">Grade 12</option>
+                        <option value="parent">Parent</option>
+                        <option value="staff">Staff</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="emergency-contact">Emergency Contact *</label>
+                    <input type="tel" id="emergency-contact" name="emergency_contact" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dietary-requirements">Dietary Requirements</label>
+                    <textarea id="dietary-requirements" name="dietary_requirements" rows="3" placeholder="Please mention any allergies or special dietary needs"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="additional-notes">Additional Notes</label>
+                    <textarea id="additional-notes" name="additional_notes" rows="3" placeholder="Any additional information or special requests"></textarea>
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary" style="padding: 15px 40px; font-size: 1.1rem;">Register for Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize AOS
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+    });
+
+    // Event filtering functionality
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const eventCards = document.querySelectorAll('.event-card');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            button.classList.add('active');
+            
+            const filterValue = button.getAttribute('data-filter');
+            
+            eventCards.forEach(card => {
+                if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeInUp 0.6s ease forwards';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // Calendar functionality
+    let currentMonth = 11; // December (0-indexed)
+    let currentYear = 2025;
+
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    const eventDates = {
+        '2025-12-15': 'Science Exhibition',
+        '2025-12-22': 'Sports Day',
+        '2026-01-10': 'Cultural Festival',
+        '2026-01-18': 'Math Olympiad',
+        '2026-02-14': 'Founder\'s Day',
+        '2026-02-28': 'Parent-Teacher Conference'
+    };
+
+    function generateCalendar(month, year) {
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        
+        let calendarHTML = '';
+        
+        // Add day headers
+        const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        dayHeaders.forEach(day => {
+            calendarHTML += `<div class="calendar-day-header">${day}</div>`;
+        });
+        
+        // Add empty cells for days before month starts
+        for (let i = 0; i < firstDay; i++) {
+            calendarHTML += '<div class="calendar-day"></div>';
+        }
+        
+        // Add days of month
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const hasEvent = eventDates[dateStr] ? 'has-event' : '';
+            const title = eventDates[dateStr] ? `title="${eventDates[dateStr]}"` : '';
+            
+            calendarHTML += `<div class="calendar-day ${hasEvent}" ${title}>${day}</div>`;
+        }
+        
+        document.getElementById('calendar').innerHTML = calendarHTML;
+        document.getElementById('calendar-month-year').textContent = `${monthNames[month]} ${year}`;
+    }
+
+    function previousMonth() {
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        generateCalendar(currentMonth, currentYear);
+    }
+
+    function nextMonth() {
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        generateCalendar(currentMonth, currentYear);
+    }
+
+    // Initialize calendar
+    generateCalendar(currentMonth, currentYear);
+
+    // Modal functionality
+    function openRegistrationModal(eventName) {
+        document.getElementById('modal-title').textContent = `Register for ${eventName}`;
+        document.getElementById('registrationModal').style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+
+    function closeRegistrationModal() {
+        document.getElementById('registrationModal').style.display = 'none';
+        document.body.style.overflow = 'auto'; // Restore scrolling
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        const modal = document.getElementById('registrationModal');
+        if (event.target == modal) {
+            closeRegistrationModal();
+        }
+    }
+
+    // Form submission handling
+    document.getElementById('registration-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Basic validation
+        const requiredFields = this.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.style.borderColor = '#ff6b6b';
+                isValid = false;
+            } else {
+                field.style.borderColor = '#e2e8f0';
+            }
+        });
+        
+        if (isValid) {
+            // Show success message
+            alert('Registration submitted successfully! You will receive a confirmation email shortly.');
+            closeRegistrationModal();
+            this.reset();
+            // In a real application, you would submit the form data here
+        } else {
+            alert('Please fill in all required fields.');
+        }
+    });
+
+    // Smooth scroll for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Add animation to elements when they come into view
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in-up').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Add some interactive effects
+    document.querySelectorAll('.event-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-10px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // Calendar day click handler
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('calendar-day') && e.target.classList.contains('has-event')) {
+            const eventName = e.target.getAttribute('title');
+            if (eventName) {
+                alert(`Event: ${eventName}\nClick 'Register Now' on the event card to register.`);
+            }
+        }
+    });
+
+    // Add loading states for buttons
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (this.type !== 'submit' && !this.onclick) {
+                const originalText = this.textContent;
+                this.textContent = 'Loading...';
+                this.style.opacity = '0.7';
+                
+                setTimeout(() => {
+                    this.textContent = originalText;
+                    this.style.opacity = '1';
+                }, 1000);
+            }
+        });
+    });
+
+    // Add fade in animation on scroll
+    const fadeElements = document.querySelectorAll('.event-card, .calendar-container');
+    const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    });
+
+    fadeElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        fadeObserver.observe(el);
+    });
+</script>
+{% endblock %}

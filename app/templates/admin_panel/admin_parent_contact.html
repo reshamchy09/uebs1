@@ -1,0 +1,894 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Parent Contact - School Management System{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent animate__animated animate__fadeInDown">
+      <i class="fas fa-user-friends mr-3"></i>Parent Directory
+    </h1>
+    <p class="text-white/70 mt-2">Connect with parents, view contact information, and manage parent communications</p>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <!-- Search Bar -->
+      <div class="relative flex-1">
+        <input type="text" placeholder="Search parents by name, student, or contact info..." class="w-full glass-card text-white placeholder-white/50 px-6 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 text-lg">
+        <button class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white">
+          <i class="fas fa-search text-xl"></i>
+        </button>
+      </div>
+      
+      <!-- Filters -->
+      <div class="flex flex-wrap gap-3">
+        <select class="glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option>All Grades</option>
+          <option>Kindergarten</option>
+          <option>Grade 1</option>
+          <option>Grade 2</option>
+          <option>Grade 3</option>
+          <option>Grade 4</option>
+          <option>Grade 5</option>
+          <option>Grade 6</option>
+          <option>Grade 7</option>
+          <option>Grade 8</option>
+          <option>Grade 9</option>
+          <option>Grade 10</option>
+          <option>Grade 11</option>
+          <option>Grade 12</option>
+        </select>
+        
+        <select class="glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option>All Sections</option>
+          <option>Section A</option>
+          <option>Section B</option>
+          <option>Section C</option>
+          <option>Section D</option>
+        </select>
+        
+        <button class="liquid-btn px-6 py-3 rounded-xl font-medium text-white transition-all duration-300 hover:bg-purple-600">
+          <i class="fas fa-filter mr-2"></i>Apply Filters
+        </button>
+      </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="flex flex-wrap gap-4 mt-6">
+      <button class="px-4 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+        <i class="fas fa-download mr-2"></i>Export Directory
+      </button>
+      <button class="px-4 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+        <i class="fas fa-print mr-2"></i>Print Directory
+      </button>
+      <button class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium ml-auto">
+        <i class="fas fa-envelope mr-2"></i>Send Bulk Message
+      </button>
+    </div>
+  </div>
+
+  <!-- Parent Statistics -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-blue-600 rounded-lg mr-4">
+          <i class="fas fa-users text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Total Parents</p>
+          <p class="text-2xl font-bold text-blue-400">1,247</p>
+          <p class="text-xs text-white/60">+24 this year</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-green-600 rounded-lg mr-4">
+          <i class="fas fa-child text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Students</p>
+          <p class="text-2xl font-bold text-green-400">982</p>
+          <p class="text-xs text-white/60">1.27 parents/student</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-purple-600 rounded-lg mr-4">
+          <i class="fas fa-envelope text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Emails Verified</p>
+          <p class="text-2xl font-bold text-purple-400">1,189</p>
+          <p class="text-xs text-white/60">95% verified</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-orange-600 rounded-lg mr-4">
+          <i class="fas fa-phone text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Primary Contacts</p>
+          <p class="text-2xl font-bold text-orange-400">1,247</p>
+          <p class="text-xs text-white/60">100% complete</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parent Directory Grid -->
+  <div class="mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-address-book mr-3"></i>Parent Directory
+    </h2>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex justify-center mb-4">
+          <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+            JS
+          </div>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-1">John Smith</h3>
+        <p class="text-sm text-white/70 text-center mb-2">Parent of Emma Smith</p>
+        <p class="text-xs text-white/60 text-center mb-4">Grade 10 - Section A</p>
+        <div class="border-t border-white/20 pt-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-envelope text-sm text-white/70"></i>
+              <span class="text-xs">john.smith@email.com</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-phone text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 123-4567</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-mobile-alt text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 987-6543</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center mt-4 space-x-2">
+          <button class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-envelope mr-1"></i>Email
+          </button>
+          <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-phone mr-1"></i>Call
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex justify-center mb-4">
+          <div class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+            MJ
+          </div>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-1">Mary Johnson</h3>
+        <p class="text-sm text-white/70 text-center mb-2">Parent of Michael Johnson</p>
+        <p class="text-xs text-white/60 text-center mb-4">Grade 8 - Section B</p>
+        <div class="border-t border-white/20 pt-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-envelope text-sm text-white/70"></i>
+              <span class="text-xs">mary.johnson@email.com</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-phone text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 123-4568</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-mobile-alt text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 987-6544</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center mt-4 space-x-2">
+          <button class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-envelope mr-1"></i>Email
+          </button>
+          <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-phone mr-1"></i>Call
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex justify-center mb-4">
+          <div class="w-20 h-20 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+            RB
+          </div>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-1">Robert Brown</h3>
+        <p class="text-sm text-white/70 text-center mb-2">Parent of Sarah Brown</p>
+        <p class="text-xs text-white/60 text-center mb-4">Grade 5 - Section C</p>
+        <div class="border-t border-white/20 pt-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-envelope text-sm text-white/70"></i>
+              <span class="text-xs">robert.brown@email.com</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-phone text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 123-4569</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-mobile-alt text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 987-6545</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center mt-4 space-x-2">
+          <button class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-envelope mr-1"></i>Email
+          </button>
+          <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-phone mr-1"></i>Call
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex justify-center mb-4">
+          <div class="w-20 h-20 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+            EP
+          </div>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-1">Emma Parker</h3>
+        <p class="text-sm text-white/70 text-center mb-2">Parent of David Parker</p>
+        <p class="text-xs text-white/60 text-center mb-4">Grade 3 - Section A</p>
+        <div class="border-t border-white/20 pt-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-envelope text-sm text-white/70"></i>
+              <span class="text-xs">emma.parker@email.com</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-phone text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 123-4570</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-mobile-alt text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 987-6546</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center mt-4 space-x-2">
+          <button class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-envelope mr-1"></i>Email
+          </button>
+          <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-phone mr-1"></i>Call
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex justify-center mb-4">
+          <div class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+            TW
+          </div>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-1">Thomas Wilson</h3>
+        <p class="text-sm text-white/70 text-center mb-2">Parent of Jennifer Wilson</p>
+        <p class="text-xs text-white/60 text-center mb-4">Grade 12 - Section B</p>
+        <div class="border-t border-white/20 pt-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-envelope text-sm text-white/70"></i>
+              <span class="text-xs">thomas.wilson@email.com</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-phone text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 123-4571</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-mobile-alt text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 987-6547</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center mt-4 space-x-2">
+          <button class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-envelope mr-1"></i>Email
+          </button>
+          <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-phone mr-1"></i>Call
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex justify-center mb-4">
+          <div class="w-20 h-20 bg-teal-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+            AL
+          </div>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-1">Alice Lee</h3>
+        <p class="text-sm text-white/70 text-center mb-2">Parent of Christopher Lee</p>
+        <p class="text-xs text-white/60 text-center mb-4">Grade 7 - Section D</p>
+        <div class="border-t border-white/20 pt-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-envelope text-sm text-white/70"></i>
+              <span class="text-xs">alice.lee@email.com</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-phone text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 123-4572</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-mobile-alt text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 987-6548</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center mt-4 space-x-2">
+          <button class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-envelope mr-1"></i>Email
+          </button>
+          <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-phone mr-1"></i>Call
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex justify-center mb-4">
+          <div class="w-20 h-20 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+            MC
+          </div>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-1">Michael Chen</h3>
+        <p class="text-sm text-white/70 text-center mb-2">Parent of Sophia Chen</p>
+        <p class="text-xs text-white/60 text-center mb-4">Grade 9 - Section A</p>
+        <div class="border-t border-white/20 pt-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-envelope text-sm text-white/70"></i>
+              <span class="text-xs">michael.chen@email.com</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-phone text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 123-4573</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-mobile-alt text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 987-6549</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center mt-4 space-x-2">
+          <button class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-envelope mr-1"></i>Email
+          </button>
+          <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-phone mr-1"></i>Call
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex justify-center mb-4">
+          <div class="w-20 h-20 bg-pink-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+            SL
+          </div>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-1">Sophia Liu</h3>
+        <p class="text-sm text-white/70 text-center mb-2">Parent of Andrew Liu</p>
+        <p class="text-xs text-white/60 text-center mb-4">Grade 6 - Section C</p>
+        <div class="border-t border-white/20 pt-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-envelope text-sm text-white/70"></i>
+              <span class="text-xs">sophia.liu@email.com</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-phone text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 123-4574</span>
+            </div>
+            <div class="flex items-center justify-center gap-2">
+              <i class="fas fa-mobile-alt text-sm text-white/70"></i>
+              <span class="text-xs">+1 (555) 987-6550</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center mt-4 space-x-2">
+          <button class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-envelope mr-1"></i>Email
+          </button>
+          <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-all">
+            <i class="fas fa-phone mr-1"></i>Call
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parent Table View -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-table mr-3"></i>Parent List (Detailed View)
+    </h2>
+    
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-white/20">
+            <th class="text-left py-3 px-4 font-medium text-white/80">Parent ID</th>
+            <th class="text-left py-3 px-4 font-medium text-white/80">Parent Name</th>
+            <th class="text-left py-3 px-4 font-medium text-white/80">Student Name</th>
+            <th class="text-left py-3 px-4 font-medium text-white/80">Grade/Section</th>
+            <th class="text-left py-3 px-4 font-medium text-white/80">Email</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Phone</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Contact Type</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">PAR-001</td>
+            <td class="py-4 px-4">John Smith</td>
+            <td class="py-4 px-4">Emma Smith</td>
+            <td class="py-4 px-4">Grade 10 - A</td>
+            <td class="py-4 px-4">john.smith@email.com</td>
+            <td class="py-4 px-4 text-center">+1 (555) 123-4567</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-blue-600 text-white text-xs rounded-full">Primary</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-envelope"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-phone"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-edit"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">PAR-002</td>
+            <td class="py-4 px-4">Mary Johnson</td>
+            <td class="py-4 px-4">Michael Johnson</td>
+            <td class="py-4 px-4">Grade 8 - B</td>
+            <td class="py-4 px-4">mary.johnson@email.com</td>
+            <td class="py-4 px-4 text-center">+1 (555) 123-4568</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-blue-600 text-white text-xs rounded-full">Primary</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-envelope"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-phone"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-edit"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">PAR-003</td>
+            <td class="py-4 px-4">Robert Brown</td>
+            <td class="py-4 px-4">Sarah Brown</td>
+            <td class="py-4 px-4">Grade 5 - C</td>
+            <td class="py-4 px-4">robert.brown@email.com</td>
+            <td class="py-4 px-4 text-center">+1 (555) 123-4569</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Secondary</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-envelope"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-phone"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-edit"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">PAR-004</td>
+            <td class="py-4 px-4">Emma Parker</td>
+            <td class="py-4 px-4">David Parker</td>
+            <td class="py-4 px-4">Grade 3 - A</td>
+            <td class="py-4 px-4">emma.parker@email.com</td>
+            <td class="py-4 px-4 text-center">+1 (555) 123-4570</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-blue-600 text-white text-xs rounded-full">Primary</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-envelope"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-phone"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-edit"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">PAR-005</td>
+            <td class="py-4 px-4">Thomas Wilson</td>
+            <td class="py-4 px-4">Jennifer Wilson</td>
+            <td class="py-4 px-4">Grade 12 - B</td>
+            <td class="py-4 px-4">thomas.wilson@email.com</td>
+            <td class="py-4 px-4 text-center">+1 (555) 123-4571</td>
+            <td class="py-4 px-4 text-center">
+              <span class="px-3 py-1 bg-blue-600 text-white text-xs rounded-full">Primary</span>
+            </td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-envelope"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-phone"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-edit"></i></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-6">
+      <div class="text-sm text-white/70 mb-4 sm:mb-0">
+        Showing 1 to 5 of 1,247 entries
+      </div>
+      <div class="flex gap-2">
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="px-3 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium">1</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">2</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">3</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">...</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">250</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grade Distribution -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <!-- Grade Distribution -->
+    <div class="glass-card rounded-xl p-6">
+      <h2 class="text-2xl font-semibold mb-6 flex items-center">
+        <i class="fas fa-chart-pie mr-3"></i>Grade Distribution
+      </h2>
+      
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-blue-500 rounded mr-3"></div>
+            <span>Grade 12</span>
+          </div>
+          <div class="text-right">
+            <div class="font-medium">87 parents</div>
+            <div class="text-sm text-white/60">7%</div>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-green-500 rounded mr-3"></div>
+            <span>Grade 11</span>
+          </div>
+          <div class="text-right">
+            <div class="font-medium">92 parents</div>
+            <div class="text-sm text-white/60">7.4%</div>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-purple-500 rounded mr-3"></div>
+            <span>Grade 10</span>
+          </div>
+          <div class="text-right">
+            <div class="font-medium">89 parents</div>
+            <div class="text-sm text-white/60">7.1%</div>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-orange-500 rounded mr-3"></div>
+            <span>Grade 9</span>
+          </div>
+          <div class="text-right">
+            <div class="font-medium">95 parents</div>
+            <div class="text-sm text-white/60">7.6%</div>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-red-500 rounded mr-3"></div>
+            <span>Grade 8</span>
+          </div>
+          <div class="text-right">
+            <div class="font-medium">102 parents</div>
+            <div class="text-sm text-white/60">8.2%</div>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-teal-500 rounded mr-3"></div>
+            <span>Grade 7</span>
+          </div>
+          <div class="text-right">
+            <div class="font-medium">98 parents</div>
+            <div class="text-sm text-white/60">7.9%</div>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-indigo-500 rounded mr-3"></div>
+            <span>Grade 6</span>
+          </div>
+          <div class="text-right">
+            <div class="font-medium">105 parents</div>
+            <div class="text-sm text-white/60">8.4%</div>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-pink-500 rounded mr-3"></div>
+            <span>Grade 5</span>
+          </div>
+          <div class="text-right">
+            <div class="font-medium">112 parents</div>
+            <div class="text-sm text-white/60">9%</div>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-gray-500 rounded mr-3"></div>
+            <span>Grades 1-4</span>
+          </div>
+          <div class="text-right">
+            <div class="font-medium">467 parents</div>
+            <div class="text-sm text-white/60">37.4%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Recent Parent Updates -->
+    <div class="glass-card rounded-xl p-6">
+      <h2 class="text-2xl font-semibold mb-6 flex items-center">
+        <i class="fas fa-clock mr-3"></i>Recent Updates
+      </h2>
+      
+      <div class="space-y-4">
+        <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+          <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+            <i class="fas fa-plus text-white"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <h3 class="font-medium">New Parent Added</h3>
+              <span class="text-xs text-white/60">2 hours ago</span>
+            </div>
+            <p class="text-sm text-white/70 mt-1">Jennifer Davis added as parent of Robert Davis (Grade 9 - Section A).</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+          <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+            <i class="fas fa-user-edit text-white"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <h3 class="font-medium">Contact Updated</h3>
+              <span class="text-xs text-white/60">1 day ago</span>
+            </div>
+            <p class="text-sm text-white/70 mt-1">John Smith updated his email address and mobile number.</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+          <div class="w-10 h-10 bg-orange-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+            <i class="fas fa-envelope text-white"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <h3 class="font-medium">Message Sent</h3>
+              <span class="text-xs text-white/60">3 days ago</span>
+            </div>
+            <p class="text-sm text-white/70 mt-1">Parent-teacher meeting reminder sent to all Grade 10 parents.</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+          <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+            <i class="fas fa-birthday-cake text-white"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <h3 class="font-medium">Student Birthday</h3>
+              <span class="text-xs text-white/60">Today</span>
+            </div>
+            <p class="text-sm text-white/70 mt-1">Emma Smith (Grade 10) has a birthday today. Send birthday wishes to parents.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Communication Tools -->
+  <div class="glass-card rounded-xl p-6">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-comments mr-3"></i>Communication Tools
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-envelope text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-center mb-2">Email Broadcast</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Send emails to parents by grade, section, or individually</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-paper-plane mr-2"></i>Send Email
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-sms text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-center mb-2">SMS Messaging</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Send text messages to parents for urgent notifications</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-mobile-alt mr-2"></i>Send SMS
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-bell text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-center mb-2">Push Notifications</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Send push notifications to parents via school app</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-bullhorn mr-2"></i>Send Notification
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-calendar-alt text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-center mb-2">Schedule Meeting</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Schedule parent-teacher conferences and send invites</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-calendar-plus mr-2"></i>Schedule
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-file-alt text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-center mb-2">Generate Reports</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Generate parent contact reports for specific groups</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-file-download mr-2"></i>Generate
+          </button>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-phone text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-center mb-2">Call Log</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Track and log phone calls made to parents</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-history mr-2"></i>View Log
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Add interactivity to parent contact page
+  const contactButtons = document.querySelectorAll('.bg-blue-600, .bg-green-600');
+  contactButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const parentCard = this.closest('.glass-card');
+      const parentName = parentCard?.querySelector('h3')?.textContent || "Unknown Parent";
+      const action = this.querySelector('i')?.className || "";
+      
+      if (action.includes('fa-envelope')) {
+        alert(`Composing email to ${parentName}...`);
+      } else if (action.includes('fa-phone')) {
+        alert(`Initiating call to ${parentName}...`);
+      }
+    });
+  });
+  
+  // Add action button functionality
+  const actionButtons = document.querySelectorAll('.text-blue-400, .text-green-400, .text-purple-400');
+  actionButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const icon = this.querySelector('i')?.className || "";
+      let message = '';
+      
+      if (icon.includes('fa-envelope')) {
+        message = 'Composing email...';
+      } else if (icon.includes('fa-phone')) {
+        message = 'Initiating phone call...';
+      } else if (icon.includes('fa-edit')) {
+        message = 'Editing parent information...';
+      }
+      
+      if (message) {
+        alert(message);
+      }
+    });
+  });
+  
+  // Add filter functionality
+  const filterSelects = document.querySelectorAll('select');
+  filterSelects.forEach(select => {
+    select.addEventListener('change', function() {
+      const filterType = this.options[this.selectedIndex].text;
+      if (filterType !== "All Grades" && filterType !== "All Sections") {
+        alert(`Filtering parents by ${filterType}...`);
+      }
+    });
+  });
+  
+  // Add search functionality
+  const searchInput = document.querySelector('input[placeholder*="Search parents"]');
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      if (this.value.length > 2) {
+        console.log(`Searching for: ${this.value}`);
+        // In a real application, this would filter the parent directory
+      }
+    });
+  });
+  
+  // Add communication tool functionality
+  const communicationButtons = document.querySelectorAll(
+    '.bg-blue-600, .bg-green-600, .bg-purple-600, .bg-orange-600, .bg-red-600, .bg-teal-600'
+  );
+  communicationButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      const card = this.closest('.glass-card');
+      const toolName = card?.querySelector('h3')?.textContent || "Communication";
+      // Prevent event bubbling if needed
+      e.stopPropagation();
+      alert(`Opening ${toolName} tool...`);
+    });
+  });
+});
+</script>
+
+{% endblock %}

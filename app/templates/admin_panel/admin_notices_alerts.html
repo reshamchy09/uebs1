@@ -1,0 +1,230 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Class Notifications - UEBS{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+  <!-- Header -->
+  <div class="mb-6 sm:mb-8">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+      Class Notifications
+    </h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">
+      Send and view notifications for specific classes
+    </p>
+  </div>
+
+  <!-- Compose Notification -->
+  <div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+      <i class="fas fa-bell text-yellow-400 mr-3"></i> Compose Notification
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-white/80 mb-2">Title</label>
+        <input 
+          id="title" 
+          type="text" 
+          placeholder="Enter title" 
+          class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400"
+        >
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Class</label>
+        <select 
+          id="classSelect" 
+          class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400"
+        >
+          <option value="">Select Class</option>
+        </select>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-white/80 mb-2">Message</label>
+        <textarea 
+          id="message" 
+          placeholder="Enter message" 
+          class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 min-h-[100px]"
+        ></textarea>
+      </div>
+    </div>
+    <button 
+      id="sendBtn" 
+      class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 mt-6"
+    >
+      <i class="fas fa-paper-plane mr-2"></i> Send Notification
+    </button>
+  </div>
+
+  <!-- Notifications List -->
+  <div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+      <i class="fas fa-history text-purple-400 mr-3"></i> Notifications
+    </h3>
+    <div class="overflow-x-auto">
+      <table class="w-full text-white/80" id="notifications">
+        <thead>
+          <tr class="border-b border-white/20">
+            <th class="text-left py-3 px-4">Class</th>
+            <th class="text-left py-3 px-4">Title</th>
+            <th class="text-left py-3 px-4">Message</th>
+            <th class="text-left py-3 px-4">Sent At</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK (Compatibility Version) -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+
+<script>
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+    authDomain: "uebs-school.firebaseapp.com",
+    projectId: "uebs-school",
+    storageBucket: "uebs-school.firebasestorage.app",
+    messagingSenderId: "740325293639",
+    appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+    measurementId: "G-T7YEBMNHBH"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // Elements
+  const classSelect = document.getElementById("classSelect");
+  const titleInput = document.getElementById("title");
+  const messageInput = document.getElementById("message");
+  const sendBtn = document.getElementById("sendBtn");
+  const notificationsList = document.querySelector("#notifications tbody");
+
+  // Load Classes from Firebase
+  function loadClasses() {
+    const classRef = db.ref("classes");
+    classRef.on("value", (snapshot) => {
+      const data = snapshot.val();
+      classSelect.innerHTML = '<option value="">Select Class</option>';
+      if (data) {
+        const classArray = Object.entries(data).map(([id, cls]) => ({
+          id,
+          className: cls.className,
+          section: cls.section || '',
+          display: cls.className + (cls.section ? ` ${cls.section}` : '')
+        }));
+        // Sort classes alphanumerically
+        classArray.sort((a, b) => a.className.localeCompare(b.className, undefined, { numeric: true, sensitivity: 'base' }));
+        classArray.forEach(cls => {
+          const opt = document.createElement("option");
+          opt.value = cls.id; // Use Firebase class ID as value
+          opt.textContent = cls.display; // Display as "Grade 1 A" or "Nursery"
+          classSelect.appendChild(opt);
+        });
+      } else {
+        const opt = document.createElement("option");
+        opt.textContent = "No classes found";
+        classSelect.appendChild(opt);
+      }
+    });
+  }
+
+  // Save Notification
+  function sendNotification() {
+    const title = titleInput.value.trim();
+    const message = messageInput.value.trim();
+    const classId = classSelect.value;
+
+    if (!title || !message || !classId) {
+      alert("Please fill all fields!");
+      return;
+    }
+
+    const classData = Object.values(classes).find(c => c.id === classId);
+    if (!classData) {
+      alert("Invalid class selected!");
+      return;
+    }
+
+    sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
+    sendBtn.disabled = true;
+
+    const classDisplay = classData.className + (classData.section ? ` ${classData.section}` : '');
+    const notifRef = db.ref("notifications").push();
+    notifRef.set({
+      title,
+      message,
+      className: classDisplay,
+      classId,
+      createdAt: firebase.database.ServerValue.TIMESTAMP,
+      read: false
+    })
+    .then(() => {
+      alert("Notification sent successfully!");
+      titleInput.value = "";
+      messageInput.value = "";
+      classSelect.value = "";
+    })
+    .catch(err => alert("Error: " + err.message))
+    .finally(() => {
+      sendBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Send Notification';
+      sendBtn.disabled = false;
+    });
+  }
+
+  // Load Notifications
+  let classes = {};
+  function loadNotifications() {
+    const notifRef = db.ref("notifications");
+    notifRef.on("value", (snapshot) => {
+      const data = snapshot.val();
+      notificationsList.innerHTML = "";
+      if (data) {
+        const notifications = Object.entries(data).map(([id, n]) => ({ id, ...n }));
+        // Sort by createdAt (newest first)
+        notifications.sort((a, b) => b.createdAt - a.createdAt);
+        notifications.forEach(n => {
+          const tr = document.createElement("tr");
+          tr.className = "border-b border-white/10 hover:bg-white/5";
+          const date = new Date(n.createdAt).toLocaleString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true
+          });
+          tr.innerHTML = `
+            <td class="py-3 px-4">${n.className}</td>
+            <td class="py-3 px-4">${n.title}</td>
+            <td class="py-3 px-4">${n.message}</td>
+            <td class="py-3 px-4">${date}</td>
+          `;
+          notificationsList.appendChild(tr);
+        });
+      } else {
+        const tr = document.createElement("tr");
+        tr.innerHTML = '<td colspan="4" class="py-3 px-4 text-center text-white/50">No notifications found</td>';
+        notificationsList.appendChild(tr);
+      }
+    });
+  }
+
+  // Fetch classes for reference
+  db.ref("classes").on("value", snap => {
+    classes = snap.val() || {};
+  });
+
+  // Event Listener
+  sendBtn.addEventListener("click", sendNotification);
+
+  // Init Load
+  document.addEventListener("DOMContentLoaded", () => {
+    loadClasses();
+    loadNotifications();
+  });
+</script>
+{% endblock %}

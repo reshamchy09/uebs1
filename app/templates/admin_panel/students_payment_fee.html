@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Fees</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{font-family:system-ui; background:#0f172a; color:#e5e7eb; margin:0}
+  .wrap{max-width:1000px;margin:auto;padding:20px}
+  .card{background:#111827;border:1px solid #1f2937;border-radius:14px;padding:16px;margin-bottom:16px}
+  input,select,button{width:100%;padding:10px;border-radius:10px;border:1px solid #334155;background:#0b1223;color:#e5e7eb}
+  button{cursor:pointer}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .col{flex:1;min-width:240px}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:10px;border-bottom:1px solid #1f2937;font-size:14px}
+  th{color:#93a3b6;text-align:left}
+  .right{text-align:right}
+  .badge{padding:4px 8px;border-radius:999px;border:1px solid #334155;background:#0b1223;font-size:12px}
+  .ok{color:#22c55e}.bad{color:#ef4444}.muted{color:#9ca3b6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    <h1>Student Fee Submission</h1>
+    <div class="row" id="authBox">
+      <input id="email" type="email" placeholder="Email" style="width:220px">
+      <input id="pass" type="password" placeholder="Password" style="width:160px">
+      <button id="btnIn">Sign In</button>
+      <button id="btnUp">Sign Up</button>
+      <button id="btnOut" class="hidden">Sign Out</button>
+      <span id="who" class="badge hidden"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Submit Fee</h2>
+    <div class="row">
+      <div class="col">
+        <label>Student ID</label>
+        <input id="stId" placeholder="e.g., S1001">
+      </div>
+      <div class="col">
+        <label>Student Name</label>
+        <input id="stName" placeholder="Your Name">
+      </div>
+      <div class="col">
+        <label>Amount</label>
+        <input id="amount" type="number" step="0.01" min="0" value="0">
+      </div>
+      <div class="col">
+        <label>Method</label>
+        <select id="method">
+          <option>Khalti</option>
+          <option>eSewa</option>
+          <option>Bank Transfer</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <div class="col">
+        <label>Reference / Transaction ID</label>
+        <input id="txRef" placeholder="e.g., ESW123..., KHALTI..., Bank Slip #">
+      </div>
+      <div class="col">
+        <label>Payment Date</label>
+        <input id="payDate" type="date">
+      </div>
+      <div class="col">
+        <label>Proof (image/pdf)</label>
+        <input id="proof" type="file" accept="image/*,.pdf">
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <div class="col">
+        <button id="btnSubmit">Submit Request</button>
+      </div>
+    </div>
+    <div class="muted" style="margin-top:6px">You will get a notification when Admin approves or rejects your request.</div>
+  </div>
+
+  <div class="card">
+    <h2>My Requests & Status</h2>
+    <table>
+      <thead><tr>
+        <th>Date</th><th>Amount</th><th>Method</th><th>Ref</th><th>Status</th><th>Reason</th><th>Receipt</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Notifications</h2>
+    <ul id="notes" style="margin:0;padding-left:18px"></ul>
+  </div>
+</div>
+
+<!-- Firebase config from Django -->
+<script id="firebase-config" type="application/json">{{ firebase_config|safe }}</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { getDatabase, ref, push, set, onValue, serverTimestamp, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+import { getStorage, ref as sref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
+
+const firebaseConfig = JSON.parse(document.getElementById("firebase-config").textContent);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const st = getStorage(app);
+
+// UI
+const email = document.getElementById('email');
+const pass  = document.getElementById('pass');
+const btnIn = document.getElementById('btnIn');
+const btnUp = document.getElementById('btnUp');
+const btnOut= document.getElementById('btnOut');
+const who   = document.getElementById('who');
+const stId = document.getElementById('stId');
+const stName = document.getElementById('stName');
+const amount = document.getElementById('amount');
+const method = document.getElementById('method');
+const txRef = document.getElementById('txRef');
+const payDate = document.getElementById('payDate');
+const proof = document.getElementById('proof');
+const btnSubmit = document.getElementById('btnSubmit');
+const tbody = document.getElementById('tbody');
+const notes = document.getElementById('notes');
+
+function fmt(n){ return Number(n||0).toFixed(2); }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+payDate.value = todayISO();
+
+let UID = null;
+
+onAuthStateChanged(auth, user=>{
+  if(user){
+    UID = user.uid;
+    btnOut.classList.remove('hidden');
+    who.classList.remove('hidden');
+    who.textContent = user.email;
+    attachMyRequests();
+    attachNotifications();
+  }else{
+    UID = null;
+    btnOut.classList.add('hidden');
+    who.classList.add('hidden');
+    tbody.innerHTML = '';
+    notes.innerHTML = '';
+  }
+});
+
+btnIn.onclick = async ()=>{ await signInWithEmailAndPassword(auth, email.value, pass.value).catch(e=>alert(e.message)); };
+btnUp.onclick = async ()=>{ await createUserWithEmailAndPassword(auth, email.value, pass.value).catch(e=>alert(e.message)); };
+btnOut.onclick= async ()=>{ await signOut(auth); };
+
+async function uploadProof(reqId, file){
+  if(!file) return "";
+  const path = `proofs/${UID}/${reqId}/${file.name}`;
+  const refp = sref(st, path);
+  await uploadBytes(refp, file);
+  return await getDownloadURL(refp);
+}
+
+btnSubmit.onclick = async ()=>{
+  if(!UID) return alert("Sign in first");
+  if(!stId.value || !stName.value) return alert("Enter Student ID & Name");
+  const amt = Number(amount.value||0);
+  if(amt<=0) return alert("Enter valid amount");
+
+  const reqRef = push(ref(db, 'fees_requests'));
+  const reqId = reqRef.key;
+  let proofUrl = "";
+  try{
+    proofUrl = await uploadProof(reqId, proof.files[0]);
+    const data = {
+      studentUid: UID,
+      studentEmail: auth.currentUser?.email || "",
+      studentId: stId.value.trim(),
+      studentName: stName.value.trim(),
+      amount: amt,
+      method: method.value,
+      reference: txRef.value.trim(),
+      paymentDate: payDate.value || todayISO(),
+      proofUrl,
+      status: "pending",
+      reason: "",
+      createdAt: Date.now(),
+      serverAt: serverTimestamp()
+    };
+    await set(reqRef, data);
+    alert("Submitted!");
+    txRef.value = ""; amount.value = 0; proof.value = "";
+  }catch(e){
+    alert("Submit failed: "+e.message);
+  }
+};
+
+function attachMyRequests(){
+  // query by studentUid
+  const q = query(ref(db,'fees_requests'), orderByChild('studentUid'), equalTo(UID));
+  onValue(q, snap=>{
+    const val = snap.val() || {};
+    const arr = Object.entries(val).map(([id,v])=>({id,...v})).sort((a,b)=>b.createdAt-a.createdAt);
+    tbody.innerHTML = "";
+    for(const r of arr){
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${r.paymentDate||''}</td>
+        <td class="right">${fmt(r.amount)}</td>
+        <td>${r.method}</td>
+        <td>${r.reference||''}</td>
+        <td>${r.status === 'approved' ? '<span class="ok">Approved</span>' : r.status === 'rejected' ? '<span class="bad">Rejected</span>' : '<span class="muted">Pending</span>'}</td>
+        <td>${r.reason||''}</td>
+        <td>${r.receiptUrl ? '<a href="'+r.receiptUrl+'" target="_blank">Download</a>' : ''}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  });
+}
+
+function attachNotifications(){
+  onValue(ref(db, `notifications/${UID}`), snap=>{
+    const val = snap.val() || {};
+    const arr = Object.entries(val).map(([id,v])=>({id,...v})).sort((a,b)=>b.createdAt-a.createdAt);
+    notes.innerHTML = "";
+    for(const n of arr){
+      const li = document.createElement('li');
+      li.textContent = `[${new Date(n.createdAt||Date.now()).toLocaleString()}] ${n.title}: ${n.body}`;
+      notes.appendChild(li);
+    }
+  });
+}
+</script>
+</body>
+</html>

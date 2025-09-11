@@ -1,0 +1,256 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Home - School Management System{% endblock %}
+
+{% block content %}
+  <!-- Top Navbar -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+    <div class="mt-12 md:mt-0">
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Welcome</h2>
+      <p class="text-white/70 mt-1 text-sm sm:text-base">School Management Dashboard</p>
+    </div>
+    <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+      <!-- Search bar for larger screens -->
+      <div class="hidden md:block relative flex-1 max-w-md">
+        <input type="text" placeholder="Search students, teachers..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+        <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+      <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative md:hidden">
+        <i class="fas fa-search text-sm sm:text-base"></i>
+      </button>
+      <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative">
+        <i class="fas fa-bell text-sm sm:text-base"></i>
+        <span class="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full"></span>
+      </button>
+      <button class="liquid-btn text-white px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all hover:scale-105 text-sm sm:text-base">
+        Profile
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile search bar (hidden on larger screens) -->
+  <div class="md:hidden mb-4">
+    <div class="relative">
+      <input type="text" placeholder="Search students, teachers..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+      <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Subscription Status -->
+  <div class="glass-card p-4 sm:p-6 rounded-2xl animate__animated animate__fadeInUp mb-6 sm:mb-8">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-4 sm:mb-6">Subscription Status</h3>
+    <div id="subscriptionInfo" class="text-white/80">
+      <p id="subStatus" class="text-sm sm:text-base">Checking subscription status...</p>
+      <p id="subExpiry" class="text-sm sm:text-base hidden">Expiry Date: <span></span></p>
+      <p id="subDaysRemaining" class="text-sm sm:text-base hidden">Days Remaining: <span></span></p>
+    </div>
+  </div>
+
+  <!-- Dashboard Stats -->
+  <div class="grid grid-responsive gap-4 sm:gap-6 mb-6 sm:mb-8">
+    <div class="glass-card p-4 sm:p-6 rounded-2xl animate__animated animate__fadeInUp hover:scale-105 transition-all duration-500 relative overflow-hidden">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-base sm:text-lg font-semibold text-white/80">Total Students</h3>
+          <p class="text-2xl sm:text-3xl font-bold text-white mt-2">1,250</p>
+          <span class="text-green-400 text-xs sm:text-sm">↗ +12% this month</span>
+        </div>
+        <div class="text-2xl sm:text-4xl text-purple-400">
+          <i class="fas fa-user-graduate"></i>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-4 sm:p-6 rounded-2xl animate__animated animate__fadeInUp animate__delay-1s hover:scale-105 transition-all duration-500 relative overflow-hidden">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-base sm:text-lg font-semibold text-white/80">Teachers</h3>
+          <p class="text-2xl sm:text-3xl font-bold text-white mt-2">85</p>
+          <span class="text-blue-400 text-xs sm:text-sm">↗ +3% this month</span>
+        </div>
+        <div class="text-2xl sm:text-4xl text-blue-400">
+          <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-4 sm:p-6 rounded-2xl animate__animated animate__fadeInUp animate__delay-2s hover:scale-105 transition-all duration-500 relative overflow-hidden">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-base sm:text-lg font-semibold text-white/80">Classes</h3>
+          <p class="text-2xl sm:text-3xl font-bold text-white mt-2">35</p>
+          <span class="text-green-400 text-xs sm:text-sm">→ No change</span>
+        </div>
+        <div class="text-2xl sm:text-4xl text-pink-400">
+          <i class="fas fa-door-open"></i>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-4 sm:p-6 rounded-2xl animate__animated animate__fadeInUp animate__delay-3s hover:scale-105 transition-all duration-500 relative overflow-hidden">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-base sm:text-lg font-semibold text-white/80">Pending Fees</h3>
+          <p class="text-2xl sm:text-3xl font-bold text-white mt-2">$12,400</p>
+          <span class="text-red-400 text-xs sm:text-sm">↓ -8% this month</span>
+        </div>
+        <div class="text-2xl sm:text-4xl text-red-400">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="glass-card p-4 sm:p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6 sm:mb-8">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-4 sm:mb-6">Quick Actions</h3>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <button class="glass-card p-3 sm:p-4 rounded-xl text-center hover:bg-white/20 transition-all group">
+        <i class="fas fa-plus-circle text-2xl sm:text-3xl text-green-400 mb-2 group-hover:scale-110 transition-transform"></i>
+        <p class="text-white/80 text-xs sm:text-sm">Add Student</p>
+      </button>
+      <button class="glass-card p-3 sm:p-4 rounded-xl text-center hover:bg-white/20 transition-all group">
+        <i class="fas fa-calendar-plus text-2xl sm:text-3xl text-blue-400 mb-2 group-hover:scale-110 transition-transform"></i>
+        <p class="text-white/80 text-xs sm:text-sm">Schedule Exam</p>
+      </button>
+      <button class="glass-card p-3 sm:p-4 rounded-xl text-center hover:bg-white/20 transition-all group">
+        <i class="fas fa-file-invoice-dollar text-2xl sm:text-3xl text-yellow-400 mb-2 group-hover:scale-110 transition-transform"></i>
+        <p class="text-white/80 text-xs sm:text-sm">Generate Invoice</p>
+      </button>
+      <button class="glass-card p-3 sm:p-4 rounded-xl text-center hover:bg-white/20 transition-all group">
+        <i class="fas fa-chart-bar text-2xl sm:text-3xl text-purple-400 mb-2 group-hover:scale-110 transition-transform"></i>
+        <p class="text-white/80 text-xs sm:text-sm">View Reports</p>
+      </button>
+    </div>
+  </div>
+
+  <!-- Activity Feed -->
+  <div class="glass-card p-4 sm:p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-4 sm:mb-6">Recent Activity</h3>
+    <div class="space-y-3 sm:space-y-4">
+      <div class="flex items-start sm:items-center space-x-3 sm:space-x-4 p-3 sm:p-4 glass rounded-xl">
+        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-green-400 to-blue-400 rounded-full flex items-center justify-center flex-shrink-0">
+          <i class="fas fa-user-plus text-white text-xs sm:text-sm"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-white text-sm sm:text-base">New student John Doe enrolled in Grade 10</p>
+          <p class="text-white/60 text-xs sm:text-sm">15 minutes ago</p>
+        </div>
+      </div>
+      
+      <div class="flex items-start sm:items-center space-x-3 sm:space-x-4 p-3 sm:p-4 glass rounded-xl">
+        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center flex-shrink-0">
+          <i class="fas fa-dollar-sign text-white text-xs sm:text-sm"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-white text-sm sm:text-base">Fee payment received from Sarah Smith</p>
+          <p class="text-white/60 text-xs sm:text-sm">1 hour ago</p>
+        </div>
+      </div>
+      
+      <div class="flex items-start sm:items-center space-x-3 sm:space-x-4 p-3 sm:p-4 glass rounded-xl">
+        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center flex-shrink-0">
+          <i class="fas fa-graduation-cap text-white text-xs sm:text-sm"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-white text-sm sm:text-base">Mathematics exam scheduled for Grade 9</p>
+          <p class="text-white/60 text-xs sm:text-sm">2 minutes ago</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+
+<script>
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+  authDomain: "uebs-school.firebaseapp.com",
+  projectId: "uebs-school",
+  storageBucket: "uebs-school.firebasestorage.app",
+  messagingSenderId: "740325293639",
+  appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+  measurementId: "G-T7YEBMNHBH"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Check Authentication and Subscription Status
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    const userId = user.uid;
+    console.log("Authenticated User ID:", userId);
+    checkSubscriptionStatus(userId);
+  } else {
+    console.log("No user logged in, redirecting to login...");
+    window.location.href = "/login"; // Adjust to your login page URL
+  }
+});
+
+// Calculate Days Remaining
+function calculateDaysRemaining(endDate) {
+  const today = new Date();
+  const expiry = new Date(endDate);
+  const diffTime = expiry - today;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays >= 0 ? diffDays : "Expired";
+}
+
+// Check Subscription Status
+function checkSubscriptionStatus(userId) {
+  db.ref('userSubscriptions/' + userId).once('value', snap => {
+    try {
+      const subscriptions = snap.val() || {};
+      let hasActiveSubscription = false;
+      let latestActiveSub = null;
+
+      // Find the latest active subscription
+      Object.keys(subscriptions).forEach(subId => {
+        const sub = subscriptions[subId];
+        if (sub.status === "Active") {
+          hasActiveSubscription = true;
+          if (!latestActiveSub || new Date(sub.endDate) > new Date(latestActiveSub.endDate)) {
+            latestActiveSub = sub;
+          }
+        }
+      });
+
+      const subStatus = document.getElementById('subStatus');
+      const subExpiry = document.getElementById('subExpiry');
+      const subDaysRemaining = document.getElementById('subDaysRemaining');
+
+      if (hasActiveSubscription && latestActiveSub) {
+        // Display subscription details
+        subStatus.textContent = `Active Subscription: ${latestActiveSub.label || latestActiveSub.duration}`;
+        subExpiry.classList.remove('hidden');
+        subExpiry.querySelector('span').textContent = latestActiveSub.endDate;
+        subDaysRemaining.classList.remove('hidden');
+        const daysRemaining = calculateDaysRemaining(latestActiveSub.endDate);
+        subDaysRemaining.querySelector('span').textContent = daysRemaining;
+      } else {
+        // No active subscription, redirect to subscription page
+        console.log("No active subscription found, redirecting to subscription.html");
+        window.location.href = "{% url 'subscription' %}"; // Adjust to your subscription page URL
+      }
+    } catch (error) {
+      console.error("Error checking subscription status:", error);
+      alert("Failed to check subscription status. Please try again.");
+      window.location.href = "{% url 'subscription' %}"; // Redirect on error
+    }
+  });
+}
+
+console.log('Home page loaded');
+</script>
+{% endblock %}

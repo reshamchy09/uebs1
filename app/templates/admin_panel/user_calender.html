@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Calendar - User</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 90%;
+      max-width: 800px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      text-align: center;
+    }
+    .week-header {
+      font-weight: bold;
+      background: #eee;
+      padding: 10px;
+    }
+    .day {
+      padding: 10px;
+      background: #fafafa;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+    .day:hover {
+      background: #d3f2ff;
+    }
+    .event-day {
+      background: #ffd6d6 !important;
+    }
+    .event-list {
+      margin-top: 20px;
+    }
+    .event-card {
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      border-left: 4px solid #ff6b6b;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Smart Calendar - User</h1>
+
+  <!-- Calendar -->
+  <div class="calendar" id="calendar">
+    <!-- Week names -->
+    <div class="week-header">Sun</div>
+    <div class="week-header">Mon</div>
+    <div class="week-header">Tue</div>
+    <div class="week-header">Wed</div>
+    <div class="week-header">Thu</div>
+    <div class="week-header">Fri</div>
+    <div class="week-header">Sat</div>
+  </div>
+
+  <!-- Event List -->
+  <div class="event-list" id="eventList">
+    <h2>Events on Selected Date</h2>
+    <p>Select a date to view events</p>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const calendarEl = document.getElementById("calendar");
+  const eventListEl = document.getElementById("eventList");
+  let eventsData = {};
+
+  function loadCalendar() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDayOfWeek = firstDay.getDay();
+
+    // Clear previous days (but keep week names)
+    calendarEl.innerHTML = `
+      <div class="week-header">Sun</div>
+      <div class="week-header">Mon</div>
+      <div class="week-header">Tue</div>
+      <div class="week-header">Wed</div>
+      <div class="week-header">Thu</div>
+      <div class="week-header">Fri</div>
+      <div class="week-header">Sat</div>
+    `;
+
+    // Empty cells before month start
+    for (let i = 0; i < startDayOfWeek; i++) {
+      calendarEl.innerHTML += `<div></div>`;
+    }
+
+    // Days in month
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const hasEvent = eventsData[dateStr];
+      calendarEl.innerHTML += `<div class="day ${hasEvent ? 'event-day' : ''}" data-date="${dateStr}">${day}</div>`;
+    }
+
+    // Click event
+    document.querySelectorAll(".day").forEach(dayEl => {
+      dayEl.addEventListener("click", () => {
+        const date = dayEl.getAttribute("data-date");
+        showEvents(date);
+      });
+    });
+  }
+
+  function showEvents(date) {
+    eventListEl.innerHTML = `<h2>Events on ${date}</h2>`;
+    if (eventsData[date]) {
+      eventsData[date].forEach(event => {
+        eventListEl.innerHTML += `<div class="event-card"><strong>${event.title}</strong><br>${event.desc}</div>`;
+      });
+    } else {
+      eventListEl.innerHTML += `<p>No events on this date</p>`;
+    }
+  }
+
+  function loadEvents() {
+    db.ref("events").on("value", snapshot => {
+      eventsData = snapshot.val() || {};
+      loadCalendar();
+    });
+  }
+
+  loadEvents();
+</script>
+
+</body>
+</html>

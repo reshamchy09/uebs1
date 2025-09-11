@@ -1,0 +1,634 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Blog - School Management System{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent animate__animated animate__fadeInDown">
+      <i class="fas fa-pen mr-3"></i>School Blog
+    </h1>
+    <p class="text-white/70 mt-2">Stay updated with the latest news, events, and insights from our school community</p>
+  </div>
+
+  <!-- Blog Stats and Actions -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <!-- Blog Statistics -->
+      <div class="flex flex-wrap gap-6">
+        <div class="text-center">
+          <div class="text-2xl font-bold text-blue-400">87</div>
+          <div class="text-sm text-white/70">Total Posts</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-green-400">12,478</div>
+          <div class="text-sm text-white/70">Total Views</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-purple-400">342</div>
+          <div class="text-sm text-white/70">Comments</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-orange-400">24</div>
+          <div class="text-sm text-white/70">Active Authors</div>
+        </div>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap gap-3">
+        <button class="liquid-btn px-6 py-3 rounded-xl font-medium text-white transition-all duration-300 hover:bg-purple-600">
+          <i class="fas fa-plus mr-2"></i>New Blog Post
+        </button>
+        <button class="px-6 py-3 glass-card rounded-xl font-medium text-white transition-all duration-300 hover:bg-white/20">
+          <i class="fas fa-download mr-2"></i>Export Posts
+        </button>
+        <button class="px-6 py-3 glass-card rounded-xl font-medium text-white transition-all duration-300 hover:bg-white/20">
+          <i class="fas fa-cog mr-2"></i>Blog Settings
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories and Filters -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <!-- Search Bar -->
+      <div class="relative flex-1">
+        <input type="text" placeholder="Search blog posts..." class="w-full glass-card text-white placeholder-white/50 px-6 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 text-lg">
+        <button class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white">
+          <i class="fas fa-search text-xl"></i>
+        </button>
+      </div>
+      
+      <!-- Category Filters -->
+      <div class="flex flex-wrap gap-3">
+        <select class="glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option>All Categories</option>
+          <option>Announcements</option>
+          <option>Events</option>
+          <option>Academic</option>
+          <option>Student Life</option>
+          <option>Parent Resources</option>
+          <option>Staff Spotlight</option>
+          <option>Community</option>
+        </select>
+        
+        <select class="glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option>Sort by Date</option>
+          <option>Newest First</option>
+          <option>Oldest First</option>
+          <option>Most Viewed</option>
+          <option>Most Commented</option>
+        </select>
+        
+        <button class="px-4 py-3 glass-card rounded-xl text-sm font-medium transition-all hover:bg-white/20">
+          <i class="fas fa-filter mr-2"></i>Apply Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Post -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <div class="relative overflow-hidden rounded-lg">
+      <img src="https://via.placeholder.com/1200x400/1a1a2e/ffffff?text=Featured+Blog+Post" alt="Featured Blog Post" class="w-full h-64 md:h-80 object-cover">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+      <div class="absolute bottom-0 left-0 right-0 p-6">
+        <div class="flex items-center mb-3">
+          <span class="px-3 py-1 bg-yellow-600 text-white text-xs rounded-full">Featured</span>
+          <span class="mx-3 text-white/70">•</span>
+          <span class="text-white/70 text-sm">Posted by Dr. John Davis • June 15, 2024</span>
+        </div>
+        <h2 class="text-3xl font-bold text-white mb-3">Celebrating Our Graduating Class of 2024</h2>
+        <p class="text-white/90 mb-4">Join us as we honor the achievements of our graduating seniors and look forward to their bright futures.</p>
+        <div class="flex items-center text-white/70">
+          <i class="fas fa-eye mr-2"></i>
+          <span class="mr-4">2,478 views</span>
+          <i class="fas fa-comment mr-2"></i>
+          <span class="mr-4">89 comments</span>
+          <i class="fas fa-share mr-2"></i>
+          <span>156 shares</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Blog Posts -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-8">
+    <!-- Blog Post 1 -->
+    <div class="glass-card rounded-xl overflow-hidden hover:bg-white/10 transition-all cursor-pointer">
+      <div class="relative">
+        <img src="https://via.placeholder.com/400x250/1a1a2e/ffffff?text=Science+Fair" alt="Science Fair" class="w-full h-48 object-cover">
+        <div class="absolute top-4 left-4">
+          <span class="px-3 py-1 bg-blue-600 text-white text-xs rounded-full">Events</span>
+        </div>
+      </div>
+      <div class="p-6">
+        <div class="flex items-center text-xs text-white/60 mb-3">
+          <span>Posted by Sarah Miller</span>
+          <span class="mx-2">•</span>
+          <span>June 12, 2024</span>
+        </div>
+        <h3 class="font-semibold text-xl mb-3">Annual Science Fair Winners Announced</h3>
+        <p class="text-sm text-white/70 mb-4">Congratulations to all participants in our annual Science Fair! See the list of winners and their innovative projects.</p>
+        <div class="flex items-center justify-between text-xs text-white/60">
+          <div class="flex items-center">
+            <i class="fas fa-eye mr-1"></i>
+            <span>1,247 views</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-comment mr-1"></i>
+            <span>42 comments</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Blog Post 2 -->
+    <div class="glass-card rounded-xl overflow-hidden hover:bg-white/10 transition-all cursor-pointer">
+      <div class="relative">
+        <img src="https://via.placeholder.com/400x250/1a1a2e/ffffff?text=Parent+Workshop" alt="Parent Workshop" class="w-full h-48 object-cover">
+        <div class="absolute top-4 left-4">
+          <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Parent Resources</span>
+        </div>
+      </div>
+      <div class="p-6">
+        <div class="flex items-center text-xs text-white/60 mb-3">
+          <span>Posted by Robert Martinez</span>
+          <span class="mx-2">•</span>
+          <span>June 10, 2024</span>
+        </div>
+        <h3 class="font-semibold text-xl mb-3">Parent Workshop: Supporting Your Child's Learning</h3>
+        <p class="text-sm text-white/70 mb-4">Learn practical strategies to support your child's academic success at home with our upcoming parent workshop.</p>
+        <div class="flex items-center justify-between text-xs text-white/60">
+          <div class="flex items-center">
+            <i class="fas fa-eye mr-1"></i>
+            <span>982 views</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-comment mr-1"></i>
+            <span>37 comments</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Blog Post 3 -->
+    <div class="glass-card rounded-xl overflow-hidden hover:bg-white/10 transition-all cursor-pointer">
+      <div class="relative">
+        <img src="https://via.placeholder.com/400x250/1a1a2e/ffffff?text=Sports+Championship" alt="Sports Championship" class="w-full h-48 object-cover">
+        <div class="absolute top-4 left-4">
+          <span class="px-3 py-1 bg-purple-600 text-white text-xs rounded-full">Student Life</span>
+        </div>
+      </div>
+      <div class="p-6">
+        <div class="flex items-center text-xs text-white/60 mb-3">
+          <span>Posted by Emma Parker</span>
+          <span class="mx-2">•</span>
+          <span>June 8, 2024</span>
+        </div>
+        <h3 class="font-semibold text-xl mb-3">Varsity Soccer Team Wins Regional Championship</h3>
+        <p class="text-sm text-white/70 mb-4">Our varsity soccer team brought home the regional championship trophy after an exciting final match against Westside High.</p>
+        <div class="flex items-center justify-between text-xs text-white/60">
+          <div class="flex items-center">
+            <i class="fas fa-eye mr-1"></i>
+            <span>1,543 views</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-comment mr-1"></i>
+            <span>58 comments</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Blog Post 4 -->
+    <div class="glass-card rounded-xl overflow-hidden hover:bg-white/10 transition-all cursor-pointer">
+      <div class="relative">
+        <img src="https://via.placeholder.com/400x250/1a1a2e/ffffff?text=Teacher+Spotlight" alt="Teacher Spotlight" class="w-full h-48 object-cover">
+        <div class="absolute top-4 left-4">
+          <span class="px-3 py-1 bg-orange-600 text-white text-xs rounded-full">Staff Spotlight</span>
+        </div>
+      </div>
+      <div class="p-6">
+        <div class="flex items-center text-xs text-white/60 mb-3">
+          <span>Posted by Michael Chen</span>
+          <span class="mx-2">•</span>
+          <span>June 5, 2024</span>
+        </div>
+        <h3 class="font-semibold text-xl mb-3">Teacher Spotlight: Ms. Johnson's Innovative Teaching Methods</h3>
+        <p class="text-sm text-white/70 mb-4">Discover how Ms. Johnson is transforming her classroom with innovative teaching methods that engage students and enhance learning.</p>
+        <div class="flex items-center justify-between text-xs text-white/60">
+          <div class="flex items-center">
+            <i class="fas fa-eye mr-1"></i>
+            <span>876 views</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-comment mr-1"></i>
+            <span>29 comments</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Blog Post 5 -->
+    <div class="glass-card rounded-xl overflow-hidden hover:bg-white/10 transition-all cursor-pointer">
+      <div class="relative">
+        <img src="https://via.placeholder.com/400x250/1a1a2e/ffffff?text=College+Prep" alt="College Prep" class="w-full h-48 object-cover">
+        <div class="absolute top-4 left-4">
+          <span class="px-3 py-1 bg-red-600 text-white text-xs rounded-full">Academic</span>
+        </div>
+      </div>
+      <div class="p-6">
+        <div class="flex items-center text-xs text-white/60 mb-3">
+          <span>Posted by Sophia Liu</span>
+          <span class="mx-2">•</span>
+          <span>June 3, 2024</span>
+        </div>
+        <h3 class="font-semibold text-xl mb-3">College Preparation Guide for High School Students</h3>
+        <p class="text-sm text-white/70 mb-4">A comprehensive guide to help high school students prepare for college applications, including timelines, tips, and resources.</p>
+        <div class="flex items-center justify-between text-xs text-white/60">
+          <div class="flex items-center">
+            <i class="fas fa-eye mr-1"></i>
+            <span>2,104 views</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-comment mr-1"></i>
+            <span>67 comments</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Blog Post 6 -->
+    <div class="glass-card rounded-xl overflow-hidden hover:bg-white/10 transition-all cursor-pointer">
+      <div class="relative">
+        <img src="https://via.placeholder.com/400x250/1a1a2e/ffffff?text=Community+Event" alt="Community Event" class="w-full h-48 object-cover">
+        <div class="absolute top-4 left-4">
+          <span class="px-3 py-1 bg-teal-600 text-white text-xs rounded-full">Community</span>
+        </div>
+      </div>
+      <div class="p-6">
+        <div class="flex items-center text-xs text-white/60 mb-3">
+          <span>Posted by Thomas Wilson</span>
+          <span class="mx-2">•</span>
+          <span>May 30, 2024</span>
+        </div>
+        <h3 class="font-semibold text-xl mb-3">Community Garden Project: How to Get Involved</h3>
+        <p class="text-sm text-white/70 mb-4">Learn about our new community garden project and how students, parents, and staff can participate in this exciting initiative.</p>
+        <div class="flex items-center justify-between text-xs text-white/60">
+          <div class="flex items-center">
+            <i class="fas fa-eye mr-1"></i>
+            <span>753 views</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-comment mr-1"></i>
+            <span>23 comments</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popular Categories -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+    <!-- Popular Categories -->
+    <div class="lg:col-span-2">
+      <div class="glass-card rounded-xl p-6">
+        <h2 class="text-2xl font-semibold mb-6 flex items-center">
+          <i class="fas fa-fire mr-3"></i>Popular Categories
+        </h2>
+        
+        <div class="space-y-4">
+          <div class="flex items-center justify-between p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-bullhorn text-white"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">Announcements</h3>
+                <p class="text-sm text-white/60">Important school updates</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">24 posts</div>
+              <div class="text-sm text-white/60">1,847 views</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-calendar text-white"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">Events</h3>
+                <p class="text-sm text-white/60">Upcoming school events</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">18 posts</div>
+              <div class="text-sm text-white/60">2,156 views</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-graduation-cap text-white"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">Academic</h3>
+                <p class="text-sm text-white/60">Learning resources & tips</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">15 posts</div>
+              <div class="text-sm text-white/60">1,984 views</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-users text-white"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">Student Life</h3>
+                <p class="text-sm text-white/60">Student activities & achievements</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">12 posts</div>
+              <div class="text-sm text-white/60">1,672 views</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-user-friends text-white"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">Parent Resources</h3>
+                <p class="text-sm text-white/60">Help for parents & guardians</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">10 posts</div>
+              <div class="text-sm text-white/60">1,423 views</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Recent Comments -->
+    <div>
+      <div class="glass-card rounded-xl p-6">
+        <h2 class="text-2xl font-semibold mb-6 flex items-center">
+          <i class="fas fa-comments mr-3"></i>Recent Comments
+        </h2>
+        
+        <div class="space-y-4">
+          <div class="p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+            <div class="flex items-center mb-2">
+              <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+                <span class="text-white font-bold text-sm">JD</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-medium text-sm">John Davis</h4>
+                <p class="text-xs text-white/60">2 hours ago</p>
+              </div>
+            </div>
+            <p class="text-sm text-white/70">Great article! The science fair was truly impressive this year.</p>
+            <div class="mt-3">
+              <button class="text-blue-400 hover:text-blue-300 text-xs font-medium">Reply</button>
+            </div>
+          </div>
+          
+          <div class="p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+            <div class="flex items-center mb-2">
+              <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3">
+                <span class="text-white font-bold text-sm">SM</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-medium text-sm">Sarah Miller</h4>
+                <p class="text-xs text-white/60">1 day ago</p>
+              </div>
+            </div>
+            <p class="text-sm text-white/70">Thank you for sharing these resources. Very helpful for parents!</p>
+            <div class="mt-3">
+              <button class="text-blue-400 hover:text-blue-300 text-xs font-medium">Reply</button>
+            </div>
+          </div>
+          
+          <div class="p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+            <div class="flex items-center mb-2">
+              <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center mr-3">
+                <span class="text-white font-bold text-sm">EP</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-medium text-sm">Emma Parker</h4>
+                <p class="text-xs text-white/60">2 days ago</p>
+              </div>
+            </div>
+            <p class="text-sm text-white/70">Our soccer team played amazingly! So proud of all the players.</p>
+            <div class="mt-3">
+              <button class="text-blue-400 hover:text-blue-300 text-xs font-medium">Reply</button>
+            </div>
+          </div>
+          
+          <div class="p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+            <div class="flex items-center mb-2">
+              <div class="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center mr-3">
+                <span class="text-white font-bold text-sm">RM</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-medium text-sm">Robert Martinez</h4>
+                <p class="text-xs text-white/60">3 days ago</p>
+              </div>
+            </div>
+            <p class="text-sm text-white/70">Ms. Johnson's teaching methods are truly innovative and effective.</p>
+            <div class="mt-3">
+              <button class="text-blue-400 hover:text-blue-300 text-xs font-medium">Reply</button>
+            </div>
+          </div>
+          
+          <div class="p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+            <div class="flex items-center mb-2">
+              <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center mr-3">
+                <span class="text-white font-bold text-sm">SL</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-medium text-sm">Sophia Liu</h4>
+                <p class="text-xs text-white/60">4 days ago</p>
+              </div>
+            </div>
+            <p class="text-sm text-white/70">This college prep guide is comprehensive and very useful for students.</p>
+            <div class="mt-3">
+              <button class="text-blue-400 hover:text-blue-300 text-xs font-medium">Reply</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-6 pt-4 border-t border-white/20">
+          <button class="w-full px-4 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+            View All Comments
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create New Blog Post Form -->
+  <div class="glass-card rounded-xl p-6">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-edit mr-3"></i>Create New Blog Post
+    </h2>
+    
+    <form class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-white/80 mb-2">Post Title</label>
+          <input type="text" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Enter blog post title">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/80 mb-2">Category</label>
+          <select class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+            <option>Select category</option>
+            <option>Announcements</option>
+            <option>Events</option>
+            <option>Academic</option>
+            <option>Student Life</option>
+            <option>Parent Resources</option>
+            <option>Staff Spotlight</option>
+            <option>Community</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-white/80 mb-2">Featured Image</label>
+        <div class="border-2 border-dashed border-white/30 rounded-xl p-8 text-center hover:border-white/50 transition-all cursor-pointer">
+          <i class="fas fa-cloud-upload-alt text-4xl text-white/50 mb-4"></i>
+          <p class="text-white/70 mb-2">Drag and drop your image here</p>
+          <p class="text-sm text-white/50">or click to browse</p>
+          <p class="text-xs text-white/50 mt-2">JPG, PNG, GIF (max 5MB)</p>
+          <input type="file" class="hidden">
+        </div>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-white/80 mb-2">Content</label>
+        <textarea rows="12" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Write your blog post content here..."></textarea>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-white/80 mb-2">Tags (comma separated)</label>
+        <input type="text" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="tag1, tag2, tag3">
+      </div>
+      
+      <div class="flex items-center">
+        <input type="checkbox" id="featuredPost" class="mr-3">
+        <label for="featuredPost" class="text-sm text-white/80">Mark as featured post</label>
+      </div>
+      
+      <div class="flex items-center">
+        <input type="checkbox" id="allowComments" class="mr-3" checked>
+        <label for="allowComments" class="text-sm text-white/80">Allow comments</label>
+      </div>
+      
+      <div class="flex flex-wrap gap-4 pt-4">
+        <button type="submit" class="liquid-btn px-6 py-3 rounded-xl font-medium text-white transition-all duration-300 hover:bg-green-600">
+          <i class="fas fa-paper-plane mr-2"></i>Publish Post
+        </button>
+        <button type="button" class="px-6 py-3 glass-card rounded-xl font-medium text-white transition-all duration-300 hover:bg-white/20">
+          <i class="fas fa-save mr-2"></i>Save as Draft
+        </button>
+        <button type="button" class="px-6 py-3 glass-card rounded-xl font-medium text-white transition-all duration-300 hover:bg-white/20">
+          <i class="fas fa-times mr-2"></i>Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Blog post interactivity
+  const blogPosts = document.querySelectorAll('.blog-post'); 
+  blogPosts.forEach(post => {
+    post.addEventListener('click', function() {
+      const postTitle = this.querySelector('h3')?.textContent?.trim();
+      if (postTitle) {
+        alert(`Viewing blog post: ${postTitle}`);
+      }
+    });
+  });
+
+  // Category click functionality
+  const categoryCards = document.querySelectorAll('.category-card');
+  categoryCards.forEach(card => {
+    const parentCard = card.closest('.glass-card');
+    const parentTitle = parentCard?.querySelector('h2')?.textContent || '';
+    if (parentTitle.includes('Popular Categories')) {
+      card.addEventListener('click', function() {
+        const categoryName = this.querySelector('.font-medium')?.textContent?.trim();
+        if (categoryName) {
+          alert(`Viewing all posts in category: ${categoryName}`);
+        }
+      });
+    }
+  });
+
+  // Reply button functionality
+  const replyButtons = document.querySelectorAll('.reply-btn');
+  replyButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      alert('Opening reply form...');
+    });
+  });
+
+  // File upload functionality
+  const uploadArea = document.querySelector('.upload-area'); 
+  if (uploadArea) {
+    const fileInput = uploadArea.querySelector('input[type="file"]');
+    
+    uploadArea.addEventListener('click', () => fileInput?.click());
+    
+    uploadArea.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      this.classList.add('border-white/70', 'bg-white/5');
+    });
+    
+    uploadArea.addEventListener('dragleave', function() {
+      this.classList.remove('border-white/70', 'bg-white/5');
+    });
+    
+    uploadArea.addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.classList.remove('border-white/70', 'bg-white/5');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        alert(`Image selected: ${files[0].name}`);
+      }
+    });
+  }
+
+  // Blog form submission
+  const blogForm = document.querySelector('#blog-form'); 
+  if (blogForm) {
+    blogForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Blog post published successfully!');
+      this.reset(); // Reset form
+    });
+  }
+});
+</script>
+
+{% endblock %}

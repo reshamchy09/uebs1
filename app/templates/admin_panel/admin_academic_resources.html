@@ -1,0 +1,584 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Academic Resources - School Management System{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent animate__animated animate__fadeInDown">
+      <i class="fas fa-book mr-3"></i>Academic Resources
+    </h1>
+    <p class="text-white/70 mt-2">Access, manage, and share educational materials for students and staff</p>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <!-- Search Bar -->
+      <div class="relative flex-1">
+        <input type="text" placeholder="Search resources by title, subject, or keyword..." class="w-full glass-card text-white placeholder-white/50 px-6 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 text-lg">
+        <button class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white">
+          <i class="fas fa-search text-xl"></i>
+        </button>
+      </div>
+      
+      <!-- Filters -->
+      <div class="flex flex-wrap gap-3">
+        <select class="glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option>All Subjects</option>
+          <option>Mathematics</option>
+          <option>Science</option>
+          <option>English</option>
+          <option>History</option>
+          <option>Computer Science</option>
+          <option>Arts</option>
+        </select>
+        
+        <select class="glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option>All Types</option>
+          <option>Textbooks</option>
+          <option>Study Guides</option>
+          <option>Worksheets</option>
+          <option>Presentations</option>
+          <option>Videos</option>
+          <option>Interactive</option>
+        </select>
+        
+        <button class="liquid-btn px-6 py-3 rounded-xl font-medium text-white transition-all duration-300 hover:bg-purple-600">
+          <i class="fas fa-filter mr-2"></i>Apply Filters
+        </button>
+      </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="flex flex-wrap gap-4 mt-6">
+      <button class="px-4 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+        <i class="fas fa-download mr-2"></i>Export Resource List
+      </button>
+      <button class="px-4 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+        <i class="fas fa-print mr-2"></i>Print Catalog
+      </button>
+      <button class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium ml-auto">
+        <i class="fas fa-plus mr-2"></i>Add New Resource
+      </button>
+    </div>
+  </div>
+
+  <!-- Resource Statistics -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-blue-600 rounded-lg mr-4">
+          <i class="fas fa-book text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Total Resources</p>
+          <p class="text-2xl font-bold text-blue-400">1,247</p>
+          <p class="text-xs text-white/60">+42 this month</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-green-600 rounded-lg mr-4">
+          <i class="fas fa-file-pdf text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Documents</p>
+          <p class="text-2xl font-bold text-green-400">853</p>
+          <p class="text-xs text-white/60">PDF, DOC, PPT</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-purple-600 rounded-lg mr-4">
+          <i class="fas fa-video text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Video Resources</p>
+          <p class="text-2xl font-bold text-purple-400">284</p>
+          <p class="text-xs text-white/60">+15 this month</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-orange-600 rounded-lg mr-4">
+          <i class="fas fa-users text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Most Popular</p>
+          <p class="text-2xl font-bold text-orange-400">Algebra Guide</p>
+          <p class="text-xs text-white/60">1,248 views</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resource Categories -->
+  <div class="mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-folder mr-3"></i>Resource Categories
+    </h2>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4">
+          <i class="fas fa-calculator text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg mb-2">Mathematics</h3>
+        <p class="text-white/70 text-sm">327 resources</p>
+        <div class="mt-4 flex items-center text-xs text-white/60">
+          <span class="mr-2">Updated: 2 days ago</span>
+          <div class="w-16 bg-gray-700 rounded-full h-2">
+            <div class="bg-blue-600 h-2 rounded-full" style="width: 75%"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4">
+          <i class="fas fa-flask text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg mb-2">Science</h3>
+        <p class="text-white/70 text-sm">289 resources</p>
+        <div class="mt-4 flex items-center text-xs text-white/60">
+          <span class="mr-2">Updated: 1 week ago</span>
+          <div class="w-16 bg-gray-700 rounded-full h-2">
+            <div class="bg-green-600 h-2 rounded-full" style="width: 65%"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mb-4">
+          <i class="fas fa-book-open text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg mb-2">English</h3>
+        <p class="text-white/70 text-sm">245 resources</p>
+        <div class="mt-4 flex items-center text-xs text-white/60">
+          <span class="mr-2">Updated: 3 days ago</span>
+          <div class="w-16 bg-gray-700 rounded-full h-2">
+            <div class="bg-purple-600 h-2 rounded-full" style="width: 85%"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mb-4">
+          <i class="fas fa-globe text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg mb-2">History</h3>
+        <p class="text-white/70 text-sm">187 resources</p>
+        <div class="mt-4 flex items-center text-xs text-white/60">
+          <span class="mr-2">Updated: 5 days ago</span>
+          <div class="w-16 bg-gray-700 rounded-full h-2">
+            <div class="bg-orange-600 h-2 rounded-full" style="width: 55%"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center mb-4">
+          <i class="fas fa-laptop-code text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg mb-2">Computer Science</h3>
+        <p class="text-white/70 text-sm">156 resources</p>
+        <div class="mt-4 flex items-center text-xs text-white/60">
+          <span class="mr-2">Updated: Today</span>
+          <div class="w-16 bg-gray-700 rounded-full h-2">
+            <div class="bg-red-600 h-2 rounded-full" style="width: 90%"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-12 h-12 bg-pink-600 rounded-lg flex items-center justify-center mb-4">
+          <i class="fas fa-palette text-white text-xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg mb-2">Arts</h3>
+        <p class="text-white/70 text-sm">143 resources</p>
+        <div class="mt-4 flex items-center text-xs text-white/60">
+          <span class="mr-2">Updated: 1 week ago</span>
+          <div class="w-16 bg-gray-700 rounded-full h-2">
+            <div class="bg-pink-600 h-2 rounded-full" style="width: 45%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resource List -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-list mr-3"></i>Resource Library
+    </h2>
+    
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-white/20">
+            <th class="text-left py-3 px-4 font-medium text-white/80">Resource Title</th>
+            <th class="text-left py-3 px-4 font-medium text-white/80">Subject</th>
+            <th class="text-left py-3 px-4 font-medium text-white/80">Type</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Grade Level</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Size</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Downloads</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Last Updated</th>
+            <th class="text-center py-3 px-4 font-medium text-white/80">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">
+              <div class="flex items-center">
+                <div class="w-8 h-8 bg-blue-600 rounded mr-3 flex items-center justify-center">
+                  <i class="fas fa-file-pdf text-white text-sm"></i>
+                </div>
+                <span>Algebra I Comprehensive Study Guide</span>
+              </div>
+            </td>
+            <td class="py-4 px-4">Mathematics</td>
+            <td class="py-4 px-4">PDF Document</td>
+            <td class="py-4 px-4 text-center">9-10</td>
+            <td class="py-4 px-4 text-center">12.4 MB</td>
+            <td class="py-4 px-4 text-center">1,248</td>
+            <td class="py-4 px-4 text-center">2024-06-15</td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-download"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-eye"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-edit"></i></button>
+                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">
+              <div class="flex items-center">
+                <div class="w-8 h-8 bg-green-600 rounded mr-3 flex items-center justify-center">
+                  <i class="fas fa-video text-white text-sm"></i>
+                </div>
+                <span>Chemistry Lab Experiments</span>
+              </div>
+            </td>
+            <td class="py-4 px-4">Science</td>
+            <td class="py-4 px-4">Video Series</td>
+            <td class="py-4 px-4 text-center">11-12</td>
+            <td class="py-4 px-4 text-center">245.7 MB</td>
+            <td class="py-4 px-4 text-center">892</td>
+            <td class="py-4 px-4 text-center">2024-06-12</td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-download"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-eye"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-edit"></i></button>
+                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">
+              <div class="flex items-center">
+                <div class="w-8 h-8 bg-purple-600 rounded mr-3 flex items-center justify-center">
+                  <i class="fas fa-file-powerpoint text-white text-sm"></i>
+                </div>
+                <span>Shakespearean Literature Analysis</span>
+              </div>
+            </td>
+            <td class="py-4 px-4">English</td>
+            <td class="py-4 px-4">PowerPoint</td>
+            <td class="py-4 px-4 text-center">10-12</td>
+            <td class="py-4 px-4 text-center">8.2 MB</td>
+            <td class="py-4 px-4 text-center">654</td>
+            <td class="py-4 px-4 text-center">2024-06-10</td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-download"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-eye"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-edit"></i></button>
+                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">
+              <div class="flex items-center">
+                <div class="w-8 h-8 bg-orange-600 rounded mr-3 flex items-center justify-center">
+                  <i class="fas fa-file-excel text-white text-sm"></i>
+                </div>
+                <span>World War II Timeline</span>
+              </div>
+            </td>
+            <td class="py-4 px-4">History</td>
+            <td class="py-4 px-4">Excel Spreadsheet</td>
+            <td class="py-4 px-4 text-center">9-11</td>
+            <td class="py-4 px-4 text-center">2.1 MB</td>
+            <td class="py-4 px-4 text-center">423</td>
+            <td class="py-4 px-4 text-center">2024-06-08</td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-download"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-eye"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-edit"></i></button>
+                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+            <td class="py-4 px-4 font-medium">
+              <div class="flex items-center">
+                <div class="w-8 h-8 bg-red-600 rounded mr-3 flex items-center justify-center">
+                  <i class="fas fa-code text-white text-sm"></i>
+                </div>
+                <span>Python Programming Basics</span>
+              </div>
+            </td>
+            <td class="py-4 px-4">Computer Science</td>
+            <td class="py-4 px-4">Interactive Tutorial</td>
+            <td class="py-4 px-4 text-center">10-12</td>
+            <td class="py-4 px-4 text-center">Online</td>
+            <td class="py-4 px-4 text-center">1,587</td>
+            <td class="py-4 px-4 text-center">2024-06-05</td>
+            <td class="py-4 px-4 text-center">
+              <div class="flex justify-center gap-2">
+                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-external-link-alt"></i></button>
+                <button class="text-green-400 hover:text-green-300"><i class="fas fa-eye"></i></button>
+                <button class="text-purple-400 hover:text-purple-300"><i class="fas fa-edit"></i></button>
+                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-6">
+      <div class="text-sm text-white/70 mb-4 sm:mb-0">
+        Showing 1 to 5 of 1,247 entries
+      </div>
+      <div class="flex gap-2">
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="px-3 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium">1</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">2</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">3</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">...</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">250</button>
+        <button class="px-3 py-2 glass-card rounded-lg text-sm font-medium transition-all hover:bg-white/20">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recently Added Resources -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-clock mr-3"></i>Recently Added
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="glass-card p-4 rounded-lg hover:bg-white/10 transition-all">
+        <div class="flex items-start">
+          <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+            <i class="fas fa-file-pdf text-white"></i>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-medium">Calculus II Practice Problems</h3>
+            <p class="text-sm text-white/70 mt-1">Mathematics • PDF Document</p>
+            <div class="flex items-center justify-between mt-3 text-xs text-white/60">
+              <span>Added 2 days ago</span>
+              <span>8.7 MB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="glass-card p-4 rounded-lg hover:bg-white/10 transition-all">
+        <div class="flex items-start">
+          <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+            <i class="fas fa-video text-white"></i>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-medium">Biology: Cell Structure</h3>
+            <p class="text-sm text-white/70 mt-1">Science • Video Tutorial</p>
+            <div class="flex items-center justify-between mt-3 text-xs text-white/60">
+              <span>Added 3 days ago</span>
+              <span>142 MB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="glass-card p-4 rounded-lg hover:bg-white/10 transition-all">
+        <div class="flex items-start">
+          <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+            <i class="fas fa-book text-white"></i>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-medium">Creative Writing Prompts</h3>
+            <p class="text-sm text-white/70 mt-1">English • DOCX Document</p>
+            <div class="flex items-center justify-between mt-3 text-xs text-white/60">
+              <span>Added 5 days ago</span>
+              <span>1.2 MB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload New Resource Form -->
+  <div class="glass-card rounded-xl p-6">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-upload mr-3"></i>Upload New Resource
+    </h2>
+    
+    <form class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-white/80 mb-2">Resource Title</label>
+          <input type="text" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Enter resource title">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/80 mb-2">Subject</label>
+          <select class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+            <option>Select subject</option>
+            <option>Mathematics</option>
+            <option>Science</option>
+            <option>English</option>
+            <option>History</option>
+            <option>Computer Science</option>
+            <option>Arts</option>
+            <option>Physical Education</option>
+            <option>Foreign Languages</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/80 mb-2">Resource Type</label>
+          <select class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+            <option>Select type</option>
+            <option>Textbook</option>
+            <option>Study Guide</option>
+            <option>Worksheet</option>
+            <option>PowerPoint</option>
+            <option>Video</option>
+            <option>Interactive Content</option>
+            <option>Audio</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/80 mb-2">Grade Level</label>
+          <select class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+            <option>Select grade level</option>
+            <option>Elementary (K-5)</option>
+            <option>Middle School (6-8)</option>
+            <option>High School (9-12)</option>
+            <option>All Grades</option>
+          </select>
+        </div>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-white/80 mb-2">Description</label>
+        <textarea rows="4" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Describe the resource, its purpose, and how it should be used..."></textarea>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-white/80 mb-2">Upload File</label>
+        <div class="border-2 border-dashed border-white/30 rounded-xl p-8 text-center hover:border-white/50 transition-all cursor-pointer">
+          <i class="fas fa-cloud-upload-alt text-4xl text-white/50 mb-4"></i>
+          <p class="text-white/70 mb-2">Drag and drop your file here</p>
+          <p class="text-sm text-white/50 mb-4">or click to browse</p>
+          <p class="text-xs text-white/50">Supported formats: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, MP4, MP3, JPG, PNG</p>
+          <input type="file" class="hidden">
+        </div>
+      </div>
+      
+      <div class="flex flex-wrap gap-4 pt-4">
+        <button type="submit" class="liquid-btn px-6 py-3 rounded-xl font-medium text-white transition-all duration-300 hover:bg-green-600">
+          <i class="fas fa-upload mr-2"></i>Upload Resource
+        </button>
+        <button type="button" class="px-6 py-3 glass-card rounded-xl font-medium text-white transition-all duration-300 hover:bg-white/20">
+          <i class="fas fa-times mr-2"></i>Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Add interactivity to academic resources page
+  const categoryCards = document.querySelectorAll('.glass-card.cursor-pointer');
+  categoryCards.forEach(card => {
+    card.addEventListener('click', function() {
+      const category = this.querySelector('h3').textContent;
+      alert(`Viewing resources for: ${category}`);
+    });
+  });
+  
+  // Add action button functionality
+  const actionButtons = document.querySelectorAll('button[title]');
+  actionButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const action = this.title;
+      alert(`${action} action triggered!`);
+    });
+  });
+  
+  // Add file upload functionality
+  const uploadArea = document.querySelector('.border-dashed');
+  if (uploadArea) {
+    uploadArea.addEventListener('click', function() {
+      const fileInput = this.querySelector('input[type="file"]');
+      if (fileInput) {
+        fileInput.click();
+      }
+    });
+    
+    uploadArea.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      this.classList.add('border-white/70', 'bg-white/5');
+    });
+    
+    uploadArea.addEventListener('dragleave', function() {
+      this.classList.remove('border-white/70', 'bg-white/5');
+    });
+    
+    uploadArea.addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.classList.remove('border-white/70', 'bg-white/5');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        alert(`File selected: ${files[0].name}`);
+      }
+    });
+  }
+  
+  // Add form submission handling
+  const uploadForm = document.querySelector('form');
+  if (uploadForm) {
+    uploadForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      // In a real application, this would submit the form via AJAX
+      alert('Resource uploaded successfully!');
+      // Reset form or redirect as needed
+    });
+  }
+}); // ✅ Closing DOMContentLoaded properly
+</script>
+{% endblock %}

@@ -1,0 +1,576 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}AI Agents - School Management System{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent animate__animated animate__fadeInDown">
+      <i class="fas fa-robot mr-3"></i>AI Agents
+    </h1>
+    <p class="text-white/70 mt-2">Leverage AI-powered agents to enhance school operations, counseling, and support services</p>
+  </div>
+
+  <!-- AI Agent Statistics -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-blue-600 rounded-lg mr-4">
+          <i class="fas fa-robot text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Active Agents</p>
+          <p class="text-2xl font-bold text-blue-400">12</p>
+          <p class="text-xs text-white/60">+2 this month</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-green-600 rounded-lg mr-4">
+          <i class="fas fa-comments text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Conversations</p>
+          <p class="text-2xl font-bold text-green-400">2,487</p>
+          <p class="text-xs text-white/60">This week</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-purple-600 rounded-lg mr-4">
+          <i class="fas fa-users text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Users Served</p>
+          <p class="text-2xl font-bold text-purple-400">1,847</p>
+          <p class="text-xs text-white/60">Students & Staff</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card p-6 rounded-xl">
+      <div class="flex items-center">
+        <div class="p-3 bg-orange-600 rounded-lg mr-4">
+          <i class="fas fa-chart-line text-white text-xl"></i>
+        </div>
+        <div>
+          <p class="text-sm text-white/70">Success Rate</p>
+          <p class="text-2xl font-bold text-orange-400">94%</p>
+          <p class="text-xs text-white/60">User satisfaction</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Agents Grid -->
+  <div class="mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-robot mr-3"></i>Available AI Agents
+    </h2>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- AI Education Counselor / Career Advisor -->
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-graduation-cap text-white text-2xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-2">AI Education Counselor</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Provides career guidance and academic counseling to students</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-comment mr-2"></i>Chat Now
+          </button>
+        </div>
+      </div>
+      
+      <!-- AI Language / Translation Agent -->
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-16 h-16 bg-green-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-language text-white text-2xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-2">AI Language Agent</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Real-time translation and language learning assistance</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-comment mr-2"></i>Chat Now
+          </button>
+        </div>
+      </div>
+      
+      <!-- AI Inventory / Warehouse Agent -->
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-16 h-16 bg-purple-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-boxes text-white text-2xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-2">AI Inventory Agent</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Manages school inventory and tracks resource availability</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-comment mr-2"></i>Chat Now
+          </button>
+        </div>
+      </div>
+      
+      <!-- AI Event Planner / Coordinator -->
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-16 h-16 bg-orange-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-calendar-alt text-white text-2xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-2">AI Event Planner</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Plans and coordinates school events and activities</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-comment mr-2"></i>Chat Now
+          </button>
+        </div>
+      </div>
+      
+      <!-- AI Legal Assistant -->
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-16 h-16 bg-red-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-gavel text-white text-2xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-2">AI Legal Assistant</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Provides guidance on education law and compliance</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-comment mr-2"></i>Chat Now
+          </button>
+        </div>
+      </div>
+      
+      <!-- AI Creative / Content Agent -->
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-16 h-16 bg-teal-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-pen text-white text-2xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-2">AI Creative Agent</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Generates content, designs, and creative materials</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-comment mr-2"></i>Chat Now
+          </button>
+        </div>
+      </div>
+      
+      <!-- AI Healthcare / Medical Agent -->
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-16 h-16 bg-pink-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-heartbeat text-white text-2xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-2">AI Healthcare Agent</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Provides basic medical guidance and health information</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-comment mr-2"></i>Chat Now
+          </button>
+        </div>
+      </div>
+      
+      <!-- AI Financial / Accounting Agent -->
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-16 h-16 bg-indigo-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-dollar-sign text-white text-2xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-2">AI Financial Agent</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Manages finances, budgets, and accounting tasks</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-comment mr-2"></i>Chat Now
+          </button>
+        </div>
+      </div>
+      
+      <!-- AI Tutor / Teacher -->
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-16 h-16 bg-yellow-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-chalkboard-teacher text-white text-2xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-2">AI Tutor</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Provides personalized tutoring and learning support</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-comment mr-2"></i>Chat Now
+          </button>
+        </div>
+      </div>
+      
+      <!-- AI Customer Support Agent -->
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-16 h-16 bg-cyan-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-headset text-white text-2xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-2">AI Support Agent</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Handles inquiries and provides technical support</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-comment mr-2"></i>Chat Now
+          </button>
+        </div>
+      </div>
+      
+      <!-- AI Manager / Task Coordinator -->
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-16 h-16 bg-lime-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-tasks text-white text-2xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-2">AI Task Manager</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Coordinates tasks, schedules, and project management</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-lime-600 hover:bg-lime-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-comment mr-2"></i>Chat Now
+          </button>
+        </div>
+      </div>
+      
+      <!-- AI Receptionist / Front Desk Agent -->
+      <div class="glass-card rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
+        <div class="w-16 h-16 bg-rose-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+          <i class="fas fa-door-open text-white text-2xl"></i>
+        </div>
+        <h3 class="font-semibold text-lg text-center mb-2">AI Receptionist</h3>
+        <p class="text-sm text-white/70 text-center mb-4">Manages front desk operations and visitor services</p>
+        <div class="flex justify-center">
+          <button class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm font-medium transition-all">
+            <i class="fas fa-comment mr-2"></i>Chat Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent AI Interactions -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <!-- Recent Interactions -->
+    <div class="lg:col-span-2">
+      <div class="glass-card rounded-xl p-6">
+        <h2 class="text-2xl font-semibold mb-6 flex items-center">
+          <i class="fas fa-clock mr-3"></i>Recent AI Interactions
+        </h2>
+        
+        <div class="space-y-4">
+          <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fas fa-graduation-cap text-white"></i>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between">
+                <h3 class="font-medium">Career Guidance Session</h3>
+                <span class="text-xs text-white/60">2 hours ago</span>
+              </div>
+              <p class="text-sm text-white/70 mt-1">AI Education Counselor provided career advice to Emma Johnson (Grade 11) for college applications.</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <span class="px-2 py-1 bg-blue-600 text-white text-xs rounded">Student: Emma Johnson</span>
+                <span class="px-2 py-1 bg-green-600 text-white text-xs rounded">Agent: Education Counselor</span>
+                <span class="px-2 py-1 bg-gray-600 text-white text-xs rounded">Duration: 15 min</span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-play"></i></button>
+            </div>
+          </div>
+          
+          <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+            <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fas fa-language text-white"></i>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between">
+                <h3 class="font-medium">Spanish Translation Request</h3>
+                <span class="text-xs text-white/60">1 day ago</span>
+              </div>
+              <p class="text-sm text-white/70 mt-1">AI Language Agent translated parent newsletter from English to Spanish for 247 parents.</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <span class="px-2 py-1 bg-green-600 text-white text-xs rounded">Agent: Language Agent</span>
+                <span class="px-2 py-1 bg-purple-600 text-white text-xs rounded">Task: Translation</span>
+                <span class="px-2 py-1 bg-gray-600 text-white text-xs rounded">Words: 1,247</span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-download"></i></button>
+            </div>
+          </div>
+          
+          <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+            <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fas fa-boxes text-white"></i>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between">
+                <h3 class="font-medium">Inventory Audit Completed</h3>
+                <span class="text-xs text-white/60">2 days ago</span>
+              </div>
+              <p class="text-sm text-white/70 mt-1">AI Inventory Agent completed monthly audit of science lab equipment and generated report.</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <span class="px-2 py-1 bg-purple-600 text-white text-xs rounded">Agent: Inventory Agent</span>
+                <span class="px-2 py-1 bg-orange-600 text-white text-xs rounded">Location: Science Lab</span>
+                <span class="px-2 py-1 bg-gray-600 text-white text-xs rounded">Items: 342</span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-file-pdf"></i></button>
+            </div>
+          </div>
+          
+          <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+            <div class="w-10 h-10 bg-orange-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fas fa-calendar-alt text-white"></i>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between">
+                <h3 class="font-medium">Event Planning: Science Fair</h3>
+                <span class="text-xs text-white/60">3 days ago</span>
+              </div>
+              <p class="text-sm text-white/70 mt-1">AI Event Planner created comprehensive plan for Annual Science Fair with budget and timeline.</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <span class="px-2 py-1 bg-orange-600 text-white text-xs rounded">Agent: Event Planner</span>
+                <span class="px-2 py-1 bg-blue-600 text-white text-xs rounded">Event: Science Fair</span>
+                <span class="px-2 py-1 bg-gray-600 text-white text-xs rounded">Budget: $2,400</span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
+            </div>
+          </div>
+          
+          <div class="flex items-start p-4 glass-card rounded-lg hover:bg-white/10 transition-all">
+            <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fas fa-gavel text-white"></i>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between">
+                <h3 class="font-medium">Compliance Check: Student Records</h3>
+                <span class="text-xs text-white/60">4 days ago</span>
+              </div>
+              <p class="text-sm text-white/70 mt-1">AI Legal Assistant reviewed student records for FERPA compliance and identified 3 areas for improvement.</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <span class="px-2 py-1 bg-red-600 text-white text-xs rounded">Agent: Legal Assistant</span>
+                <span class="px-2 py-1 bg-teal-600 text-white text-xs rounded">Compliance: FERPA</span>
+                <span class="px-2 py-1 bg-gray-600 text-white text-xs rounded">Records: 1,247</span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-file-alt"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Agent Performance -->
+  <div class="glass-card rounded-xl p-6">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-chart-bar mr-3"></i>AI Agent Performance Metrics
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="glass-card p-6 rounded-lg">
+        <h3 class="font-medium mb-3">Top Performing Agents</h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+              <span>Education Counselor</span>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">98% satisfaction</div>
+              <div class="text-xs text-white/60">427 interactions</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+              <span>Tutor</span>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">96% satisfaction</div>
+              <div class="text-xs text-white/60">389 interactions</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-3 h-3 bg-purple-500 rounded-full mr-3"></div>
+              <span>Support Agent</span>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">95% satisfaction</div>
+              <div class="text-xs text-white/60">512 interactions</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg">
+        <h3 class="font-medium mb-3">Usage by Department</h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-3 h-3 bg-orange-500 rounded-full mr-3"></div>
+              <span>Academic</span>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">42%</div>
+              <div class="text-xs text-white/60">1,042 interactions</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
+              <span>Administration</span>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">28%</div>
+              <div class="text-xs text-white/60">697 interactions</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-3 h-3 bg-teal-500 rounded-full mr-3"></div>
+              <span>Student Services</span>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">18%</div>
+              <div class="text-xs text-white/60">447 interactions</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-3 h-3 bg-indigo-500 rounded-full mr-3"></div>
+              <span>Operations</span>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">12%</div>
+              <div class="text-xs text-white/60">298 interactions</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="glass-card p-6 rounded-lg">
+        <h3 class="font-medium mb-3">Response Time Metrics</h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-3 h-3 bg-yellow-500 rounded-full mr-3"></div>
+              <span>Average Response Time</span>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">2.4 seconds</div>
+              <div class="text-xs text-white/60">All agents</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-3 h-3 bg-pink-500 rounded-full mr-3"></div>
+              <span>Fastest Agent</span>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">1.2 seconds</div>
+              <div class="text-xs text-white/60">Support Agent</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-3 h-3 bg-cyan-500 rounded-full mr-3"></div>
+              <span>Slowest Agent</span>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">4.8 seconds</div>
+              <div class="text-xs text-white/60">Legal Assistant</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-3 h-3 bg-lime-500 rounded-full mr-3"></div>
+              <span>95th Percentile</span>
+            </div>
+            <div class="text-right">
+              <div class="font-medium">8.7 seconds</div>
+              <div class="text-xs text-white/60">Response time</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // AI Agent click functionality
+  const aiAgentCards = document.querySelectorAll('.cursor-pointer');
+  aiAgentCards.forEach(card => {
+    if (card.querySelector('.font-semibold') && card.closest('.glass-card').querySelector('h2') && card.closest('.glass-card').querySelector('h2').textContent.includes('Available AI Agents')) {
+      card.addEventListener('click', function() {
+        const agentName = this.querySelector('.font-semibold').textContent;
+        alert(`Connecting to ${agentName}...`);
+      });
+    }
+  });
+  
+  // Play interaction functionality
+  const playButtons = document.querySelectorAll('.text-blue-400 .fa-play');
+  playButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const interaction = this.closest('.flex').querySelector('h3').textContent;
+      alert(`Playing recording of: ${interaction}`);
+    });
+  });
+  
+  // Download functionality
+  const downloadButtons = document.querySelectorAll('.text-blue-400 .fa-download');
+  downloadButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const interaction = this.closest('.flex').querySelector('h3').textContent;
+      alert(`Downloading: ${interaction}`);
+    });
+  });
+  
+  // PDF functionality
+  const pdfButtons = document.querySelectorAll('.text-blue-400 .fa-file-pdf');
+  pdfButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const interaction = this.closest('.flex').querySelector('h3').textContent;
+      alert(`Generating PDF for: ${interaction}`);
+    });
+  });
+  
+  // Edit functionality
+  const editButtons = document.querySelectorAll('.text-blue-400 .fa-edit');
+  editButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const interaction = this.closest('.flex').querySelector('h3').textContent;
+      alert(`Editing: ${interaction}`);
+    });
+  });
+  
+  // File functionality
+  const fileButtons = document.querySelectorAll('.text-blue-400 .fa-file-alt');
+  fileButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const interaction = this.closest('.flex').querySelector('h3').textContent;
+      alert(`Viewing compliance report for: ${interaction}`);
+    });
+  });
+});
+</script>
+{% endblock %}

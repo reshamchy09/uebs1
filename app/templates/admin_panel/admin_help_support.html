@@ -1,0 +1,427 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Help & Support - School Management System{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent animate__animated animate__fadeInDown">
+      <i class="fas fa-life-ring mr-3"></i>Help & Support Center
+    </h1>
+    <p class="text-white/70 mt-2">Find answers, get assistance, and resolve issues with our comprehensive support resources</p>
+  </div>
+
+  <!-- Search and Quick Actions -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <div class="relative mb-6">
+      <input type="text" placeholder="Search for help articles, FAQs, or support topics..." class="w-full glass-card text-white placeholder-white/50 px-6 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 text-lg">
+      <button class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white">
+        <i class="fas fa-search text-xl"></i>
+      </button>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="glass-card p-4 rounded-lg text-center cursor-pointer hover:bg-white/10 transition-all">
+        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i class="fas fa-question text-xl"></i>
+        </div>
+        <h3 class="font-medium">Browse FAQs</h3>
+        <p class="text-sm text-white/60 mt-1">Find answers to common questions</p>
+      </div>
+      <div class="glass-card p-4 rounded-lg text-center cursor-pointer hover:bg-white/10 transition-all">
+        <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i class="fas fa-video text-xl"></i>
+        </div>
+        <h3 class="font-medium">Watch Tutorials</h3>
+        <p class="text-sm text-white/60 mt-1">Step-by-step video guides</p>
+      </div>
+      <div class="glass-card p-4 rounded-lg text-center cursor-pointer hover:bg-white/10 transition-all">
+        <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i class="fas fa-headset text-xl"></i>
+        </div>
+        <h3 class="font-medium">Contact Support</h3>
+        <p class="text-sm text-white/60 mt-1">Get personalized assistance</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Categories -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+    <!-- Getting Started -->
+    <div class="glass-card rounded-xl p-6">
+      <div class="flex items-center mb-4">
+        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
+          <i class="fas fa-rocket text-white"></i>
+        </div>
+        <h2 class="text-xl font-semibold">Getting Started</h2>
+      </div>
+      <ul class="space-y-3">
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-blue-400 mr-3"></i>
+            <span class="group-hover:underline">First-time setup guide</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-blue-400 mr-3"></i>
+            <span class="group-hover:underline">Navigating the dashboard</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-blue-400 mr-3"></i>
+            <span class="group-hover:underline">User roles and permissions</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-blue-400 mr-3"></i>
+            <span class="group-hover:underline">Customizing your profile</span>
+          </div>
+        </li>
+        <li class="text-right mt-2">
+          <a href="#" class="text-blue-400 hover:text-blue-300 text-sm font-medium">View all →</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Common Issues -->
+    <div class="glass-card rounded-xl p-6">
+      <div class="flex items-center mb-4">
+        <div class="w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mr-3">
+          <i class="fas fa-exclamation-triangle text-white"></i>
+        </div>
+        <h2 class="text-xl font-semibold">Common Issues</h2>
+      </div>
+      <ul class="space-y-3">
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-orange-400 mr-3"></i>
+            <span class="group-hover:underline">Login and authentication problems</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-orange-400 mr-3"></i>
+            <span class="group-hover:underline">Data not saving correctly</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-orange-400 mr-3"></i>
+            <span class="group-hover:underline">Report generation errors</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-orange-400 mr-3"></i>
+            <span class="group-hover:underline">Slow performance issues</span>
+          </div>
+        </li>
+        <li class="text-right mt-2">
+          <a href="#" class="text-orange-400 hover:text-orange-300 text-sm font-medium">View all →</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Advanced Features -->
+    <div class="glass-card rounded-xl p-6">
+      <div class="flex items-center mb-4">
+        <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+          <i class="fas fa-cogs text-white"></i>
+        </div>
+        <h2 class="text-xl font-semibold">Advanced Features</h2>
+      </div>
+      <ul class="space-y-3">
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-purple-400 mr-3"></i>
+            <span class="group-hover:underline">Custom report creation</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-purple-400 mr-3"></i>
+            <span class="group-hover:underline">Bulk data import/export</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-purple-400 mr-3"></i>
+            <span class="group-hover:underline">API integration guide</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-purple-400 mr-3"></i>
+            <span class="group-hover:underline">Custom workflow automation</span>
+          </div>
+        </li>
+        <li class="text-right mt-2">
+          <a href="#" class="text-purple-400 hover:text-purple-300 text-sm font-medium">View all →</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Contact Support Section -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-headset text-green-400 mr-3"></i>
+      Contact Support
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Contact Methods -->
+      <div>
+        <h3 class="text-lg font-medium mb-4">Get in Touch</h3>
+        <div class="space-y-4">
+          <div class="flex items-start p-4 glass-card rounded-lg">
+            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fas fa-envelope text-white"></i>
+            </div>
+            <div>
+              <h4 class="font-medium">Email Support</h4>
+              <p class="text-white/70">support@uebs.edu</p>
+              <p class="text-sm text-white/60 mt-1">Response within 24 hours</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start p-4 glass-card rounded-lg">
+            <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fas fa-phone text-white"></i>
+            </div>
+            <div>
+              <h4 class="font-medium">Phone Support</h4>
+              <p class="text-white/70">+1 (800) 123-4567</p>
+              <p class="text-sm text-white/60 mt-1">Mon-Fri, 9AM-5PM EST</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start p-4 glass-card rounded-lg">
+            <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fas fa-comments text-white"></i>
+            </div>
+            <div>
+              <h4 class="font-medium">Live Chat</h4>
+              <p class="text-white/70">Available now</p>
+              <p class="text-sm text-white/60 mt-1">Click the chat icon in bottom right</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Support Form -->
+      <div>
+        <h3 class="text-lg font-medium mb-4">Submit a Ticket</h3>
+        <form class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2">Subject</label>
+            <input type="text" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Brief description of your issue">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2">Category</label>
+            <select class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+              <option>Select a category</option>
+              <option>Technical Issue</option>
+              <option>Billing Inquiry</option>
+              <option>Feature Request</option>
+              <option>Account Management</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2">Priority</label>
+            <div class="flex space-x-4">
+              <label class="flex items-center cursor-pointer">
+                <input type="radio" name="priority" value="low" class="mr-2">
+                <span class="text-white/70">Low</span>
+              </label>
+              <label class="flex items-center cursor-pointer">
+                <input type="radio" name="priority" value="medium" class="mr-2" checked>
+                <span class="text-white/70">Medium</span>
+              </label>
+              <label class="flex items-center cursor-pointer">
+                <input type="radio" name="priority" value="high" class="mr-2">
+                <span class="text-white/70">High</span>
+              </label>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2">Description</label>
+            <textarea rows="4" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Please provide detailed information about your issue..."></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2">Attachments (Optional)</label>
+            <input type="file" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          </div>
+          <div class="pt-2">
+            <button type="submit" class="liquid-btn w-full px-6 py-3 rounded-xl font-medium text-white transition-all duration-300 hover:bg-purple-600">
+              <i class="fas fa-paper-plane mr-2"></i>Submit Ticket
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Knowledge Base -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-book text-yellow-400 mr-3"></i>
+      Knowledge Base
+    </h2>
+    
+    <div class="space-y-4">
+      <div class="p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex items-center justify-between">
+          <h3 class="font-medium">How to Generate Student Reports</h3>
+          <span class="px-3 py-1 bg-blue-600 text-white text-xs rounded-full">Guide</span>
+        </div>
+        <p class="text-sm text-white/60 mt-2">Step-by-step instructions for generating comprehensive student performance reports with customizable filters and export options.</p>
+        <div class="flex items-center justify-between mt-3 text-xs text-white/50">
+          <span>Updated 2 days ago</span>
+          <span>5 min read</span>
+        </div>
+      </div>
+      
+      <div class="p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex items-center justify-between">
+          <h3 class="font-medium">Setting Up Automated Fee Reminders</h3>
+          <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Tutorial</span>
+        </div>
+        <p class="text-sm text-white/60 mt-2">Learn how to configure automated email and SMS reminders for pending fee payments to reduce late payments and improve cash flow.</p>
+        <div class="flex items-center justify-between mt-3 text-xs text-white/50">
+          <span>Updated 1 week ago</span>
+          <span>8 min read</span>
+        </div>
+      </div>
+      
+      <div class="p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex items-center justify-between">
+          <h3 class="font-medium">Troubleshooting Attendance Sync Issues</h3>
+          <span class="px-3 py-1 bg-orange-600 text-white text-xs rounded-full">Troubleshooting</span>
+        </div>
+        <p class="text-sm text-white/60 mt-2">Common solutions for resolving attendance data synchronization problems between different devices and the central database.</p>
+        <div class="flex items-center justify-between mt-3 text-xs text-white/50">
+          <span>Updated 3 days ago</span>
+          <span>4 min read</span>
+        </div>
+      </div>
+      
+      <div class="p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex items-center justify-between">
+          <h3 class="font-medium">Customizing the Gradebook for Different Subjects</h3>
+          <span class="px-3 py-1 bg-purple-600 text-white text-xs rounded-full">Advanced</span>
+        </div>
+        <p class="text-sm text-white/60 mt-2">Advanced configuration options for tailoring the gradebook to specific subject requirements, including custom grading scales and weightings.</p>
+        <div class="flex items-center justify-between mt-3 text-xs text-white/50">
+          <span>Updated 5 days ago</span>
+          <span>12 min read</span>
+        </div>
+      </div>
+      
+      <div class="text-center pt-4">
+        <button class="px-6 py-3 border border-white/30 rounded-xl hover:bg-white/10 transition-all">
+          <i class="fas fa-plus mr-2"></i>View All Articles
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video Tutorials -->
+  <div class="glass-card rounded-xl p-6">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-video text-red-400 mr-3"></i>
+      Video Tutorials
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="group cursor-pointer">
+        <div class="relative rounded-lg overflow-hidden mb-3">
+          <img src="https://via.placeholder.com/400x225/1a1a2e/ffffff?text=Getting+Started" alt="Getting Started" class="w-full h-48 object-cover">
+          <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <i class="fas fa-play text-white text-2xl"></i>
+          </div>
+          <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+            5:23
+          </div>
+        </div>
+        <h3 class="font-medium">Getting Started with UEBS</h3>
+        <p class="text-sm text-white/60 mt-1">Learn the basics of navigating the system</p>
+      </div>
+      
+      <div class="group cursor-pointer">
+        <div class="relative rounded-lg overflow-hidden mb-3">
+          <img src="https://via.placeholder.com/400x225/1a1a2e/ffffff?text=Student+Management" alt="Student Management" class="w-full h-48 object-cover">
+          <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <i class="fas fa-play text-white text-2xl"></i>
+          </div>
+          <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+            8:45
+          </div>
+        </div>
+        <h3 class="font-medium">Student Management</h3>
+        <p class="text-sm text-white/60 mt-1">Add, edit, and manage student records</p>
+      </div>
+      
+      <div class="group cursor-pointer">
+        <div class="relative rounded-lg overflow-hidden mb-3">
+          <img src="https://via.placeholder.com/400x225/1a1a2e/ffffff?text=Reporting+Tools" alt="Reporting Tools" class="w-full h-48 object-cover">
+          <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <i class="fas fa-play text-white text-2xl"></i>
+          </div>
+          <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+            12:18
+          </div>
+        </div>
+        <h3 class="font-medium">Advanced Reporting</h3>
+        <p class="text-sm text-white/60 mt-1">Create custom reports and dashboards</p>
+      </div>
+    </div>
+    
+    <div class="text-center pt-6">
+      <button class="px-6 py-3 border border-white/30 rounded-xl hover:bg-white/10 transition-all">
+        <i class="fas fa-plus mr-2"></i>View All Videos
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Add interactivity to help support page
+document.addEventListener('DOMContentLoaded', function() {
+  // Make FAQ items clickable
+  const faqItems = document.querySelectorAll('.group.cursor-pointer');
+  faqItems.forEach(item => {
+    item.addEventListener('click', function() {
+      // In a real application, this would navigate to the specific help article
+      console.log('Clicked on:', this.querySelector('span')?.textContent);
+    });
+  });
+  
+  // Add form submission handling
+  const supportForm = document.querySelector('form');
+  if (supportForm) {
+    supportForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      // In a real application, this would submit the form via AJAX
+      alert('Support ticket submitted successfully! Our team will respond within 24 hours.');
+      this.reset();
+    });
+  }
+  
+  // Add video tutorial click handling
+  const videoTutorials = document.querySelectorAll('.group.cursor-pointer');
+  videoTutorials.forEach(video => {
+    video.addEventListener('click', function() {
+      // In a real application, this would open a video player
+      const title = this.querySelector('h3')?.textContent;
+      alert(`Playing video: ${title}`);
+    });
+  });
+});
+</script>
+{% endblock %}

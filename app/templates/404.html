@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Page Not Found - Unison English Boarding School{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* 404 Page Specific Styles */
+    .error-container {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    }
+
+    .error-content {
+        text-align: center;
+        max-width: 700px;
+        padding: 3rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .error-content::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #1e3c72, #2a5298);
+    }
+
+    .error-illustration {
+        max-width: 300px;
+        margin: 0 auto 2rem;
+    }
+
+    .error-code {
+        font-size: 6rem;
+        font-weight: 800;
+        color: #1e3c72;
+        margin: 0;
+        line-height: 1;
+        text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .error-title {
+        font-size: 2rem;
+        color: #2a5298;
+        margin: 1rem 0;
+        font-weight: 600;
+    }
+
+    .error-message {
+        font-size: 1.1rem;
+        color: #555;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .error-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 20px rgba(30, 60, 114, 0.4);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #2a5298;
+        border: 2px solid #2a5298;
+    }
+
+    .btn-secondary:hover {
+        background: #f8f9fa;
+        transform: translateY(-2px);
+        color: #2a5298;
+    }
+
+    .btn-icon {
+        margin-right: 8px;
+    }
+
+    /* Search box */
+    .search-box {
+        max-width: 400px;
+        margin: 2rem auto;
+        position: relative;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.8rem 1.5rem;
+        padding-right: 50px;
+        border: 2px solid #e2e8f0;
+        border-radius: 50px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #2a5298;
+        box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.2);
+    }
+
+    .search-button {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        background: #2a5298;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .search-button:hover {
+        background: #1e3c72;
+    }
+
+    /* Quick links */
+    .quick-links {
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        border-top: 1px solid #eee;
+    }
+
+    .quick-links h3 {
+        font-size: 1.2rem;
+        color: #1e3c72;
+        margin-bottom: 1.2rem;
+    }
+
+    .links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+
+    .link-item {
+        padding: 0.8rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        transition: all 0.3s;
+        text-align: center;
+    }
+
+    .link-item:hover {
+        background: #e9ecef;
+        transform: translateY(-3px);
+    }
+
+    .link-item a {
+        color: #2a5298;
+        text-decoration: none;
+        font-weight: 500;
+        display: block;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .error-content {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+        }
+
+        .error-code {
+            font-size: 4rem;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+        }
+
+        .error-actions {
+            flex-direction: column;
+        }
+
+        .btn-primary, .btn-secondary {
+            width: 100%;
+        }
+
+        .error-illustration {
+            max-width: 200px;
+        }
+    }
+
+    /* Animation */
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .error-illustration {
+        animation: float 5s ease-in-out infinite;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-content" data-aos="zoom-in">
+        <div class="error-illustration">
+            <svg viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="250" cy="150" r="120" fill="#f0f4ff" />
+                <circle cx="250" cy="150" r="100" fill="#d6e4ff" />
+                <text x="250" y="150" text-anchor="middle" dominant-baseline="middle" font-size="80" font-weight="700" fill="#1e3c72">404</text>
+                <path d="M180,80 L220,120" stroke="#e74c3c" stroke-width="8" stroke-linecap="round" />
+                <path d="M220,80 L180,120" stroke="#e74c3c" stroke-width="8" stroke-linecap="round" />
+                <path d="M320,80 L280,120" stroke="#e74c3c" stroke-width="8" stroke-linecap="round" />
+                <path d="M280,80 L320,120" stroke="#e74c3c" stroke-width="8" stroke-linecap="round" />
+                <path d="M200,200 Q250,230 300,200" stroke="#1e3c72" stroke-width="8" fill="none" stroke-linecap="round" />
+            </svg>
+        </div>
+        
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">Page Not Found</h2>
+        
+        <p class="error-message">
+            Sorry, the page you are looking for doesn't exist or has been moved. 
+            Please check the URL or try using the search below.
+        </p>
+
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Search our website...">
+            <button class="search-button">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <div class="error-actions">
+            <a href="{% url 'home' %}" class="btn-primary">
+                <i class="fas fa-home btn-icon"></i> Go to Homepage
+            </a>
+            <a href="{% url 'contact' %}" class="btn-secondary">
+                <i class="fas fa-envelope btn-icon"></i> Contact Support
+            </a>
+        </div>
+
+        <div class="quick-links">
+            <h3>Popular Pages</h3>
+            <div class="links-grid">
+                <div class="link-item">
+                    <a href="{% url 'about' %}">About Us</a>
+                </div>
+                <div class="link-item">
+                    <a href="{% url 'academics' %}">Academics</a>
+                </div>
+                <div class="link-item">
+                    <a href="{% url 'admissions' %}">Admissions</a>
+                </div>
+                <div class="link-item">
+                    <a href="{% url 'facilities' %}">Facilities</a>
+                </div>
+                <div class="link-item">
+                    <a href="{% url 'events' %}">Events</a>
+                </div>
+                <div class="link-item">
+                    <a href="{% url 'faculty' %}">Faculty</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        const searchButton = document.querySelector('.search-button');
+        
+        searchButton.addEventListener('click', function() {
+            performSearch();
+        });
+        
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query) {
+                // In a real application, this would redirect to search results
+                alert('Searching for: ' + query + '\nThis would redirect to search results in a live site.');
+                // window.location.href = '/search/?q=' + encodeURIComponent(query);
+            }
+        }
+        
+        // Initialize animations
+        if (typeof AOS !== 'undefined') {
+            AOS.init({
+                duration: 1000,
+                easing: 'ease-in-out',
+                once: true
+            });
+        }
+    });
+</script>
+{% endblock %}

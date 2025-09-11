@@ -1,0 +1,280 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Add New Student - UEBS{% endblock %}
+
+{% block content %}
+<!-- Top Navbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+  <div class="mt-12 md:mt-0">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Add New Student</h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">Fill in the student details below</p>
+  </div>
+  <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+    <div class="hidden md:block relative flex-1 max-w-md">
+      <input type="text" placeholder="Search..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+      <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative md:hidden">
+      <i class="fas fa-search text-sm sm:text-base"></i>
+    </button>
+    <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative">
+      <i class="fas fa-history text-sm sm:text-base"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile search bar -->
+<div class="md:hidden mb-4">
+  <div class="relative">
+    <input type="text" placeholder="Search..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+    <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Student Form Container -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp">
+  <form id="studentForm" class="space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-white/80 mb-2">Full Name</label>
+        <input type="text" id="fullName" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Full Name" required>
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Date of Birth</label>
+        <input type="date" id="dob" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" required>
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Gender</label>
+        <select id="gender" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" required>
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Class/Grade</label>
+        <input type="text" id="classGrade" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Class/Grade" required>
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Section (Optional)</label>
+        <input type="text" id="section" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Section">
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Parent/Guardian Name</label>
+        <input type="text" id="parentName" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Parent/Guardian Name" required>
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Contact Number</label>
+        <input type="text" id="contact" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Contact Number" required>
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Email (Optional)</label>
+        <input type="email" id="email" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Email">
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-white/80 mb-2">Address</label>
+        <input type="text" id="address" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Address" required>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-white/80 mb-2">Student Photo</label>
+        <div class="glass-card rounded-xl p-4 flex items-center justify-center border-2 border-dashed border-white/20">
+          <input type="file" id="image" accept="image/*" class="hidden">
+          <label for="image" class="cursor-pointer text-center">
+            <i class="fas fa-camera text-3xl text-purple-400 mb-2"></i>
+            <p class="text-white/70">Click to upload photo</p>
+            <p class="text-xs text-white/50 mt-1">JPG, PNG (Max 2MB)</p>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-4">
+      <button type="submit" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 w-full">
+        <i class="fas fa-user-plus mr-2"></i> Add Student
+      </button>
+      <p class="text-white/50 text-sm mt-3">
+        Username will be auto-generated. <br>
+        Default password: UEBS@123. Student must change it on first login.
+      </p>
+    </div>
+  </form>
+</div>
+
+<!-- History Section -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mt-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-4 sm:mb-6 flex items-center">
+    <i class="fas fa-history text-purple-400 mr-3"></i> Recently Added Students
+  </h3>
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80 text-sm sm:text-base">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-2 sm:px-4">Name</th>
+          <th class="text-left py-3 px-2 sm:px-4">Class</th>
+          <th class="text-left py-3 px-2 sm:px-4">Added On</th>
+          <th class="text-left py-3 px-2 sm:px-4">Status</th>
+        </tr>
+      </thead>
+      <tbody id="recentStudents"></tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+
+<script>
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+  authDomain: "uebs-school.firebaseapp.com",
+  projectId: "uebs-school",
+  storageBucket: "uebs-school.firebasestorage.app",
+  messagingSenderId: "740325293639",
+  appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+  measurementId: "G-T7YEBMNHBH"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const storage = firebase.storage();
+const auth = firebase.auth();
+
+// Generate username
+function generateUsername(fullName) {
+  const cleanName = fullName.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const randomNum = Math.floor(1000 + Math.random() * 9000);
+  let username = cleanName + randomNum;
+  if (username.length < 7) username += 'user'.slice(0, 7 - username.length);
+  return username;
+}
+
+// Add recent student to table
+function addRecentStudent(name, classGrade, dateAdded) {
+  const date = new Date(dateAdded).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+  const row = `
+    <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+      <td class="py-3 px-2 sm:px-4">${name}</td>
+      <td class="py-3 px-2 sm:px-4">${classGrade}</td>
+      <td class="py-3 px-2 sm:px-4">${date}</td>
+      <td class="py-3 px-2 sm:px-4">
+        <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-xs">Active</span>
+      </td>
+    </tr>`;
+  document.getElementById('recentStudents').insertAdjacentHTML('afterbegin', row);
+}
+
+// Load recent students
+function loadRecentStudents() {
+  const recentStudentsTable = document.getElementById('recentStudents');
+  recentStudentsTable.innerHTML = ''; // Clear existing rows to prevent duplicates
+  db.ref('students')
+    .orderByChild('dateAdded')
+    .limitToLast(5)
+    .once('value', snapshot => {
+      const students = [];
+      snapshot.forEach(child => students.push(child.val()));
+      if (students.length === 0) {
+        recentStudentsTable.innerHTML = `
+          <tr>
+            <td colspan="4" class="py-3 px-4 text-center text-white/50">No students added yet.</td>
+          </tr>`;
+      } else {
+        students.reverse().forEach(s => {
+          // Sanitize data to prevent XSS and ensure consistency
+          const name = s.fullName ? s.fullName.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Unknown';
+          const classGrade = s.classGrade ? s.classGrade.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'N/A';
+          const dateAdded = s.dateAdded || new Date().toISOString();
+          addRecentStudent(name, classGrade, dateAdded);
+        });
+      }
+    }, err => {
+      console.error('Error loading recent students:', err.message);
+      recentStudentsTable.innerHTML = `
+        <tr>
+          <td colspan="4" class="py-3 px-4 text-center text-red-400">Error loading recent students: ${err.message}</td>
+        </tr>`;
+    });
+}
+
+// Form submission handler
+document.getElementById('studentForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const fullName = document.getElementById('fullName').value.trim();
+  const dob = document.getElementById('dob').value;
+  const gender = document.getElementById('gender').value;
+  const classGrade = document.getElementById('classGrade').value.trim();
+  const section = document.getElementById('section').value.trim();
+  const parentName = document.getElementById('parentName').value.trim();
+  const contact = document.getElementById('contact').value.trim();
+  let email = document.getElementById('email').value.trim();
+  const address = document.getElementById('address').value.trim();
+  const imageFile = document.getElementById('image').files[0];
+
+  const username = generateUsername(fullName);
+  const password = "UEBS@123";
+
+  if (email === '') email = `${username}@uebs.school`;
+
+  try {
+    // Save student data to Firebase
+    async function saveData(imageUrl = '') {
+      const userId = db.ref().child('students').push().key;
+      const studentData = {
+        username,
+        password,
+        fullName,
+        dob,
+        gender,
+        classGrade,
+        section,
+        parentName,
+        contact,
+        email,
+        address,
+        imageUrl,
+        status: "Active",
+        dateAdded: new Date().toISOString()
+      };
+
+      await db.ref(`students/${userId}`).set(studentData);
+      await auth.createUserWithEmailAndPassword(email, password);
+      alert(`Student added successfully!\nUsername: ${username}\nPassword: ${password}\nEmail: ${email}`);
+      document.getElementById('studentForm').reset();
+      loadRecentStudents(); // Refresh the table after adding a student
+    }
+
+    // Handle image upload if provided
+    if (imageFile) {
+      const storageRef = storage.ref(`students/${username}_${imageFile.name}`);
+      const snapshot = await storageRef.put(imageFile);
+      const imageUrl = await snapshot.ref.getDownloadURL();
+      await saveData(imageUrl);
+    } else {
+      await saveData();
+    }
+  } catch (err) {
+    console.error('Error adding student:', err.message);
+    alert(`Error adding student: ${err.message}`);
+  }
+});
+
+// Load recent students on page load
+document.addEventListener('DOMContentLoaded', loadRecentStudents);
+</script>
+{% endblock %}

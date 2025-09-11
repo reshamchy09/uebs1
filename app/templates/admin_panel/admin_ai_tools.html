@@ -1,0 +1,137 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}AI Tools Directory - UEBS{% endblock %}
+
+{% block content %}
+<div class="wrap max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+  <header class="mb-6 sm:mb-8">
+    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+      AI Tools Directory
+    </h1>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">
+      Quick links to popular AI tools: Chatbots, Text-to-Video, Text-to-Speech, Text-to-Image, and more. Use search or filter by category.
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-[1fr_280px] gap-4 mt-4">
+      <div class="relative">
+        <input 
+          id="q" 
+          type="search" 
+          placeholder="Search tools... (e.g., voice, video, chatbot)" 
+          class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400"
+        >
+        <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/70">
+          <i class="fas fa-search"></i>
+        </span>
+      </div>
+      <select 
+        id="cat" 
+        class="glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400"
+        aria-label="Filter by category"
+      >
+        <option value="all">All Categories</option>
+        <option value="chatbot">AI Chatbots</option>
+        <option value="text-to-video">Text to Video</option>
+        <option value="text-to-speech">Text to Speech</option>
+        <option value="text-to-image">Text to Image</option>
+        <option value="other">Other Tools</option>
+      </select>
+    </div>
+  </header>
+
+  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6" id="cards"></section>
+
+  <footer class="mt-8 text-center text-white/70 text-sm">
+    Made with ❤ — links open in a new tab. If any link breaks, search the brand name.
+  </footer>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Tool data
+  const tools = [
+    { name: 'ChatGPT', url: 'https://chatgpt.com', desc: 'Conversational assistant by OpenAI for coding & writing.', cat: 'chatbot' },
+    { name: 'Claude', url: 'https://claude.ai', desc: 'Research-focused chatbot with long context.', cat: 'chatbot' },
+    { name: 'Perplexity', url: 'https://www.perplexity.ai', desc: 'AI-powered search with citations.', cat: 'chatbot' },
+    { name: 'Pi AI', url: 'https://pi.ai', desc: 'Friendly personal AI companion.', cat: 'chatbot' },
+    { name: 'Microsoft Copilot', url: 'https://copilot.microsoft.com', desc: 'AI built into Microsoft ecosystem.', cat: 'chatbot' },
+    { name: 'Runway', url: 'https://runwayml.com', desc: 'Gen AI video creation from prompts.', cat: 'text-to-video' },
+    { name: 'Pika Labs', url: 'https://pika.art', desc: 'Generate/edit videos from text or images.', cat: 'text-to-video' },
+    { name: 'Synthesia', url: 'https://www.synthesia.io', desc: 'Avatar-based presenter videos.', cat: 'text-to-video' },
+    { name: 'HeyGen', url: 'https://www.heygen.com', desc: 'Talking avatars with lip-sync.', cat: 'text-to-video' },
+    { name: 'Kaiber', url: 'https://www.kaiber.ai', desc: 'Cinematic text-to-video generator.', cat: 'text-to-video' },
+    { name: 'ElevenLabs', url: 'https://elevenlabs.io', desc: 'Ultra-realistic AI voices.', cat: 'text-to-speech' },
+    { name: 'Play.ht', url: 'https://play.ht', desc: 'AI voices for podcasts & apps.', cat: 'text-to-speech' },
+    { name: 'Murf', url: 'https://murf.ai', desc: 'Studio-quality voiceovers.', cat: 'text-to-speech' },
+    { name: 'LOVO', url: 'https://lovo.ai', desc: 'Human-like voices with emotion.', cat: 'text-to-speech' },
+    { name: 'Google Cloud TTS', url: 'https://cloud.google.com/text-to-speech', desc: 'Scalable multi-language TTS.', cat: 'text-to-speech' },
+    { name: 'Midjourney', url: 'https://www.midjourney.com', desc: 'High-quality artistic images (Discord).', cat: 'text-to-image' },
+    { name: 'Stable Diffusion', url: 'https://stability.ai', desc: 'Open-source image generation model.', cat: 'text-to-image' },
+    { name: 'DALL·E', url: 'https://openai.com/dall-e-3', desc: 'Creative image generation & editing.', cat: 'text-to-image' },
+    { name: 'Leonardo AI', url: 'https://leonardo.ai', desc: 'Great for game assets & concept art.', cat: 'text-to-image' },
+    { name: 'Fotor AI', url: 'https://www.fotor.com/features/ai-image-generator/', desc: 'Quick AI images & photo edits.', cat: 'text-to-image' },
+    { name: 'Notion AI', url: 'https://www.notion.so/product/ai', desc: 'AI writing & task automation inside Notion.', cat: 'other' },
+    { name: 'Copy.ai', url: 'https://www.copy.ai', desc: 'Marketing copy generator.', cat: 'other' },
+    { name: 'Jasper', url: 'https://www.jasper.ai', desc: 'Blog & ad copywriting assistant.', cat: 'other' },
+    { name: 'Descript', url: 'https://www.descript.com', desc: 'Edit video by editing text.', cat: 'other' },
+    { name: 'Grammarly', url: 'https://www.grammarly.com', desc: 'Grammar, tone & clarity checker.', cat: 'other' },
+    { name: 'QuillBot', url: 'https://quillbot.com', desc: 'Paraphrasing & summarizing tool.', cat: 'other' },
+    { name: 'Canva AI', url: 'https://www.canva.com/ai/', desc: 'Design assistant + AI image tools.', cat: 'other' },
+    { name: 'Remove.bg', url: 'https://www.remove.bg', desc: 'One-click background remover.', cat: 'other' },
+  ];
+
+  const cards = document.getElementById('cards');
+  const q = document.getElementById('q');
+  const cat = document.getElementById('cat');
+
+  function render(items) {
+    cards.innerHTML = items.map(t => `
+      <article class="glass-card p-6 rounded-2xl flex flex-col gap-4 animate__animated animate__fadeInUp" data-cat="${t.cat}">
+        <div class="flex justify-between items-center gap-2">
+          <h3 class="text-lg font-semibold text-white">${t.name}</h3>
+          <span class="px-2 py-1 rounded-full text-xs bg-white/10 text-white/70">${label(t.cat)}</span>
+        </div>
+        <p class="text-white/70 text-sm">${t.desc}</p>
+        <div class="flex flex-wrap gap-2">
+          <a 
+            class="liquid-btn text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 hover:scale-105 transition-all"
+            href="${t.url}" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            aria-label="Open ${t.name} in new tab"
+          >
+            <i class="fas fa-external-link-alt"></i> Visit
+          </a>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  function label(c) {
+    switch(c) {
+      case 'chatbot': return 'Chatbot';
+      case 'text-to-video': return 'Text→Video';
+      case 'text-to-speech': return 'Text→Speech';
+      case 'text-to-image': return 'Text→Image';
+      default: return 'Other';
+    }
+  }
+
+  function applyFilters() {
+    const query = q.value.trim().toLowerCase();
+    const category = cat.value;
+    const filtered = tools.filter(t => {
+      const matchesText = !query || (t.name.toLowerCase().includes(query) || t.desc.toLowerCase().includes(query));
+      const matchesCat = category === 'all' || t.cat === category;
+      return matchesText && matchesCat;
+    });
+    render(filtered);
+  }
+
+  q.addEventListener('input', applyFilters);
+  cat.addEventListener('change', applyFilters);
+
+  // Initial render
+  render(tools);
+</script>
+{% endblock %}

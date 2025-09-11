@@ -1,0 +1,170 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Vehicle Tracking - School Management System{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 sm:py-12">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+    <div class="mt-12 md:mt-0">
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+        Vehicle Tracking
+      </h2>
+      <p class="text-white/70 mt-1 text-sm sm:text-base">Track Vehicles in Real-Time</p>
+    </div>
+    <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+      <!-- Search bar for larger screens -->
+      <div class="hidden md:block relative flex-1 max-w-md">
+        <input type="text" id="searchInput" placeholder="Search vehicles..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" aria-label="Search vehicles">
+        <button class="absolute right-3 top-2 text-white/70 hover:text-white" aria-label="Search">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+      <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative md:hidden" aria-label="Toggle search">
+        <i class="fas fa-search text-sm sm:text-base"></i>
+      </button>
+      <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative" aria-label="Notifications">
+        <i class="fas fa-bell text-sm sm:text-base"></i>
+        <span class="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full"></span>
+      </button>
+      <button class="liquid-btn text-white px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all hover:scale-105 text-sm sm:text-base" aria-label="View Profile">
+        Profile
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile search bar -->
+  <div class="md:hidden mb-4">
+    <div class="relative">
+      <input type="text" id="searchInputMobile" placeholder="Search vehicles..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" aria-label="Search vehicles">
+      <button class="absolute right-3 top-2 text-white/70 hover:text-white" aria-label="Search">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Vehicle Tracking Form -->
+  <div class="glass-card p-4 sm:p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6 sm:mb-8">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-4 sm:mb-6">Select Vehicle to Track</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <select id="vehicleSelect" class="glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" aria-label="Select Vehicle to Track">
+        <option value="">Select Vehicle</option>
+      </select>
+      <button onclick="startTracking()" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105" aria-label="Start Tracking Selected Vehicle">
+        <i class="fas fa-map-marker-alt mr-2"></i>Start Tracking
+      </button>
+    </div>
+  </div>
+
+  <!-- Google Map -->
+  <div class="glass-card p-4 sm:p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp">
+    <h3 class="text-xl sm:text-2xl font-semibold text-white mb-4 sm:mb-6">Vehicle Location</h3>
+    <div id="map" class="h-[400px] w-full rounded-xl"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+
+<!-- Google Maps API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyATHEhVi0JqvvykGSLG2pn13B7KdhGQPmg&callback=initMap" async defer></script>
+
+<script>
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+  authDomain: "uebs-school.firebaseapp.com",
+  projectId: "uebs-school",
+  storageBucket: "uebs-school.firebasestorage.app",
+  messagingSenderId: "740325293639",
+  appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+  measurementId: "G-T7YEBMNHBH"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Check Authentication
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) {
+    console.log("No user logged in, redirecting to login...");
+    window.location.href = "{% url 'login' %}";
+  }
+});
+
+// Populate Vehicle Dropdown
+const vehicleSelect = document.getElementById("vehicleSelect");
+let vehiclesCache = {};
+db.ref("vehicles").on("value", snapshot => {
+  vehiclesCache = snapshot.val() || {};
+  vehicleSelect.innerHTML = '<option value="">Select Vehicle</option>';
+  for (let key in vehiclesCache) {
+    vehicleSelect.innerHTML += `<option value="${key}">${vehiclesCache[key].vehicleNumber}</option>`;
+  }
+});
+
+// Google Maps Initialization
+let map, marker;
+window.initMap = function(lat = 27.7172, lng = 85.3240) {
+  if (!map) { // Prevent re-initialization
+    map = new google.maps.Map(document.getElementById("map"), {
+      center: { lat, lng },
+      zoom: 14
+    });
+    marker = new google.maps.Marker({
+      position: { lat, lng },
+      map: map,
+      title: "Vehicle"
+    });
+  }
+};
+
+// Start Tracking
+function startTracking() {
+  const vehicleId = vehicleSelect.value;
+  if (!vehicleId) {
+    alert("Please select a vehicle to track.");
+    return;
+  }
+  db.ref("vehicleLocation/" + vehicleId).on("value", snapshot => {
+    const loc = snapshot.val();
+    if (loc) {
+      const pos = { lat: parseFloat(loc.lat), lng: parseFloat(loc.lng) };
+      marker.setPosition(pos);
+      map.setCenter(pos);
+      marker.setTitle(vehiclesCache[vehicleId]?.vehicleNumber || "Vehicle");
+    } else {
+      alert("No location data available for this vehicle.");
+    }
+  }, error => {
+    console.error("Error fetching location:", error);
+    alert("Failed to fetch vehicle location. Please try again.");
+  });
+}
+
+// Search Functionality
+function setupSearch() {
+  const searchInputs = [document.getElementById("searchInput"), document.getElementById("searchInputMobile")];
+  searchInputs.forEach(input => {
+    if (input) {
+      input.addEventListener("input", () => {
+        const query = input.value.toLowerCase();
+        const options = vehicleSelect.querySelectorAll("option:not([value=''])");
+        options.forEach(option => {
+          const vehicleNumber = option.textContent.toLowerCase();
+          option.style.display = vehicleNumber.includes(query) ? "" : "none";
+        });
+      });
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", setupSearch);
+
+console.log('Vehicle Tracking page loaded');
+</script>
+{% endblock %}

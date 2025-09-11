@@ -1,0 +1,404 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Class Management - UEBS{% endblock %}
+
+{% block content %}
+<!-- Top Navbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+  <div class="mt-12 md:mt-0">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Class Management</h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">Manage all classes and sections</p>
+  </div>
+  <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+    <div class="hidden md:block relative flex-1 max-w-md">
+      <input type="text" id="searchInput" placeholder="Search classes..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+      <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative md:hidden">
+      <i class="fas fa-search text-sm sm:text-base"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile search bar -->
+<div class="md:hidden mb-4">
+  <div class="relative">
+    <input type="text" id="searchInputMobile" placeholder="Search classes..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+    <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Add New Class Form -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-plus-circle text-green-400 mr-3"></i> Add New Class
+  </h3>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label class="block text-white/80 mb-2">Class/Grade Name</label>
+      <input type="text" id="className" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., Grade 10" required>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Section (Optional)</label>
+      <input type="text" id="classSection" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., A, B, Science">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Total Fee (Annual)</label>
+      <input type="number" id="classFee" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., 12000" required>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Class Teacher (Optional)</label>
+      <input type="text" id="classTeacher" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Teacher name">
+    </div>
+    <div class="md:col-span-2">
+      <label class="block text-white/80 mb-2">Notes (Optional)</label>
+      <textarea id="classNotes" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Additional information" rows="2"></textarea>
+    </div>
+    <div class="md:col-span-2">
+      <label class="flex items-center text-white/80 mb-2">
+        <input type="checkbox" id="termsFee" class="mr-2">
+        Divide into 4 Terms
+      </label>
+    </div>
+  </div>
+  
+  <button id="addClassBtn" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 mt-6">
+    <i class="fas fa-plus mr-2"></i> Add Class
+  </button>
+</div>
+
+<!-- Filters -->
+<div class="glass-card p-4 mb-6 rounded-2xl animate__animated animate__fadeInUp">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-white/80 mb-2">Class/Grade</label>
+      <select id="filterClass" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Classes</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Section</label>
+      <select id="filterSection" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Sections</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Fee Range</label>
+      <select id="filterFee" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Fees</option>
+        <option value="0-5000">Below 5,000</option>
+        <option value="5000-10000">5,000 - 10,000</option>
+        <option value="10000-15000">10,000 - 15,000</option>
+        <option value="15000-20000">15,000 - 20,000</option>
+        <option value="20000-999999">Above 20,000</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- Class List Table -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp">
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="classTable">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">Class Name</th>
+          <th class="text-left py-3 px-4">Section</th>
+          <th class="text-left py-3 px-4">Total Fee</th>
+          <th class="text-left py-3 px-4">Monthly Fee</th>
+          <th class="text-left py-3 px-4">Term Fee</th>
+          <th class="text-left py-3 px-4">Class Teacher</th>
+          <th class="text-left py-3 px-4">Notes</th>
+          <th class="text-left py-3 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Classes will be populated here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fixed inset-0 bg-black/50 z-50 hidden justify-center items-center" id="editModal">
+  <div class="glass-card p-6 lg:p-8 rounded-2xl w-full max-w-2xl">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl sm:text-2xl font-semibold text-white">Edit Class</h3>
+      <button id="closeEdit" class="text-white/70 hover:text-white text-2xl">&times;</button>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-white/80 mb-2">Class/Grade Name</label>
+        <input type="text" id="editClassName" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Section</label>
+        <input type="text" id="editClassSection" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Total Fee (Annual)</label>
+        <input type="number" id="editClassFee" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Class Teacher</label>
+        <input type="text" id="editClassTeacher" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-white/80 mb-2">Notes</label>
+        <textarea id="editClassNotes" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" rows="2"></textarea>
+      </div>
+      <div class="md:col-span-2">
+        <label class="flex items-center text-white/80 mb-2">
+          <input type="checkbox" id="editTermsFee" class="mr-2">
+          Divide into 4 Terms
+        </label>
+      </div>
+    </div>
+
+    <div class="flex justify-end space-x-4 mt-6">
+      <button id="saveEdit" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+        <i class="fas fa-save mr-2"></i> Save Changes
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+
+<script>
+  // Initialize Firebase with your config
+  const firebaseConfig = {
+    apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+    authDomain: "uebs-school.firebaseapp.com",
+    projectId: "uebs-school",
+    storageBucket: "uebs-school.firebasestorage.app",
+    messagingSenderId: "740325293639",
+    appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+    measurementId: "G-T7YEBMNHBH"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  let classes = {};
+  let editId = '';
+
+  // Add Class
+  document.getElementById('addClassBtn').addEventListener('click', () => {
+    const name = document.getElementById('className').value.trim();
+    const section = document.getElementById('classSection').value.trim();
+    const fee = parseFloat(document.getElementById('classFee').value);
+    const teacher = document.getElementById('classTeacher').value.trim();
+    const notes = document.getElementById('classNotes').value.trim();
+    const termsFee = document.getElementById('termsFee').checked;
+
+    if (!name || !fee || isNaN(fee)) { 
+      alert("Class Name and valid Total Fee are required!"); 
+      return; 
+    }
+
+    const monthlyFee = parseFloat((fee / 12).toFixed(2));
+    const termFee = termsFee ? parseFloat((fee / 4).toFixed(2)) : null;
+
+    // Show loading state
+    const addBtn = document.getElementById('addClassBtn');
+    addBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Adding...';
+    addBtn.disabled = true;
+
+    const newClassRef = db.ref('classes').push();
+    newClassRef.set({
+      className: name,
+      section: section,
+      fee: fee,
+      monthlyFee: monthlyFee,
+      termFee: termFee,
+      termsEnabled: termsFee,
+      classTeacher: teacher,
+      notes: notes,
+      createdAt: firebase.database.ServerValue.TIMESTAMP
+    }).then(() => {
+      alert('Class added successfully!');
+      // Reset form
+      document.getElementById('className').value = '';
+      document.getElementById('classSection').value = '';
+      document.getElementById('classFee').value = '';
+      document.getElementById('classTeacher').value = '';
+      document.getElementById('classNotes').value = '';
+      document.getElementById('termsFee').checked = false;
+    }).catch(error => {
+      alert('Error adding class: ' + error.message);
+    }).finally(() => {
+      addBtn.innerHTML = '<i class="fas fa-plus mr-2"></i> Add Class';
+      addBtn.disabled = false;
+    });
+  });
+
+  // Fetch Classes
+  db.ref('classes').on('value', snapshot => {
+    classes = snapshot.val() || {};
+    populateClassTable();
+    populateFilters();
+  });
+
+  // Populate Class Table with filtering
+  function populateClassTable() {
+    const tbody = document.querySelector('#classTable tbody');
+    tbody.innerHTML = '';
+    
+    const search = document.getElementById('searchInput').value.toLowerCase() || 
+                   document.getElementById('searchInputMobile').value.toLowerCase();
+    const filterClass = document.getElementById('filterClass').value;
+    const filterSection = document.getElementById('filterSection').value;
+    const filterFee = document.getElementById('filterFee').value;
+
+    Object.keys(classes).forEach(key => {
+      const c = classes[key];
+      
+      // Apply filters
+      if (
+        (c.className.toLowerCase().includes(search) || 
+         (c.section && c.section.toLowerCase().includes(search)) ||
+         (c.classTeacher && c.classTeacher.toLowerCase().includes(search))) &&
+        (filterClass === '' || c.className === filterClass) &&
+        (filterSection === '' || c.section === filterSection) &&
+        (filterFee === '' || checkFeeRange(c.fee, filterFee))
+      ) {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-white/10 hover:bg-white/5';
+        tr.innerHTML = `
+          <td class="py-3 px-4">${c.className}</td>
+          <td class="py-3 px-4">${c.section || '-'}</td>
+          <td class="py-3 px-4">${c.fee.toLocaleString()}</td>
+          <td class="py-3 px-4">${c.monthlyFee.toLocaleString()}</td>
+          <td class="py-3 px-4">${c.termsEnabled ? c.termFee.toLocaleString() : '-'}</td>
+          <td class="py-3 px-4">${c.classTeacher || '-'}</td>
+          <td class="py-3 px-4">${c.notes || '-'}</td>
+          <td class="py-3 px-4">
+            <div class="flex space-x-2">
+              <button onclick="editClass('${key}')" class="glass-card px-3 py-1 rounded-lg text-blue-400 hover:bg-blue-400/20">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deleteClass('${key}')" class="glass-card px-3 py-1 rounded-lg text-red-400 hover:bg-red-400/20">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      }
+    });
+  }
+
+  // Check if fee falls within selected range
+  function checkFeeRange(fee, range) {
+    if (!range) return true;
+    const [min, max] = range.split('-').map(Number);
+    return fee >= min && fee <= max;
+  }
+
+  // Populate Filters
+  function populateFilters() {
+    const classSet = new Set();
+    const sectionSet = new Set();
+    
+    Object.values(classes).forEach(c => {
+      if (c.className) classSet.add(c.className);
+      if (c.section) sectionSet.add(c.section);
+    });
+    
+    const classSelect = document.getElementById('filterClass');
+    classSelect.innerHTML = '<option value="">All Classes</option>';
+    Array.from(classSet).sort().forEach(c => {
+      classSelect.innerHTML += `<option value="${c}">${c}</option>`;
+    });
+    
+    const sectionSelect = document.getElementById('filterSection');
+    sectionSelect.innerHTML = '<option value="">All Sections</option>';
+    Array.from(sectionSet).sort().forEach(s => {
+      sectionSelect.innerHTML += `<option value="${s}">${s}</option>`;
+    });
+  }
+
+  // Search & Filter Events
+  document.getElementById('searchInput').addEventListener('input', populateClassTable);
+  document.getElementById('searchInputMobile').addEventListener('input', populateClassTable);
+  document.getElementById('filterClass').addEventListener('change', populateClassTable);
+  document.getElementById('filterSection').addEventListener('change', populateClassTable);
+  document.getElementById('filterFee').addEventListener('change', populateClassTable);
+
+  // Edit Class
+  function editClass(id) {
+    editId = id;
+    const c = classes[id];
+    document.getElementById('editClassName').value = c.className || '';
+    document.getElementById('editClassSection').value = c.section || '';
+    document.getElementById('editClassFee').value = c.fee || '';
+    document.getElementById('editClassTeacher').value = c.classTeacher || '';
+    document.getElementById('editClassNotes').value = c.notes || '';
+    document.getElementById('editTermsFee').checked = c.termsEnabled || false;
+    document.getElementById('editModal').style.display = 'flex';
+  }
+
+  document.getElementById('closeEdit').addEventListener('click', () => {
+    document.getElementById('editModal').style.display = 'none';
+  });
+
+  document.getElementById('saveEdit').addEventListener('click', () => {
+    const updatedFee = parseFloat(document.getElementById('editClassFee').value);
+    const termsFee = document.getElementById('editTermsFee').checked;
+    
+    if (!document.getElementById('editClassName').value.trim() || !updatedFee || isNaN(updatedFee)) {
+      alert("Class Name and valid Total Fee are required!"); 
+      return;
+    }
+    
+    const updated = {
+      className: document.getElementById('editClassName').value.trim(),
+      section: document.getElementById('editClassSection').value.trim(),
+      fee: updatedFee,
+      monthlyFee: parseFloat((updatedFee / 12).toFixed(2)),
+      termFee: termsFee ? parseFloat((updatedFee / 4).toFixed(2)) : null,
+      termsEnabled: termsFee,
+      classTeacher: document.getElementById('editClassTeacher').value.trim(),
+      notes: document.getElementById('editClassNotes').value.trim()
+    };
+
+    // Show loading state
+    const saveBtn = document.getElementById('saveEdit');
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+    saveBtn.disabled = true;
+
+    db.ref('classes/' + editId).set(updated)
+      .then(() => {
+        alert('Class updated successfully!');
+        document.getElementById('editModal').style.display = 'none';
+      })
+      .catch(error => {
+        alert('Error updating class: ' + error.message);
+      })
+      .finally(() => {
+        saveBtn.innerHTML = '<i class="fas fa-save mr-2"></i> Save Changes';
+        saveBtn.disabled = false;
+      });
+  });
+
+  // Delete Class
+  function deleteClass(id) {
+    if (confirm('Are you sure you want to delete this class? This action cannot be undone.')) {
+      db.ref('classes/' + id).remove()
+        .then(() => alert('Class deleted successfully!'))
+        .catch(error => alert('Error deleting class: ' + error.message));
+    }
+  }
+</script>
+{% endblock %}

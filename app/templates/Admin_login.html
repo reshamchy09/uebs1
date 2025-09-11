@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .auth-container {
+        max-width: 400px;
+        margin: 60px auto;
+        padding: 25px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        text-align: center;
+        font-family: Arial, sans-serif;
+    }
+    .auth-container h2 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #333;
+    }
+    .auth-container input {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+    }
+    .auth-container input:focus {
+        border-color: #4CAF50;
+        outline: none;
+    }
+    .auth-container button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        background: #4CAF50;
+        border: none;
+        color: white;
+        font-size: 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    .auth-container button:hover {
+        background: #45a049;
+    }
+    .auth-container p {
+        margin-top: 15px;
+        font-size: 14px;
+        color: #555;
+    }
+    .auth-container a {
+        color: #4CAF50;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .auth-container a:hover {
+        text-decoration: underline;
+    }
+    .forgot-link {
+        display: block;
+        margin: 10px 0;
+        font-size: 14px;
+    }
+</style>
+
+<div class="auth-container">
+    <h2>School Management System</h2>
+    <form id="login-form">
+        <input type="email" id="login-email" placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+    <a href="#" id="forgot-password" class="forgot-link">Forgot Password?</a>
+    <p>Don't have an account? <a href="{% url 'Admin_signup' %}">Sign up here</a></p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+      apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+      authDomain: "uebs-school.firebaseapp.com",
+      projectId: "uebs-school",
+      storageBucket: "uebs-school.appspot.com",
+      messagingSenderId: "740325293639",
+      appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+      measurementId: "G-T7YEBMNHBH"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Redirect if already logged in
+  onAuthStateChanged(auth, (user) => {
+      if (user) {
+          window.location.href = "{% url 'admin_dashboard' %}";
+      }
+  });
+
+  // Login form submission
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+
+      try {
+          await signInWithEmailAndPassword(auth, email, password);
+          window.location.href = "{% url 'admin_dashboard' %}";
+      } catch (error) {
+          alert(error.message);
+      }
+  });
+
+  // Forgot password handler
+  document.getElementById('forgot-password').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      if (!email) {
+          alert("Please enter your email first.");
+          return;
+      }
+      try {
+          await sendPasswordResetEmail(auth, email);
+          alert("Password reset email sent! Check your inbox.");
+      } catch (error) {
+          alert(error.message);
+      }
+  });
+</script>
+{% endblock %}

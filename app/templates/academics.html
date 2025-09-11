@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Academics - Excellency School{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="parallax-bg"></div>
+    <div class="header-content">
+        <h1 data-aos="fade-down">Academic Excellence</h1>
+        <p data-aos="fade-up" data-aos-delay="200">Comprehensive curriculum for holistic development</p>
+    </div>
+</section>
+
+<!-- Courses Section -->
+<section class="courses-section">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Our Programs</h2>
+        
+        <div class="courses-grid">
+            {% for course in courses %}
+                <div class="course-card" data-aos="flip-up" data-aos-delay="{{ forloop.counter|add:100 }}">
+                    <div class="course-header">
+                        <h3>{{ course.name }}</h3>
+                        <span class="grade-badge">{{ course.grade }}</span>
+                    </div>
+                    <div class="course-content">
+                        <p>{{ course.description }}</p>
+                        <div class="course-meta">
+                            <span class="duration">📅 {{ course.duration }}</span>
+                        </div>
+                    </div>
+                    <div class="course-footer">
+                        <button class="btn btn-primary">Learn More</button>
+                    </div>
+                </div>
+            {% empty %}
+                <!-- Default courses if none in database -->
+                <div class="course-card" data-aos="flip-up">
+                    <div class="course-header">
+                        <h3>Primary Education</h3>
+                        <span class="grade-badge">K-5</span>
+                    </div>
+                    <div class="course-content">
+                        <p>Foundation learning with emphasis on creativity, critical thinking, and character building.</p>
+                        <div class="course-meta">
+                            <span class="duration">📅 6 Years</span>
+                        </div>
+                    </div>
+                    <div class="course-footer">
+                        <button class="btn btn-primary">Learn More</button>
+                    </div>
+                </div>
+                
+                <div class="course-card" data-aos="flip-up" data-aos-delay="200">
+                    <div class="course-header">
+                        <h3>Middle School</h3>
+                        <span class="grade-badge">6-8</span>
+                    </div>
+                    <div class="course-content">
+                        <p>Transitional phase focusing on academic rigor and personal development.</p>
+                        <div class="course-meta">
+                            <span class="duration">📅 3 Years</span>
+                        </div>
+                    </div>
+                    <div class="course-footer">
+                        <button class="btn btn-primary">Learn More</button>
+                    </div>
+                </div>
+                
+                <div class="course-card" data-aos="flip-up" data-aos-delay="300">
+                    <div class="course-header">
+                        <h3>High School</h3>
+                        <span class="grade-badge">9-12</span>
+                    </div>
+                    <div class="course-content">
+                        <p>College preparatory curriculum with advanced placement and specialized tracks.</p>
+                        <div class="course-meta">
+                            <span class="duration">📅 4 Years</span>
+                        </div>
+                    </div>
+                    <div class="course-footer">
+                        <button class="btn btn-primary">Learn More</button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Curriculum Highlights -->
+<section class="curriculum-highlights">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Curriculum Highlights</h2>
+        
+        <div class="highlights-grid">
+            <div class="highlight-item" data-aos="zoom-in" data-aos-delay="100">
+                <div class="highlight-icon">🧪</div>
+                <h4>STEM Excellence</h4>
+                <p>Advanced Science, Technology, Engineering, and Mathematics programs with hands-on learning</p>
+            </div>
+            
+            <div class="highlight-item" data-aos="zoom-in" data-aos-delay="200">
+                <div class="highlight-icon">🎨</div>
+                <h4>Arts Integration</h4>
+                <p>Creative arts curriculum including visual arts, music, drama, and digital media</p>
+            </div>
+            
+            <div class="highlight-item" data-aos="zoom-in" data-aos-delay="300">
+                <div class="highlight-icon">🌍</div>
+                <h4>Global Perspective</h4>
+                <p>International curriculum with multilingual education and cultural exchange programs</p>
+            </div>
+            
+            <div class="highlight-item" data-aos="zoom-in" data-aos-delay="400">
+                <div class="highlight-icon">💻</div>
+                <h4>Digital Literacy</h4>
+                <p>Comprehensive technology integration and computer science education</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

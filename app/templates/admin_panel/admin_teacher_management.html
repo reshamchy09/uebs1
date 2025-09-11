@@ -1,0 +1,431 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Staff Management - UEBS{% endblock %}
+
+{% block content %}
+<!-- Top Navbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+  <div class="mt-12 md:mt-0">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Staff Management</h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">Manage school staff members and their details</p>
+  </div>
+  <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+    <div class="hidden md:block relative flex-1 max-w-md">
+      <input type="text" id="searchStaff" placeholder="Search staff..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+      <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative md:hidden">
+      <i class="fas fa-search text-sm sm:text-base"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile search bar -->
+<div class="md:hidden mb-4">
+  <div class="relative">
+    <input type="text" id="searchStaffMobile" placeholder="Search staff..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+    <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Add/Edit Staff Form -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-user-plus text-blue-400 mr-3"></i> 
+    <span id="formTitle">Add New Staff</span>
+  </h3>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <input type="hidden" id="staffId">
+    <div>
+      <label class="block text-white/80 mb-2">Full Name</label>
+      <input type="text" id="fullName" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Full Name" required>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Email</label>
+      <input type="email" id="email" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Email">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Contact Number</label>
+      <input type="text" id="contact" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Contact Number">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Role</label>
+      <select id="role" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">Select Role</option>
+        <option value="Teacher">Teacher</option>
+        <option value="Admin">Admin</option>
+        <option value="Accountant">Accountant</option>
+        <option value="Support">Support</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Assigned Class (Optional)</label>
+      <input type="text" id="assignedClass" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Assigned Class">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Salary</label>
+      <input type="number" id="salary" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Salary">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Date of Joining</label>
+      <input type="date" id="dateOfJoining" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Qualification</label>
+      <input type="text" id="qualification" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Qualification">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Experience (Years)</label>
+      <input type="number" id="experience" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Experience">
+    </div>
+    <div class="md:col-span-2">
+      <label class="block text-white/80 mb-2">Address (Optional)</label>
+      <input type="text" id="address" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Address">
+    </div>
+  </div>
+  
+  <button id="addStaffBtn" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 mt-6">
+    <i class="fas fa-save mr-2"></i> Save Staff
+  </button>
+  <button id="cancelEdit" class="glass-card text-white px-6 py-3 rounded-xl font-semibold transition-all hover:bg-white/20 ml-4 hidden">
+    Cancel
+  </button>
+</div>
+
+<!-- Filters -->
+<div class="glass-card p-4 mb-6 rounded-2xl animate__animated animate__fadeInUp">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-white/80 mb-2">Role</label>
+      <select id="filterRole" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Roles</option>
+        <option value="Teacher">Teacher</option>
+        <option value="Admin">Admin</option>
+        <option value="Accountant">Accountant</option>
+        <option value="Support">Support</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Assigned Class</label>
+      <input type="text" id="filterClass" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Filter by class">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Experience</label>
+      <select id="filterExperience" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Experience</option>
+        <option value="1">1+ Years</option>
+        <option value="3">3+ Years</option>
+        <option value="5">5+ Years</option>
+        <option value="10">10+ Years</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- Staff List -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-users text-purple-400 mr-3"></i> Staff Members
+  </h3>
+  
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="staffTable">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">Name</th>
+          <th class="text-left py-3 px-4">Role</th>
+          <th class="text-left py-3 px-4">Class</th>
+          <th class="text-left py-3 px-4">Contact</th>
+          <th class="text-left py-3 px-4">Experience</th>
+          <th class="text-left py-3 px-4">Salary</th>
+          <th class="text-left py-3 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Staff will be populated here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fixed inset-0 bg-black/50 z-50 hidden justify-center items-center" id="confirmModal">
+  <div class="glass-card p-6 lg:p-8 rounded-2xl w-full max-w-md">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl sm:text-2xl font-semibold text-white" id="modalTitle">Confirm Action</h3>
+      <button id="closeModal" class="text-white/70 hover:text-white text-2xl">&times;</button>
+    </div>
+    
+    <p class="text-white/80 mb-6" id="modalMessage">Are you sure you want to delete this staff member?</p>
+    
+    <div class="flex justify-end space-x-4">
+      <button id="confirmAction" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+        Confirm
+      </button>
+      <button id="cancelAction" class="glass-card text-white px-6 py-3 rounded-xl font-semibold transition-all hover:bg-white/20">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+
+<script>
+// Initialize Firebase with your config
+const firebaseConfig = {
+  apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+  authDomain: "uebs-school.firebaseapp.com",
+  projectId: "uebs-school",
+  storageBucket: "uebs-school.firebasestorage.app",
+  messagingSenderId: "740325293639",
+  appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+  measurementId: "G-T7YEBMNHBH"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let staffData = {};
+let currentStaffId = '';
+let modalAction = '';
+
+// Set today's date as default for joining date
+document.getElementById('dateOfJoining').valueAsDate = new Date();
+
+// Fetch staff data
+db.ref('staff').on('value', snapshot => {
+  staffData = snapshot.val() || {};
+  populateStaffTable();
+});
+
+// Add/Update Staff
+document.getElementById('addStaffBtn').addEventListener('click', () => {
+  const id = document.getElementById('staffId').value || db.ref('staff').push().key;
+  const staffObj = {
+    fullName: document.getElementById('fullName').value,
+    email: document.getElementById('email').value,
+    contact: document.getElementById('contact').value,
+    role: document.getElementById('role').value,
+    assignedClass: document.getElementById('assignedClass').value || '',
+    salary: parseFloat(document.getElementById('salary').value) || 0,
+    dateOfJoining: document.getElementById('dateOfJoining').value,
+    qualification: document.getElementById('qualification').value,
+    experience: parseFloat(document.getElementById('experience').value) || 0,
+    address: document.getElementById('address').value || '',
+    password: currentStaffId ? (staffData[id]?.password || 'Staff@123') : 'Staff@123', // Set default password for new staff
+    createdAt: currentStaffId ? (staffData[id]?.createdAt || firebase.database.ServerValue.TIMESTAMP) : firebase.database.ServerValue.TIMESTAMP,
+    updatedAt: firebase.database.ServerValue.TIMESTAMP
+  };
+
+  if (!staffObj.fullName || !staffObj.role) {
+    alert("Please fill in required fields (Name and Role)");
+    return;
+  }
+
+  // Show loading state
+  const btn = document.getElementById('addStaffBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+  btn.disabled = true;
+
+  db.ref('staff/' + id).set(staffObj)
+    .then(() => {
+      alert(`Staff ${currentStaffId ? 'updated' : 'added'} successfully!`);
+      clearForm();
+    })
+    .catch(error => {
+      alert('Error saving staff: ' + error.message);
+    })
+    .finally(() => {
+      btn.innerHTML = '<i class="fas fa-save mr-2"></i> Save Staff';
+      btn.disabled = false;
+    });
+});
+
+// Populate Staff Table with filtering
+function populateStaffTable() {
+  const tbody = document.querySelector('#staffTable tbody');
+  tbody.innerHTML = '';
+  
+  const search = document.getElementById('searchStaff').value.toLowerCase() || 
+                 document.getElementById('searchStaffMobile').value.toLowerCase();
+  const roleFilter = document.getElementById('filterRole').value;
+  const classFilter = document.getElementById('filterClass').value.toLowerCase();
+  const expFilter = document.getElementById('filterExperience').value;
+  
+  Object.keys(staffData).forEach(id => {
+    const s = staffData[id];
+    
+    // Apply filters
+    if (search && !s.fullName.toLowerCase().includes(search)) return;
+    if (roleFilter && s.role !== roleFilter) return;
+    if (classFilter && !(s.assignedClass || '').toLowerCase().includes(classFilter)) return;
+    if (expFilter && (!s.experience || s.experience < parseFloat(expFilter))) return;
+    
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-white/10 hover:bg-white/5';
+    tr.innerHTML = `
+      <td class="py-3 px-4">
+        <div class="font-medium text-white">${s.fullName}</div>
+        <div class="text-sm text-white/60">${s.email}</div>
+      </td>
+      <td class="py-3 px-4">
+        <span class="px-2 py-1 rounded-full text-xs ${
+          s.role === 'Teacher' ? 'bg-blue-500/20 text-blue-400' :
+          s.role === 'Admin' ? 'bg-purple-500/20 text-purple-400' :
+          s.role === 'Accountant' ? 'bg-green-500/20 text-green-400' :
+          'bg-yellow-500/20 text-yellow-400'
+        }">${s.role}</span>
+      </td>
+      <td class="py-3 px-4">${s.assignedClass || '-'}</td>
+      <td class="py-3 px-4">${s.contact || '-'}</td>
+      <td class="py-3 px-4">${s.experience || 0} yrs</td>
+      <td class="py-3 px-4">${s.salary ? s.salary.toLocaleString() : '0'}</td>
+      <td class="py-3 px-4">
+        <div class="flex space-x-2">
+          <button onclick="editStaff('${id}')" class="glass-card px-3 py-1 rounded-lg text-blue-400 hover:bg-blue-400/20">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button onclick="showDeleteModal('${id}')" class="glass-card px-3 py-1 rounded-lg text-red-400 hover:bg-red-400/20">
+            <i class="fas fa-trash"></i>
+          </button>
+          <button onclick="viewStaffDetails('${id}')" class="glass-card px-3 py-1 rounded-lg text-purple-400 hover:bg-purple-400/20">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button onclick="resetPassword('${id}')" class="glass-card px-3 py-1 rounded-lg text-yellow-400 hover:bg-yellow-400/20">
+            <i class="fas fa-key"></i>
+          </button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Edit Staff
+function editStaff(id) {
+  const s = staffData[id];
+  currentStaffId = id;
+  
+  document.getElementById('staffId').value = id;
+  document.getElementById('fullName').value = s.fullName;
+  document.getElementById('email').value = s.email;
+  document.getElementById('contact').value = s.contact || '';
+  document.getElementById('role').value = s.role;
+  document.getElementById('assignedClass').value = s.assignedClass || '';
+  document.getElementById('salary').value = s.salary || '';
+  document.getElementById('dateOfJoining').value = s.dateOfJoining || '';
+  document.getElementById('qualification').value = s.qualification || '';
+  document.getElementById('experience').value = s.experience || '';
+  document.getElementById('address').value = s.address || '';
+  
+  document.getElementById('formTitle').textContent = 'Edit Staff Member';
+  document.getElementById('cancelEdit').classList.remove('hidden');
+  document.getElementById('addStaffBtn').innerHTML = '<i class="fas fa-save mr-2"></i> Update Staff';
+  
+  // Scroll to form
+  document.querySelector('.glass-card').scrollIntoView({ behavior: 'smooth' });
+}
+
+// View Staff Details
+function viewStaffDetails(id) {
+  const s = staffData[id];
+  alert(`Staff Details:\n\nName: ${s.fullName}\nRole: ${s.role}\nClass: ${s.assignedClass || 'None'}\nEmail: ${s.email}\nContact: ${s.contact || 'None'}\nSalary: ${s.salary || '0'}\nExperience: ${s.experience || '0'} years`);
+}
+
+// Reset Password
+function resetPassword(id) {
+  currentStaffId = id;
+  modalAction = 'reset';
+  
+  const s = staffData[id];
+  document.getElementById('modalTitle').textContent = 'Confirm Password Reset';
+  document.getElementById('modalMessage').textContent = `Are you sure you want to reset the password for ${s.fullName} (${s.role}) to the default 'Staff@123'?`;
+  document.getElementById('confirmModal').style.display = 'flex';
+}
+
+// Show Delete Confirmation Modal
+function showDeleteModal(id) {
+  currentStaffId = id;
+  modalAction = 'delete';
+  
+  const s = staffData[id];
+  document.getElementById('modalTitle').textContent = 'Confirm Deletion';
+  document.getElementById('modalMessage').textContent = `Are you sure you want to delete ${s.fullName} (${s.role})? This action cannot be undone.`;
+  document.getElementById('confirmModal').style.display = 'flex';
+}
+
+// Clear Form
+function clearForm() {
+  currentStaffId = '';
+  document.getElementById('staffId').value = '';
+  document.getElementById('fullName').value = '';
+  document.getElementById('email').value = '';
+  document.getElementById('contact').value = '';
+  document.getElementById('role').value = '';
+  document.getElementById('assignedClass').value = '';
+  document.getElementById('salary').value = '';
+  document.getElementById('dateOfJoining').valueAsDate = new Date();
+  document.getElementById('qualification').value = '';
+  document.getElementById('experience').value = '';
+  document.getElementById('address').value = '';
+  
+  document.getElementById('formTitle').textContent = 'Add New Staff';
+  document.getElementById('cancelEdit').classList.add('hidden');
+  document.getElementById('addStaffBtn').innerHTML = '<i class="fas fa-save mr-2"></i> Save Staff';
+}
+
+// Cancel Edit
+document.getElementById('cancelEdit').addEventListener('click', clearForm);
+
+// Modal Handlers
+document.getElementById('closeModal').addEventListener('click', () => {
+  document.getElementById('confirmModal').style.display = 'none';
+});
+
+document.getElementById('cancelAction').addEventListener('click', () => {
+  document.getElementById('confirmModal').style.display = 'none';
+});
+
+document.getElementById('confirmAction').addEventListener('click', () => {
+  if (modalAction === 'delete') {
+    db.ref('staff/' + currentStaffId).remove()
+      .then(() => {
+        alert('Staff member deleted successfully!');
+        document.getElementById('confirmModal').style.display = 'none';
+      })
+      .catch(error => {
+        alert('Error deleting staff: ' + error.message);
+      });
+  } else if (modalAction === 'reset') {
+    db.ref('staff/' + currentStaffId).update({
+      password: 'Staff@123',
+      updatedAt: firebase.database.ServerValue.TIMESTAMP
+    })
+      .then(() => {
+        alert('Password reset successfully to Staff@123!');
+        document.getElementById('confirmModal').style.display = 'none';
+      })
+      .catch(error => {
+        alert('Error resetting password: ' + error.message);
+      });
+  }
+});
+
+// Search and Filter dynamically
+document.getElementById('searchStaff').addEventListener('keyup', populateStaffTable);
+document.getElementById('searchStaffMobile').addEventListener('keyup', populateStaffTable);
+document.getElementById('filterRole').addEventListener('change', populateStaffTable);
+document.getElementById('filterClass').addEventListener('keyup', populateStaffTable);
+document.getElementById('filterExperience').addEventListener('change', populateStaffTable);
+</script>
+{% endblock %}

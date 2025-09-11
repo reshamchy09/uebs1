@@ -1,0 +1,449 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Help & Support - School Management System{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent animate__animated animate__fadeInDown">
+      <i class="fas fa-life-ring mr-3"></i>Help & Support Center
+    </h1>
+    <p class="text-white/70 mt-2">Get assistance, contact our support team, or reach out to the developer directly</p>
+  </div>
+
+  <!-- Emergency Contact Banner -->
+  <div class="glass-card rounded-xl p-6 mb-8 bg-gradient-to-r from-red-600/20 to-orange-600/20 border border-red-500/30">
+    <div class="flex flex-col md:flex-row md:items-center justify-between">
+      <div class="mb-4 md:mb-0">
+        <h2 class="text-xl font-semibold text-red-300 mb-2">Need Immediate Assistance?</h2>
+        <p class="text-white/80">Contact our developer directly for urgent issues</p>
+      </div>
+      <div class="flex flex-wrap gap-4">
+        <a href="mailto:reshamchy2004@gmail.com" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-all">
+          <i class="fas fa-envelope mr-2"></i>Email Developer
+        </a>
+        <a href="https://wa.me/9860485752" target="_blank" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-all">
+          <i class="fab fa-whatsapp mr-2"></i>WhatsApp Support
+        </a>
+        <a href="https://resamchaudhary.com.np" target="_blank" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all">
+          <i class="fas fa-globe mr-2"></i>Developer Website
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Categories -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+    <!-- Getting Started -->
+    <div class="glass-card rounded-xl p-6">
+      <div class="flex items-center mb-4">
+        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+          <i class="fas fa-rocket text-white"></i>
+        </div>
+        <h2 class="text-xl font-semibold">Getting Started</h2>
+      </div>
+      <ul class="space-y-3">
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-blue-400 mr-3"></i>
+            <span class="group-hover:underline">First-time setup guide</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-blue-400 mr-3"></i>
+            <span class="group-hover:underline">Navigating the dashboard</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-blue-400 mr-3"></i>
+            <span class="group-hover:underline">User roles and permissions</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-blue-400 mr-3"></i>
+            <span class="group-hover:underline">Customizing your profile</span>
+          </div>
+        </li>
+        <li class="text-right mt-2">
+          <a href="#" class="text-blue-400 hover:text-blue-300 text-sm font-medium">View all →</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Common Issues -->
+    <div class="glass-card rounded-xl p-6">
+      <div class="flex items-center mb-4">
+        <div class="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center mr-3">
+          <i class="fas fa-exclamation-triangle text-white"></i>
+        </div>
+        <h2 class="text-xl font-semibold">Common Issues</h2>
+      </div>
+      <ul class="space-y-3">
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-orange-400 mr-3"></i>
+            <span class="group-hover:underline">Login and authentication problems</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-orange-400 mr-3"></i>
+            <span class="group-hover:underline">Data not saving correctly</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-orange-400 mr-3"></i>
+            <span class="group-hover:underline">Report generation errors</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-orange-400 mr-3"></i>
+            <span class="group-hover:underline">Slow performance issues</span>
+          </div>
+        </li>
+        <li class="text-right mt-2">
+          <a href="#" class="text-orange-400 hover:text-orange-300 text-sm font-medium">View all →</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Advanced Features -->
+    <div class="glass-card rounded-xl p-6">
+      <div class="flex items-center mb-4">
+        <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center mr-3">
+          <i class="fas fa-cogs text-white"></i>
+        </div>
+        <h2 class="text-xl font-semibold">Advanced Features</h2>
+      </div>
+      <ul class="space-y-3">
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-purple-400 mr-3"></i>
+            <span class="group-hover:underline">Custom report creation</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-purple-400 mr-3"></i>
+            <span class="group-hover:underline">Bulk data import/export</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-purple-400 mr-3"></i>
+            <span class="group-hover:underline">API integration guide</span>
+          </div>
+        </li>
+        <li class="group cursor-pointer p-3 rounded-lg hover:bg-white/10 transition-all">
+          <div class="flex items-center">
+            <i class="fas fa-circle text-xs text-purple-400 mr-3"></i>
+            <span class="group-hover:underline">Custom workflow automation</span>
+          </div>
+        </li>
+        <li class="text-right mt-2">
+          <a href="#" class="text-purple-400 hover:text-purple-300 text-sm font-medium">View all →</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Contact Support Section -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-headset text-green-400 mr-3"></i>Contact Support
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Developer Contact Information -->
+      <div>
+        <h3 class="text-lg font-medium mb-4">Developer Contact</h3>
+        <div class="space-y-4">
+          <div class="flex items-start p-4 glass-card rounded-lg">
+            <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fas fa-envelope text-white"></i>
+            </div>
+            <div>
+              <h4 class="font-medium">Email Support</h4>
+              <p class="text-white/70">reshamchy2004@gmail.com</p>
+              <p class="text-sm text-white/60 mt-1">Response within 24 hours</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start p-4 glass-card rounded-lg">
+            <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fab fa-whatsapp text-white"></i>
+            </div>
+            <div>
+              <h4 class="font-medium">WhatsApp Support</h4>
+              <p class="text-white/70">+977 9860485752</p>
+              <p class="text-sm text-white/60 mt-1">Available 9AM-9PM NPT</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start p-4 glass-card rounded-lg">
+            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fas fa-globe text-white"></i>
+            </div>
+            <div>
+              <h4 class="font-medium">Developer Website</h4>
+              <p class="text-white/70">resamchaudhary.com.np</p>
+              <p class="text-sm text-white/60 mt-1">Portfolio and contact info</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start p-4 glass-card rounded-lg">
+            <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fas fa-clock text-white"></i>
+            </div>
+            <div>
+              <h4 class="font-medium">Support Hours</h4>
+              <p class="text-white/70">Monday - Friday</p>
+              <p class="text-sm text-white/60 mt-1">9:00 AM - 6:00 PM NPT</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Support Form -->
+      <div>
+        <h3 class="text-lg font-medium mb-4">Submit a Support Ticket</h3>
+        <form class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2">Your Name</label>
+            <input type="text" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Enter your full name">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2">Email Address</label>
+            <input type="email" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Enter your email address">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2">Subject</label>
+            <input type="text" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Brief description of your issue">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2">Category</label>
+            <select class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+              <option>Select a category</option>
+              <option>Technical Issue</option>
+              <option>Bug Report</option>
+              <option>Feature Request</option>
+              <option>Account Management</option>
+              <option>Billing Inquiry</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2">Priority</label>
+            <div class="flex space-x-6">
+              <label class="flex items-center cursor-pointer">
+                <input type="radio" name="priority" value="low" class="mr-2">
+                <span class="text-white/70">Low</span>
+              </label>
+              <label class="flex items-center cursor-pointer">
+                <input type="radio" name="priority" value="medium" class="mr-2" checked>
+                <span class="text-white/70">Medium</span>
+              </label>
+              <label class="flex items-center cursor-pointer">
+                <input type="radio" name="priority" value="high" class="mr-2">
+                <span class="text-white/70">High</span>
+              </label>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2">Description</label>
+            <textarea rows="4" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Please provide detailed information about your issue..."></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2">Attachments (Optional)</label>
+            <input type="file" class="w-full glass-card px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          </div>
+          <div class="pt-2">
+            <button type="submit" class="liquid-btn w-full px-6 py-3 rounded-xl font-medium text-white transition-all duration-300 hover:bg-purple-600">
+              <i class="fas fa-paper-plane mr-2"></i>Submit Ticket
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Knowledge Base -->
+  <div class="glass-card rounded-xl p-6 mb-8">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-book text-yellow-400 mr-3"></i>Knowledge Base
+    </h2>
+    
+    <div class="space-y-4">
+      <div class="p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex items-center justify-between">
+          <h3 class="font-medium">How to Generate Student Reports</h3>
+          <span class="px-3 py-1 bg-blue-600 text-white text-xs rounded-full">Guide</span>
+        </div>
+        <p class="text-sm text-white/60 mt-2">Step-by-step instructions for generating comprehensive student performance reports with customizable filters and export options.</p>
+        <div class="flex items-center justify-between mt-3 text-xs text-white/50">
+          <span>Updated 2 days ago</span>
+          <span>5 min read</span>
+        </div>
+      </div>
+      
+      <div class="p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex items-center justify-between">
+          <h3 class="font-medium">Setting Up Automated Fee Reminders</h3>
+          <span class="px-3 py-1 bg-green-600 text-white text-xs rounded-full">Tutorial</span>
+        </div>
+        <p class="text-sm text-white/60 mt-2">Learn how to configure automated email and SMS reminders for pending fee payments to reduce late payments and improve cash flow.</p>
+        <div class="flex items-center justify-between mt-3 text-xs text-white/50">
+          <span>Updated 1 week ago</span>
+          <span>8 min read</span>
+        </div>
+      </div>
+      
+      <div class="p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex items-center justify-between">
+          <h3 class="font-medium">Troubleshooting Attendance Sync Issues</h3>
+          <span class="px-3 py-1 bg-orange-600 text-white text-xs rounded-full">Troubleshooting</span>
+        </div>
+        <p class="text-sm text-white/60 mt-2">Common solutions for resolving attendance data synchronization problems between different devices and the central database.</p>
+        <div class="flex items-center justify-between mt-3 text-xs text-white/50">
+          <span>Updated 3 days ago</span>
+          <span>4 min read</span>
+        </div>
+      </div>
+      
+      <div class="p-4 glass-card rounded-lg hover:bg-white/10 transition-all cursor-pointer">
+        <div class="flex items-center justify-between">
+          <h3 class="font-medium">Customizing the Gradebook for Different Subjects</h3>
+          <span class="px-3 py-1 bg-purple-600 text-white text-xs rounded-full">Advanced</span>
+        </div>
+        <p class="text-sm text-white/60 mt-2">Advanced configuration options for tailoring the gradebook to specific subject requirements, including custom grading scales and weightings.</p>
+        <div class="flex items-center justify-between mt-3 text-xs text-white/50">
+          <span>Updated 5 days ago</span>
+          <span>12 min read</span>
+        </div>
+      </div>
+      
+      <div class="text-center pt-4">
+        <button class="px-6 py-3 border border-white/30 rounded-xl hover:bg-white/10 transition-all">
+          <i class="fas fa-plus mr-2"></i>View All Articles
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video Tutorials -->
+  <div class="glass-card rounded-xl p-6">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center">
+      <i class="fas fa-video text-red-400 mr-3"></i>Video Tutorials
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="group cursor-pointer">
+        <div class="relative rounded-lg overflow-hidden mb-3">
+          <img src="https://via.placeholder.com/400x225/1a1a2e/ffffff?text=Getting+Started" alt="Getting Started" class="w-full h-48 object-cover">
+          <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <i class="fas fa-play text-white text-2xl"></i>
+          </div>
+          <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+            5:23
+          </div>
+        </div>
+        <h3 class="font-medium">Getting Started with UEBS</h3>
+        <p class="text-sm text-white/60 mt-1">Learn the basics of navigating the system</p>
+      </div>
+      
+      <div class="group cursor-pointer">
+        <div class="relative rounded-lg overflow-hidden mb-3">
+          <img src="https://via.placeholder.com/400x225/1a1a2e/ffffff?text=Student+Management" alt="Student Management" class="w-full h-48 object-cover">
+          <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <i class="fas fa-play text-white text-2xl"></i>
+          </div>
+          <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+            8:45
+          </div>
+        </div>
+        <h3 class="font-medium">Student Management</h3>
+        <p class="text-sm text-white/60 mt-1">Add, edit, and manage student records</p>
+      </div>
+      
+      <div class="group cursor-pointer">
+        <div class="relative rounded-lg overflow-hidden mb-3">
+          <img src="https://via.placeholder.com/400x225/1a1a2e/ffffff?text=Reporting+Tools" alt="Reporting Tools" class="w-full h-48 object-cover">
+          <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <i class="fas fa-play text-white text-2xl"></i>
+          </div>
+          <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+            12:18
+          </div>
+        </div>
+        <h3 class="font-medium">Advanced Reporting</h3>
+        <p class="text-sm text-white/60 mt-1">Create custom reports and dashboards</p>
+      </div>
+    </div>
+    
+    <div class="text-center pt-6">
+      <button class="px-6 py-3 border border-white/30 rounded-xl hover:bg-white/10 transition-all">
+        <i class="fas fa-plus mr-2"></i>View All Videos
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- WhatsApp Floating Button -->
+<div class="fixed bottom-6 right-6 z-50">
+  <a href="https://wa.me/9860485752" target="_blank" class="w-16 h-16 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
+    <i class="fab fa-whatsapp text-white text-2xl"></i>
+  </a>
+  <div class="mt-2 text-center">
+    <p class="text-xs text-white/70">WhatsApp Support</p>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // FAQ items
+  const faqItems = document.querySelectorAll('.faq-item');
+  faqItems.forEach(item => {
+    item.addEventListener('click', function () {
+      const title = this.querySelector('span')?.textContent || 'FAQ';
+      console.log('Clicked FAQ:', title);
+      alert(`Opening FAQ: ${title}`);
+    });
+  });
+
+  // Support form submit
+  const supportForm = document.querySelector('form');
+  if (supportForm) {
+    supportForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      alert('Support ticket submitted successfully! Our team will respond within 24 hours.');
+      this.reset();
+    });
+  }
+
+  // Video tutorials
+  const videoTutorials = document.querySelectorAll('.video-tutorial');
+  videoTutorials.forEach(video => {
+    video.addEventListener('click', function () {
+      const title = this.querySelector('h3')?.textContent || 'Video';
+      alert(`Playing video: ${title}`);
+    });
+  });
+
+  // Knowledge base articles
+  const knowledgeBaseArticles = document.querySelectorAll('.knowledge-article');
+  knowledgeBaseArticles.forEach(article => {
+    article.addEventListener('click', function () {
+      const title = this.querySelector('h3')?.textContent || 'Article';
+      alert(`Opening article: ${title}`);
+    });
+  });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,603 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Staff Attendance - UEBS{% endblock %}
+
+{% block content %}
+<!-- Top Navbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+  <div class="mt-12 md:mt-0">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Staff Attendance</h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">Manage and track staff attendance records</p>
+  </div>
+  <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+    <div class="hidden md:block relative flex-1 max-w-md">
+      <input type="date" id="attendanceDate" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+    </div>
+    <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative md:hidden">
+      <i class="fas fa-calendar text-sm sm:text-base"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile date picker -->
+<div class="md:hidden mb-4">
+  <div class="relative">
+    <input type="date" id="attendanceDateMobile" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+  </div>
+</div>
+
+<!-- Attendance Management Section -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-clipboard-check text-green-400 mr-3"></i> Daily Attendance
+  </h3>
+  
+  <!-- Filters -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div>
+      <label class="block text-white/80 mb-2">Role</label>
+      <select id="filterRoleTable" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Roles</option>
+        <option value="Teacher">Teacher</option>
+        <option value="Admin">Admin</option>
+        <option value="Accountant">Accountant</option>
+        <option value="Support">Support</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Search</label>
+      <input type="text" id="searchStaff" placeholder="Search by name" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+    </div>
+    <div class="flex items-end">
+      <button id="markAllPresent" class="liquid-btn text-white px-4 py-2 rounded-xl font-semibold transition-all hover:scale-105 w-full">
+        <i class="fas fa-check-circle mr-2"></i> Mark All Present
+      </button>
+    </div>
+  </div>
+  
+  <!-- Attendance Table -->
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="attendanceTable">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">Staff Member</th>
+          <th class="text-left py-3 px-4">Role</th>
+          <th class="text-left py-3 px-4">Class</th>
+          <th class="text-left py-3 px-4">Status</th>
+          <th class="text-left py-3 px-4">Leave Document</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Attendance data will be populated here -->
+      </tbody>
+    </table>
+  </div>
+  
+  <button id="saveAttendance" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 mt-6">
+    <i class="fas fa-save mr-2"></i> Save Attendance
+  </button>
+</div>
+
+<!-- Attendance Calendar Section -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-calendar-alt text-purple-400 mr-3"></i> Attendance Calendar
+  </h3>
+  
+  <!-- Calendar Controls -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div>
+      <label class="block text-white/80 mb-2">Role</label>
+      <select id="filterRoleCalendar" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Roles</option>
+        <option value="Teacher">Teacher</option>
+        <option value="Admin">Admin</option>
+        <option value="Accountant">Accountant</option>
+        <option value="Support">Support</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Staff Member</label>
+      <select id="filterStaffCalendar" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">Select Staff</option>
+      </select>
+    </div>
+    <div class="flex items-end space-x-2">
+      <button id="prevMonth" class="glass-card text-white px-4 py-2 rounded-xl font-semibold transition-all hover:bg-white/20">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div class="glass-card text-white px-4 py-2 rounded-xl text-center flex-1" id="monthYearLabel"></div>
+      <button id="nextMonth" class="glass-card text-white px-4 py-2 rounded-xl font-semibold transition-all hover:bg-white/20">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Year</label>
+      <select id="yearSelect" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <!-- Years populated dynamically -->
+      </select>
+    </div>
+  </div>
+  
+  <!-- Calendar Display -->
+  <div class="grid grid-cols-7 gap-2 mb-2">
+    <div class="text-center text-white/80 font-medium py-2">Sun</div>
+    <div class="text-center text-white/80 font-medium py-2">Mon</div>
+    <div class="text-center text-white/80 font-medium py-2">Tue</div>
+    <div class="text-center text-white/80 font-medium py-2">Wed</div>
+    <div class="text-center text-white/80 font-medium py-2">Thu</div>
+    <div class="text-center text-white/80 font-medium py-2">Fri</div>
+    <div class="text-center text-white/80 font-medium py-2">Sat</div>
+  </div>
+  
+  <div id="calendar" class="grid grid-cols-7 gap-2">
+    <!-- Calendar days populated dynamically -->
+  </div>
+</div>
+
+<!-- Status Legend -->
+<div class="flex justify-center space-x-4 mt-4 text-white/80 text-sm">
+  <div class="flex items-center">
+    <div class="w-4 h-4 bg-green-500/80 rounded-full mr-2"></div>
+    <span>Present</span>
+  </div>
+  <div class="flex items-center">
+    <div class="w-4 h-4 bg-red-500/80 rounded-full mr-2"></div>
+    <span>Absent</span>
+  </div>
+  <div class="flex items-center">
+    <div class="w-4 h-4 bg-blue-500/80 rounded-full mr-2"></div>
+    <span>Leave</span>
+  </div>
+  <div class="flex items-center">
+    <div class="w-4 h-4 bg-gray-500/50 rounded-full mr-2"></div>
+    <span>No Record</span>
+  </div>
+</div>
+
+<!-- Attendance Detail Modal -->
+<div class="modal fixed inset-0 bg-black/50 z-50 hidden justify-center items-center" id="attendanceDetailModal">
+  <div class="glass-card p-6 lg:p-8 rounded-2xl w-full max-w-md">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl sm:text-2xl font-semibold text-white" id="modalDateTitle">Attendance Details</h3>
+      <button id="closeModal" class="text-white/70 hover:text-white text-2xl">&times;</button>
+    </div>
+    
+    <div class="text-white/80 mb-4" id="modalStaffInfo"></div>
+    
+    <div class="mb-4">
+      <label class="block text-white/80 mb-2">Status</label>
+      <div id="modalStatus" class="glass-card px-4 py-2 rounded-xl"></div>
+    </div>
+    
+    <div id="leaveDocSection" class="mb-4 hidden">
+      <label class="block text-white/80 mb-2">Leave Document</label>
+      <a id="leaveDocLink" target="_blank" class="text-blue-400 hover:underline">View Document</a>
+    </div>
+    
+    <div class="flex justify-end">
+      <button id="closeDetailModal" class="glass-card text-white px-6 py-2 rounded-xl font-semibold transition-all hover:bg-white/20">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-storage-compat.js"></script>
+
+<script>
+// Initialize Firebase with your config
+const firebaseConfig = {
+  apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+  authDomain: "uebs-school.firebaseapp.com",
+  projectId: "uebs-school",
+  storageBucket: "uebs-school.firebasestorage.app",
+  messagingSenderId: "740325293639",
+  appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+  measurementId: "G-T7YEBMNHBH"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const storage = firebase.storage();
+
+let staffData = {};
+let attendanceData = {};
+let staffList = {};
+let attendanceCalendarData = {};
+let selectedStaffId = "";
+let currentYear = new Date().getFullYear();
+let currentMonth = new Date().getMonth();
+let selectedDate = new Date().toISOString().split('T')[0];
+
+// Set default date
+document.getElementById('attendanceDate').value = selectedDate;
+document.getElementById('attendanceDateMobile').value = selectedDate;
+
+// Fetch Staff data
+db.ref('staff').on('value', snapshot => {
+  staffData = snapshot.val() || {};
+  staffList = snapshot.val() || {};
+  populateStaffFilter();
+  loadAttendance();
+  if (selectedStaffId) loadCalendarData();
+});
+
+// Load Attendance (Table)
+function loadAttendance() {
+  const date = document.getElementById('attendanceDate').value || 
+               document.getElementById('attendanceDateMobile').value;
+  selectedDate = date;
+  
+  db.ref('staffAttendance/' + date).once('value').then(snapshot => {
+    attendanceData = snapshot.val() || {};
+    populateTable();
+  });
+}
+
+// Populate Table
+function populateTable() {
+  const tbody = document.querySelector('#attendanceTable tbody');
+  tbody.innerHTML = '';
+
+  const search = document.getElementById('searchStaff').value.toLowerCase();
+  const roleFilter = document.getElementById('filterRoleTable').value;
+
+  Object.keys(staffData).forEach(id => {
+    const s = staffData[id];
+    if (search && !s.fullName.toLowerCase().includes(search)) return;
+    if (roleFilter && s.role !== roleFilter) return;
+
+    const status = attendanceData[id]?.status || "Present";
+    const fileUrl = attendanceData[id]?.leaveFile || "";
+
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-white/10 hover:bg-white/5';
+    tr.innerHTML = `
+      <td class="py-3 px-4">
+        <div class="font-medium text-white">${s.fullName}</div>
+        <div class="text-sm text-white/60">${s.email || ''}</div>
+      </td>
+      <td class="py-3 px-4">
+        <span class="px-2 py-1 rounded-full text-xs ${
+          s.role === 'Teacher' ? 'bg-blue-500/20 text-blue-400' :
+          s.role === 'Admin' ? 'bg-purple-500/20 text-purple-400' :
+          s.role === 'Accountant' ? 'bg-green-500/20 text-green-400' :
+          'bg-yellow-500/20 text-yellow-400'
+        }">${s.role}</span>
+      </td>
+      <td class="py-3 px-4">${s.assignedClass || '-'}</td>
+      <td class="py-3 px-4">
+        <select onchange="markAttendance('${id}', this.value)" 
+                class="glass-card text-white px-3 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 ${
+                  status === 'Present' ? 'bg-green-500/20' :
+                  status === 'Absent' ? 'bg-red-500/20' :
+                  'bg-blue-500/20'
+                }">
+          <option value="Present" ${status==="Present"?"selected":""}>Present</option>
+          <option value="Absent" ${status==="Absent"?"selected":""}>Absent</option>
+          <option value="Leave" ${status==="Leave"?"selected":""}>Leave</option>
+        </select>
+      </td>
+      <td class="py-3 px-4">
+        <label class="relative cursor-pointer">
+          <input type="file" onchange="uploadLeaveFile('${id}', this.files[0])" 
+                 class="hidden" ${status!=="Leave" ? "disabled" : ""}>
+          <span class="glass-card px-3 py-1 rounded-lg inline-block ${
+            fileUrl ? 'text-blue-400 hover:bg-blue-400/20' : 'text-white/60 hover:bg-white/10'
+          }">
+            <i class="fas ${fileUrl ? 'fa-file-alt' : 'fa-upload'} mr-1"></i>
+            ${fileUrl ? 'View' : 'Upload'}
+          </span>
+        </label>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Mark Attendance
+function markAttendance(id, value) {
+  attendanceData[id] = attendanceData[id] || {};
+  attendanceData[id].status = value;
+  
+  // If status changes from Leave, remove leave file
+  if (value !== "Leave" && attendanceData[id].leaveFile) {
+    delete attendanceData[id].leaveFile;
+  }
+  
+  populateTable();
+}
+
+// Upload Leave File
+function uploadLeaveFile(id, file) {
+  if (!file) return;
+  
+  // Show loading state
+  const fileInputs = document.querySelectorAll(`input[type="file"][onchange*="${id}"]`);
+  fileInputs.forEach(input => {
+    input.disabled = true;
+    input.previousElementSibling.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Uploading...';
+  });
+
+  const date = document.getElementById('attendanceDate').value || 
+               document.getElementById('attendanceDateMobile').value;
+  const fileRef = storage.ref(`leaveApplications/${date}/${id}_${file.name}`);
+  
+  fileRef.put(file).then(snapshot => {
+    snapshot.ref.getDownloadURL().then(url => {
+      attendanceData[id] = attendanceData[id] || {};
+      attendanceData[id].leaveFile = url;
+      attendanceData[id].status = "Leave"; // Ensure status is Leave when file is uploaded
+      
+      // Update UI
+      fileInputs.forEach(input => {
+        input.disabled = false;
+        input.previousElementSibling.innerHTML = '<i class="fas fa-file-alt mr-1"></i> View';
+        input.previousElementSibling.classList.remove('text-white/60');
+        input.previousElementSibling.classList.add('text-blue-400');
+      });
+      
+      populateTable();
+    });
+  }).catch(error => {
+    alert('Error uploading file: ' + error.message);
+    fileInputs.forEach(input => {
+      input.disabled = false;
+      input.previousElementSibling.innerHTML = '<i class="fas fa-upload mr-1"></i> Upload';
+    });
+  });
+}
+
+// Save Attendance
+document.getElementById('saveAttendance').addEventListener('click', () => {
+  const date = document.getElementById('attendanceDate').value || 
+               document.getElementById('attendanceDateMobile').value;
+  
+  // Show loading state
+  const btn = document.getElementById('saveAttendance');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+  btn.disabled = true;
+  
+  db.ref('staffAttendance/' + date).set(attendanceData)
+    .then(() => {
+      alert('Attendance saved successfully!');
+      if (selectedStaffId) loadCalendarData();
+    })
+    .catch(error => {
+      alert('Error saving attendance: ' + error.message);
+    })
+    .finally(() => {
+      btn.innerHTML = '<i class="fas fa-save mr-2"></i> Save Attendance';
+      btn.disabled = false;
+    });
+});
+
+// Mark All Present
+document.getElementById('markAllPresent').addEventListener('click', () => {
+  if (confirm('Mark all staff members as present for ' + selectedDate + '?')) {
+    Object.keys(staffData).forEach(id => {
+      attendanceData[id] = attendanceData[id] || {};
+      attendanceData[id].status = "Present";
+      // Remove leave file if exists
+      if (attendanceData[id].leaveFile) {
+        delete attendanceData[id].leaveFile;
+      }
+    });
+    populateTable();
+  }
+});
+
+// Table Events
+document.getElementById('attendanceDate').addEventListener('change', loadAttendance);
+document.getElementById('attendanceDateMobile').addEventListener('change', loadAttendance);
+document.getElementById('searchStaff').addEventListener('keyup', populateTable);
+document.getElementById('filterRoleTable').addEventListener('change', populateTable);
+
+// -------------------- CALENDAR FUNCTIONS --------------------
+function populateYearSelect() {
+  const yearSelect = document.getElementById("yearSelect");
+  yearSelect.innerHTML = "";
+  
+  for (let y = currentYear - 5; y <= currentYear + 1; y++) {
+    const opt = document.createElement("option");
+    opt.value = y;
+    opt.textContent = y;
+    if (y === currentYear) opt.selected = true;
+    yearSelect.appendChild(opt);
+  }
+}
+populateYearSelect();
+
+function populateStaffFilter() {
+  const staffSelect = document.getElementById("filterStaffCalendar");
+  staffSelect.innerHTML = `<option value="">Select Staff</option>`;
+  const role = document.getElementById("filterRoleCalendar").value;
+
+  Object.keys(staffList).forEach(id => {
+    const s = staffList[id];
+    if (role && s.role !== role) return;
+    
+    const opt = document.createElement("option");
+    opt.value = id;
+    opt.textContent = s.fullName + (s.assignedClass ? ` (${s.assignedClass})` : '');
+    staffSelect.appendChild(opt);
+  });
+}
+
+// Calendar Filter Events
+document.getElementById("filterRoleCalendar").addEventListener("change", function() {
+  populateStaffFilter();
+  selectedStaffId = "";
+  document.getElementById("calendar").innerHTML = "";
+});
+
+document.getElementById("filterStaffCalendar").addEventListener("change", function() {
+  selectedStaffId = this.value;
+  if (selectedStaffId) {
+    loadCalendarData();
+  } else {
+    document.getElementById("calendar").innerHTML = "";
+  }
+});
+
+document.getElementById("yearSelect").addEventListener("change", function() {
+  currentYear = parseInt(this.value);
+  if (selectedStaffId) loadCalendarData();
+});
+
+document.getElementById("prevMonth").addEventListener("click", function() {
+  currentMonth--;
+  if (currentMonth < 0) { 
+    currentMonth = 11; 
+    currentYear--; 
+    populateYearSelect(); 
+  }
+  if (selectedStaffId) loadCalendarData();
+});
+
+document.getElementById("nextMonth").addEventListener("click", function() {
+  currentMonth++;
+  if (currentMonth > 11) { 
+    currentMonth = 0; 
+    currentYear++; 
+    populateYearSelect(); 
+  }
+  if (selectedStaffId) loadCalendarData();
+});
+
+function loadCalendarData() {
+  attendanceCalendarData = {};
+  const startDate = new Date(currentYear, currentMonth, 1);
+  const endDate = new Date(currentYear, currentMonth + 1, 0);
+  
+  document.getElementById("monthYearLabel").textContent = 
+    startDate.toLocaleString('default', {month: 'long'}) + " " + currentYear;
+
+  let fetchCount = 0;
+  const totalDays = endDate.getDate();
+
+  // Show loading state
+  const calendar = document.getElementById("calendar");
+  calendar.innerHTML = '<div class="col-span-7 text-center py-8 text-white/60"><i class="fas fa-spinner fa-spin mr-2"></i> Loading attendance data...</div>';
+
+  for (let day = 1; day <= totalDays; day++) {
+    const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    
+    db.ref(`staffAttendance/${dateStr}/${selectedStaffId}`).once("value").then(snapshot => {
+      attendanceCalendarData[dateStr] = snapshot.val()?.status || "";
+      fetchCount++;
+      
+      if (fetchCount === totalDays) {
+        renderCalendar();
+      }
+    });
+  }
+}
+
+function renderCalendar() {
+  const calendar = document.getElementById("calendar");
+  calendar.innerHTML = "";
+
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+  // Empty cells for days before the 1st of the month
+  for (let i = 0; i < firstDay; i++) {
+    const div = document.createElement("div");
+    div.className = "day empty h-16";
+    calendar.appendChild(div);
+  }
+
+  // Days of the month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const status = attendanceCalendarData[dateStr];
+    
+    const div = document.createElement("div");
+    div.className = "day h-16 flex flex-col items-center justify-center rounded-lg cursor-pointer transition-all hover:scale-105 ";
+    
+    if (status === "Present") div.classList.add("bg-green-500/20", "border-green-400/50");
+    else if (status === "Absent") div.classList.add("bg-red-500/20", "border-red-400/50");
+    else if (status === "Leave") div.classList.add("bg-blue-500/20", "border-blue-400/50");
+    else div.classList.add("glass-card", "border-white/10");
+    
+    div.innerHTML = `
+      <div class="font-medium">${day}</div>
+      <div class="text-xs mt-1 ${
+        status === "Present" ? "text-green-400" :
+        status === "Absent" ? "text-red-400" :
+        status === "Leave" ? "text-blue-400" : "text-white/60"
+      }">
+        ${status || ""}
+      </div>
+    `;
+    
+    div.onclick = () => showAttendanceDetails(dateStr);
+    calendar.appendChild(div);
+  }
+}
+
+function showAttendanceDetails(dateStr) {
+  const modal = document.getElementById("attendanceDetailModal");
+  const staff = staffList[selectedStaffId];
+  
+  document.getElementById("modalDateTitle").textContent = "Attendance on " + 
+    new Date(dateStr).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  
+  document.getElementById("modalStaffInfo").innerHTML = `
+    <div class="font-medium text-white">${staff.fullName}</div>
+    <div class="text-sm">${staff.role} ${staff.assignedClass ? '· ' + staff.assignedClass : ''}</div>
+  `;
+  
+  const status = attendanceCalendarData[dateStr] || "No record";
+  const statusElement = document.getElementById("modalStatus");
+  statusElement.innerHTML = `
+    <span class="px-2 py-1 rounded-full text-sm ${
+      status === "Present" ? "bg-green-500/20 text-green-400" :
+      status === "Absent" ? "bg-red-500/20 text-red-400" :
+      status === "Leave" ? "bg-blue-500/20 text-blue-400" :
+      "bg-gray-500/20 text-white/60"
+    }">
+      ${status}
+    </span>
+  `;
+  
+  // Check for leave document
+  db.ref(`staffAttendance/${dateStr}/${selectedStaffId}`).once("value").then(snapshot => {
+    const data = snapshot.val();
+    const leaveDocSection = document.getElementById("leaveDocSection");
+    const leaveDocLink = document.getElementById("leaveDocLink");
+    
+    if (data?.leaveFile) {
+      leaveDocSection.classList.remove("hidden");
+      leaveDocLink.href = data.leaveFile;
+    } else {
+      leaveDocSection.classList.add("hidden");
+    }
+  });
+  
+  modal.style.display = "flex";
+}
+
+// Modal close handlers
+document.getElementById("closeModal").addEventListener("click", () => {
+  document.getElementById("attendanceDetailModal").style.display = "none";
+});
+
+document.getElementById("closeDetailModal").addEventListener("click", () => {
+  document.getElementById("attendanceDetailModal").style.display = "none";
+});
+
+// Initialize calendar with current month
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById("monthYearLabel").textContent = 
+    new Date().toLocaleString('default', {month: 'long'}) + " " + currentYear;
+});
+</script>
+{% endblock %}

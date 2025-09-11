@@ -1,0 +1,244 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Finance  Reports - UEBS{% endblock %}
+
+{% block content %}
+<!-- Top Navbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+  <div class="mt-12 md:mt-0">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Reports</h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">Visualize financial data with charts and summaries</p>
+  </div>
+  <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+    <button id="downloadPdfBtn" class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all" title="Download as PDF">
+      <i class="fas fa-file-pdf text-sm sm:text-base"></i>
+    </button>
+    <button id="printBtn" class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all" title="Print">
+      <i class="fas fa-print text-sm sm:text-base"></i>
+    </button>
+    <button id="exportExcelBtn" class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all" title="Export to Excel">
+      <i class="fas fa-file-excel text-sm sm:text-base"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Date Range Filter -->
+<div class="glass-card p-4 mb-6 rounded-2xl animate__animated animate__fadeInUp">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-filter text-purple-400 mr-3"></i> Date Range
+  </h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label class="block text-white/80 mb-2">Start Date</label>
+      <input type="date" id="startDate" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">End Date</label>
+      <input type="date" id="endDate" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+    </div>
+  </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div class="glass-card p-4 rounded-2xl">
+    <h3 class="text-lg font-semibold text-white mb-2">Total Income</h3>
+    <p id="totalIncome" class="text-2xl text-green-400">0.00</p>
+  </div>
+  <div class="glass-card p-4 rounded-2xl">
+    <h3 class="text-lg font-semibold text-white mb-2">Total Expenses</h3>
+    <p id="totalExpenses" class="text-2xl text-red-400">0.00</p>
+  </div>
+  <div class="glass-card p-4 rounded-2xl">
+    <h3 class="text-lg font-semibold text-white mb-2">Net Balance</h3>
+    <p id="netBalance" class="text-2xl text-blue-400">0.00</p>
+  </div>
+</div>
+
+<!-- Charts -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <!-- Bar Chart -->
+  <div class="glass-card p-4 rounded-2xl">
+    <h3 class="text-xl font-semibold text-white mb-4">Monthly Income vs Expenses (Bar Chart)</h3>
+    <canvas id="barChart" height="200"></canvas>
+  </div>
+
+  <!-- Pie Chart Income -->
+  <div class="glass-card p-4 rounded-2xl">
+    <h3 class="text-xl font-semibold text-white mb-4">Income by Category (Pie Chart)</h3>
+    <canvas id="pieIncomeChart" height="200"></canvas>
+  </div>
+
+  <!-- Pie Chart Expenses -->
+  <div class="glass-card p-4 rounded-2xl">
+    <h3 class="text-xl font-semibold text-white mb-4">Expenses by Category (Pie Chart)</h3>
+    <canvas id="pieExpensesChart" height="200"></canvas>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- jsPDF and html2canvas for PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- XLSX for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+  authDomain: "uebs-school.firebaseapp.com",
+  projectId: "uebs-school",
+  storageBucket: "uebs-school.firebasestorage.app",
+  messagingSenderId: "740325293639",
+  appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+  measurementId: "G-T7YEBMNHBH"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const { jsPDF } = window.jspdf;
+
+let journalData = {};
+let barChart, pieIncomeChart, pieExpensesChart;
+
+// Load Journal Data
+db.ref('journal').on('value', snap => {
+  journalData = snap.val() || {};
+  updateReports();
+});
+
+// Update Reports
+function updateReports() {
+  const startDate = document.getElementById('startDate').value || '0000-01-01';
+  const endDate = document.getElementById('endDate').value || '9999-12-31';
+
+  let totalIncome = 0, totalExpenses = 0;
+  let monthlyData = {};
+  let incomeCategories = {};
+  let expenseCategories = {};
+
+  Object.values(journalData).forEach(entry => {
+    if (entry.date >= startDate && entry.date <= endDate) {
+      const amount = entry.amount;
+      const month = entry.date.slice(0, 7); // YYYY-MM
+      if (!monthlyData[month]) monthlyData[month] = { income: 0, expenses: 0 };
+
+      if (entry.type === 'Debit') {
+        totalIncome += amount;
+        monthlyData[month].income += amount;
+        incomeCategories[entry.category] = (incomeCategories[entry.category] || 0) + amount;
+      } else if (entry.type === 'Credit') {
+        totalExpenses += amount;
+        monthlyData[month].expenses += amount;
+        expenseCategories[entry.category] = (expenseCategories[entry.category] || 0) + amount;
+      }
+    }
+  });
+
+  document.getElementById('totalIncome').textContent = totalIncome.toFixed(2);
+  document.getElementById('totalExpenses').textContent = totalExpenses.toFixed(2);
+  document.getElementById('netBalance').textContent = (totalIncome - totalExpenses).toFixed(2);
+
+  // Bar Chart Data
+  const months = Object.keys(monthlyData).sort();
+  const incomeData = months.map(m => monthlyData[m].income);
+  const expensesData = months.map(m => monthlyData[m].expenses);
+
+  if (barChart) barChart.destroy();
+  barChart = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [
+        { label: 'Income', data: incomeData, backgroundColor: 'rgba(75, 192, 192, 0.6)' },
+        { label: 'Expenses', data: expensesData, backgroundColor: 'rgba(255, 99, 132, 0.6)' }
+      ]
+    },
+    options: { scales: { y: { beginAtZero: true } } }
+  });
+
+  // Pie Chart Income
+  if (pieIncomeChart) pieIncomeChart.destroy();
+  pieIncomeChart = new Chart(document.getElementById('pieIncomeChart'), {
+    type: 'pie',
+    data: {
+      labels: Object.keys(incomeCategories),
+      datasets: [{ data: Object.values(incomeCategories), backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'] }]
+    }
+  });
+
+  // Pie Chart Expenses
+  if (pieExpensesChart) pieExpensesChart.destroy();
+  pieExpensesChart = new Chart(document.getElementById('pieExpensesChart'), {
+    type: 'pie',
+    data: {
+      labels: Object.keys(expenseCategories),
+      datasets: [{ data: Object.values(expenseCategories), backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'] }]
+    }
+  });
+}
+
+// Date Change Listeners
+document.getElementById('startDate').addEventListener('change', updateReports);
+document.getElementById('endDate').addEventListener('change', updateReports);
+
+// Download as PDF
+document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+  const btn = document.getElementById('downloadPdfBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.disabled = true;
+
+  html2canvas(document.querySelector('.grid.grid-cols-1.lg\\:grid-cols-2')).then(canvas => {
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const imgData = canvas.toDataURL('image/png');
+    const imgProps = doc.getImageProperties(imgData);
+    const pdfWidth = doc.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    doc.save('reports.pdf');
+    btn.innerHTML = '<i class="fas fa-file-pdf"></i>';
+    btn.disabled = false;
+  });
+});
+
+// Print Reports
+document.getElementById('printBtn').addEventListener('click', () => {
+  window.print();
+});
+
+// Export to Excel
+document.getElementById('exportExcelBtn').addEventListener('click', () => {
+  const btn = document.getElementById('exportExcelBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.disabled = true;
+
+  const data = [];
+  data.push(['Category', 'Income', 'Expenses']);
+  const categories = new Set([...Object.keys(incomeCategories), ...Object.keys(expenseCategories)]);
+  categories.forEach(cat => {
+    data.push([cat, (incomeCategories[cat] || 0).toFixed(2), (expenseCategories[cat] || 0).toFixed(2)]);
+  });
+  data.push([]);
+  data.push(['Total Income', totalIncome.toFixed(2), '']);
+  data.push(['Total Expenses', '', totalExpenses.toFixed(2)]);
+  data.push(['Net Balance', (totalIncome - totalExpenses).toFixed(2), '']);
+
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Reports');
+  XLSX.writeFile(wb, 'reports.xlsx');
+  btn.innerHTML = '<i class="fas fa-file-excel"></i>';
+  btn.disabled = false;
+});
+
+// Initial Load
+updateReports();
+</script>
+{% endblock %}

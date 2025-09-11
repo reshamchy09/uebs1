@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Unison English Boarding School - Shaping Future Leaders{% endblock %}</title>
+    
+    <!-- Primary SEO -->
+    <meta name="description" content="Unison English Boarding School in Dhangadhi — top English-medium boarding school offering quality academics, modern labs, sports facilities, and hostel. Admissions open for 2025." />
+    <!-- Note: 'meta keywords' is ignored by major search engines but included for legacy/other tools -->
+    <meta name="keywords" content="Best school in Dhangadhi, English boarding school Dhangadhi, Top schools in Dhangadhi, Private schools Dhangadhi, Boarding school admissions 2025 Dhangadhi, Affordable schools in Dhangadhi, Schools with hostel Dhangadhi" />
+
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- External Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+    <!-- Canonical -->
+<link rel="canonical" href="https://www.example.com/" />
+
+<!-- Open Graph (social preview) -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Unison English Boarding School — Best School in Dhangadhi" />
+<meta property="og:description" content="Top English-medium boarding school in Dhangadhi with excellent faculty, science labs, sports, and safe hostel facilities. Admissions open for 2025." />
+<meta property="og:url" content="https://www.example.com/" />
+<meta property="og:image" content="https://www.example.com/assets/og-image.jpg" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Unison English Boarding School — Best School in Dhangadhi" />
+<meta name="twitter:description" content="Top English-medium boarding school in Dhangadhi — admissions open for 2025." />
+<meta name="twitter:image" content="https://www.example.com/assets/twitter-image.jpg" />
+
+<!-- Robots -->
+<meta name="robots" content="index, follow" />
+    
+    <!-- Custom CSS -->
+  {% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        /* Floating WhatsApp Button Styles */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 28px;
+            box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .whatsapp-float:hover {
+            background-color: #20ba5a;
+            transform: scale(1.1);
+            box-shadow: 2px 2px 25px rgba(0, 0, 0, 0.3);
+            color: #FFF;
+            text-decoration: none;
+        }
+
+        .whatsapp-float i {
+            margin: 0;
+            line-height: 1;
+        }
+
+        /* Pulse animation */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+            }
+        }
+
+        /* Tooltip */
+        .whatsapp-float::before {
+            content: "Chat with us!";
+            position: absolute;
+            right: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .whatsapp-float::after {
+            content: "";
+            position: absolute;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 6px solid transparent;
+            border-left-color: rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .whatsapp-float:hover::before,
+        .whatsapp-float:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                width: 55px;
+                height: 55px;
+                font-size: 24px;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .whatsapp-float::before {
+                font-size: 12px;
+                padding: 6px 10px;
+                right: 65px;
+            }
+
+            .whatsapp-float::after {
+                right: 55px;
+            }
+        }
+
+        /* Hide tooltip on very small screens */
+        @media (max-width: 480px) {
+            .whatsapp-float::before,
+            .whatsapp-float::after {
+                display: none;
+            }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loader" class="loader">
+        <div class="loader-content">
+            <div class="school-logo">🎓</div>
+            <div class="loader-text">Unison English Boarding School</div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">🎓</span>
+                <span class="logo-text">UEBS</span>
+            </div>
+            
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
+                <li><a href="{% url 'about' %}" class="nav-link">About</a></li>
+                <li><a href="{% url 'academics' %}" class="nav-link">Academics</a></li>
+                <li><a href="{% url 'admissions' %}" class="nav-link">Admissions</a></li>
+                <li><a href="{% url 'facilities' %}" class="nav-link">Facilities</a></li>
+               <li><a href="{% url 'e-learning' %}" class="nav-link">E-learning</a></li>
+                <li><a href="{% url 'events' %}" class="nav-link">Events</a></li>
+                <li><a href="{% url 'faculty' %}" class="nav-link">Faculty</a></li>
+                <li><a href="{% url 'contact' %}" class="nav-link">Contact</a></li>
+                <li><a href="{% url 'student_portal' %}" class="nav-link portal-btn">Student Portal</a></li>
+            </ul>
+            
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/9779822662207?text=Hello! I would like to know more about Unison English Boarding School." 
+       class="whatsapp-float" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       aria-label="Contact us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+  <!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'about' %}">About Us</a></li>
+                <li><a href="{% url 'academics' %}">Academics</a></li>
+                <li><a href="{% url 'admissions' %}">Admissions</a></li>
+                <li><a href="https://resamchaudhary.com.np" target="_blank" rel="noopener">Developer</a></li>
+                <li><a href="{% url 'login' %}">Login</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Contact Info</h3>
+            <div class="contact-info">
+                <p><i class="fas fa-map-marker-alt"></i> Dhangadhi 19, Sub Metro, Potlian City, Kailali</p>
+                <p><i class="fas fa-phone"></i> +977 123-4567</p>
+                <p><i class="fas fa-envelope"></i> UEBS@gmail.com</p>
+            </div>
+        </div>
+
+        <div class="footer-section">
+            <h3>School Hours</h3>
+            <p>Sunday – Friday: 8:00 AM – 3:30 PM</p>
+            <h3>Office Hours</h3>
+            <p>7:30 AM – 4:00 PM</p>
+        </div>
+
+        <!-- 📱 Download App QR Section -->
+        <div class="footer-section">
+            <h3>Download Our App</h3>
+            <p>Scan the QR code or click the button below</p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://your-app-download-link.com"
+                 alt="Download App QR"
+                 style="width:120px;height:120px;border:2px solid #ddd;border-radius:8px;">
+
+            <br><br>
+
+            <!-- Download Button -->
+            <a href="https://your-app-download-link.com" target="_blank" rel="noopener"
+               style="display:inline-block;background:#28a745;color:#fff;padding:10px 20px;
+                      border-radius:5px;text-decoration:none;font-weight:bold;">
+                📲 Download App
+            </a>
+        </div>
+    </div>
+        
+    <div class="footer-section">
+        <h3>Follow Us</h3>
+        <div class="social-links">
+            <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>
+            &copy; 2025 Unison English Boarding School. All rights reserved. |
+            Developed by 
+            <a href="https://resamchaudhary.com.np" 
+               target="_blank" 
+               rel="noopener" 
+               style="color: green; font-weight: bold;">
+                Resham Chaudhary (Click Me)
+            </a>
+        </p>
+    </div>
+</footer>
+
+
+
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

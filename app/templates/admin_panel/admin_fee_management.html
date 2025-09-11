@@ -1,0 +1,914 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Fee Management - UEBS{% endblock %}
+
+{% block content %}
+<!-- Top Navbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+  <div class="mt-12 md:mt-0">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Fee Management</h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">Manage student payments and pending fees</p>
+  </div>
+  <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+    <div class="hidden md:block relative flex-1 max-w-md">
+      <input type="text" id="searchStudent" placeholder="Search student..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+      <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative md:hidden">
+      <i class="fas fa-search text-sm sm:text-base"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile Search -->
+<div class="md:hidden mb-4">
+  <div class="relative">
+    <input type="text" id="searchStudentMobile" placeholder="Search student..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+    <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="glass-card p-4 mb-6 rounded-2xl animate__animated animate__fadeInUp">
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div>
+      <label class="block text-white/80 mb-2">Class</label>
+      <select id="filterClass" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Classes</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Section</label>
+      <select id="filterSection" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Sections</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Fee For</label>
+      <select id="filterTerm" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All</option>
+        <option value="Monthly">Monthly Fee</option>
+        <option value="Term1">Term 1 Fee</option>
+        <option value="Term2">Term 2 Fee</option>
+        <option value="Term3">Term 3 Fee</option>
+        <option value="Term4">Term 4 Fee</option>
+        <option value="Annual">Annual Fee</option>
+        <option value="Exam">Exam Fee</option>
+        <option value="Previous">Previous Dues</option>
+        <option value="Other">Other Fee</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Year</label>
+      <select id="filterYear" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Years</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- Record New Payment -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-money-bill-wave text-green-400 mr-3"></i> Record New Payment
+  </h3>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label class="block text-white/80 mb-2">Student</label>
+      <select id="studentSelect" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">Select Student</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Amount Paid</label>
+      <input type="number" id="paymentAmount" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Enter amount" required>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Payment Date</label>
+      <input type="date" id="paymentDate" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Payment Method</label>
+      <select id="paymentMethod" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="Cash">Cash</option>
+        <option value="Bank">Bank Transfer</option>
+        <option value="Online">Online Payment</option>
+        <option value="Cheque">Cheque</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Fee For</label>
+      <select id="paymentTerm" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">Select Fee For</option>
+        <option value="Monthly">Monthly Fee</option>
+        <option value="Term1">Term 1 Fee</option>
+        <option value="Term2">Term 2 Fee</option>
+        <option value="Term3">Term 3 Fee</option>
+        <option value="Term4">Term 4 Fee</option>
+        <option value="Annual">Annual Fee</option>
+        <option value="Exam">Exam Fee</option>
+        <option value="Previous">Previous Dues</option>
+        <option value="Other">Other Fee</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Month</label>
+      <select id="paymentMonth" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Year</label>
+      <select id="paymentYear" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+      </select>
+    </div>
+    <div class="md:col-span-2">
+      <label class="block text-white/80 mb-2">Notes (Optional)</label>
+      <input type="text" id="paymentNotes" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Additional information">
+    </div>
+  </div>
+  
+  <button id="addPaymentBtn" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 mt-6">
+    <i class="fas fa-save mr-2"></i> Record Payment
+  </button>
+</div>
+
+<!-- Selected Student Details -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6" id="selectedStudentDetails" style="display: none;">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-user-graduate text-blue-400 mr-3"></i> Student Details
+  </h3>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-white/80">
+    <div>
+      <p><strong>Name:</strong> <span id="studentName"></span></p>
+      <p><strong>Class:</strong> <span id="studentClass"></span></p>
+    </div>
+    <div>
+      <p><strong>Monthly Fee:</strong> ₹<span id="monthlyFee"></span></p>
+      <p><strong>Term Fee:</strong> ₹<span id="termFee"></span></p>
+    </div>
+    <div>
+      <p><strong>Annual Fee:</strong> ₹<span id="annualFee"></span></p>
+      <p><strong>Payment Mode:</strong> <span id="paymentMode"></span></p>
+    </div>
+  </div>
+</div>
+
+<!-- Pending Fees -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-exclamation-triangle text-yellow-400 mr-3"></i> Pending Fees
+  </h3>
+  
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="pendingTable">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">Student</th>
+          <th class="text-left py-3 px-4">Class</th>
+          <th class="text-left py-3 px-4">Total Fee</th>
+          <th class="text-left py-3 px-4">Paid</th>
+          <th class="text-left py-3 px-4">Remaining</th>
+          <th class="text-left py-3 px-4">Status</th>
+          <th class="text-left py-3 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Payment History -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-history text-purple-400 mr-3"></i> Payment History
+  </h3>
+  
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="paymentTable">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">Student</th>
+          <th class="text-left py-3 px-4">Class</th>
+          <th class="text-left py-3 px-4">Amount</th>
+          <th class="text-left py-3 px-4">Date</th>
+          <th class="text-left py-3 px-4">Method</th>
+          <th class="text-left py-3 px-4">Fee For</th>
+          <th class="text-left py-3 px-4">Month</th>
+          <th class="text-left py-3 px-4">Year</th>
+          <th class="text-left py-3 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Edit Payment Modal -->
+<div class="modal fixed inset-0 bg-black/50 z-50 hidden justify-center items-center" id="editModal">
+  <div class="glass-card p-6 lg:p-8 rounded-2xl w-full max-w-2xl">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl sm:text-2xl font-semibold text-white">Edit Payment</h3>
+      <button id="closeEdit" class="text-white/70 hover:text-white text-2xl">&times;</button>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-white/80 mb-2">Amount Paid</label>
+        <input type="number" id="editAmount" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Payment Date</label>
+        <input type="date" id="editDate" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Payment Method</label>
+        <select id="editMethod" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option value="Cash">Cash</option>
+          <option value="Bank">Bank Transfer</option>
+          <option value="Online">Online Payment</option>
+          <option value="Cheque">Cheque</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Fee For</label>
+        <select id="editTerm" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option value="Monthly">Monthly Fee</option>
+          <option value="Term1">Term 1 Fee</option>
+          <option value="Term2">Term 2 Fee</option>
+          <option value="Term3">Term 3 Fee</option>
+          <option value="Term4">Term 4 Fee</option>
+          <option value="Annual">Annual Fee</option>
+          <option value="Exam">Exam Fee</option>
+          <option value="Previous">Previous Dues</option>
+          <option value="Other">Other Fee</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Month</label>
+        <select id="editMonth" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <option value="1">January</option>
+          <option value="2">February</option>
+          <option value="3">March</option>
+          <option value="4">April</option>
+          <option value="5">May</option>
+          <option value="6">June</option>
+          <option value="7">July</option>
+          <option value="8">August</option>
+          <option value="9">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-white/80 mb-2">Year</label>
+        <select id="editYear" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        </select>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-white/80 mb-2">Notes</label>
+        <input type="text" id="editNotes" class="w-full glass-card text-white placeholder-white/50 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+      </div>
+    </div>
+
+    <div class="flex justify-end space-x-4 mt-6">
+      <button id="saveEdit" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+        <i class="fas fa-save mr-2"></i> Save Changes
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Bill Modal -->
+<div class="modal fixed inset-0 bg-black/50 z-50 hidden justify-center items-center" id="billModal">
+  <div class="glass-card p-6 lg:p-8 rounded-2xl w-full max-w-3xl max-h-screen overflow-y-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl sm:text-2xl font-semibold text-white">Payment Bill</h3>
+      <button id="closeBill" class="text-white/70 hover:text-white text-2xl">&times;</button>
+    </div>
+    <div id="billContent"></div>
+    <div class="flex justify-end mt-6">
+      <button id="downloadBill" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold">Download PDF</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+<!-- PDF & Screenshot -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<script>
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+    authDomain: "uebs-school.firebaseapp.com",
+    projectId: "uebs-school",
+    storageBucket: "uebs-school.firebasestorage.app",
+    messagingSenderId: "740325293639",
+    appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+    measurementId: "G-T7YEBMNHBH"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  let students = {}, classes = {}, payments = {};
+  let editStudentId = '', editPaymentId = '';
+  let selectedStudentId = '';
+
+  // Month names
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  // Set today's date
+  document.getElementById('paymentDate').valueAsDate = new Date();
+
+  // Populate year dropdowns
+  function populateYearDropdowns() {
+    const currentYear = new Date().getFullYear();
+    [document.getElementById('paymentYear'), document.getElementById('filterYear'), document.getElementById('editYear')]
+      .forEach(select => {
+        select.innerHTML = '';
+        for (let year = currentYear; year >= currentYear - 5; year--) {
+          const opt = document.createElement('option');
+          opt.value = year;
+          opt.textContent = year;
+          if (year === currentYear) opt.selected = true;
+          select.appendChild(opt);
+        }
+      });
+  }
+
+  // Fetch data
+  db.ref('students').on('value', snap => {
+    students = snap.val() || {};
+    populateStudentDropdown();
+    populateFilterDropdowns();
+    calculatePendingFees();
+    populatePaymentTable();
+  });
+
+  db.ref('classes').on('value', snap => {
+    classes = snap.val() || {};
+    calculatePendingFees();
+    populatePaymentTable();
+  });
+
+  db.ref('fees').on('value', snap => {
+    payments = snap.val() || {};
+    calculatePendingFees();
+    populatePaymentTable();
+  });
+
+  // Populate student dropdown
+  function populateStudentDropdown() {
+    const select = document.getElementById('studentSelect');
+    select.innerHTML = '<option value="">Select Student</option>';
+    
+    Object.entries(students).forEach(([id, s]) => {
+      if (!s || !s.fullName) return;
+      
+      const classDisplay = s.className ? 
+        (s.section ? `${s.className} ${s.section}` : s.className) : 
+        'Unassigned';
+      
+      const opt = document.createElement('option');
+      opt.value = id;
+      opt.textContent = `${s.fullName} (${classDisplay})`;
+      select.appendChild(opt);
+    });
+  }
+
+  // Handle student selection change
+  document.getElementById('studentSelect').addEventListener('change', function() {
+    selectedStudentId = this.value;
+    if (selectedStudentId) {
+      showStudentDetails(selectedStudentId);
+    } else {
+      document.getElementById('selectedStudentDetails').style.display = 'none';
+    }
+  });
+
+  // Show selected student details
+  function showStudentDetails(studentId) {
+    const student = students[studentId];
+    if (!student) return;
+
+    const classData = getClassDataForStudent(student);
+    
+    document.getElementById('studentName').textContent = student.fullName;
+    document.getElementById('studentClass').textContent = student.className + (student.section ? ' ' + student.section : '');
+    
+    if (classData) {
+      document.getElementById('monthlyFee').textContent = classData.monthlyFee ? classData.monthlyFee.toLocaleString() : '0';
+      document.getElementById('termFee').textContent = classData.termFee ? classData.termFee.toLocaleString() : '0';
+      document.getElementById('annualFee').textContent = classData.fee ? classData.fee.toLocaleString() : '0';
+      document.getElementById('paymentMode').textContent = classData.termsEnabled ? 'Term-wise' : 'Monthly';
+    } else {
+      document.getElementById('monthlyFee').textContent = '0';
+      document.getElementById('termFee').textContent = '0';
+      document.getElementById('annualFee').textContent = '0';
+      document.getElementById('paymentMode').textContent = 'Not set';
+    }
+    
+    document.getElementById('selectedStudentDetails').style.display = 'block';
+  }
+
+  // Get class data for a student
+  function getClassDataForStudent(student) {
+    if (!student || !student.className) return null;
+    
+    // Find class by className and section
+    return Object.values(classes).find(c => 
+      c.className === student.className && 
+      (c.section || '') === (student.section || '')
+    );
+  }
+
+  // Populate class/section filters
+  function populateFilterDropdowns() {
+    const classSet = new Set(), sectionSet = new Set();
+    
+    Object.values(students).forEach(s => {
+      if (s && s.className) classSet.add(s.className);
+      if (s && s.section) sectionSet.add(s.section);
+    });
+
+    // Populate class filter
+    const classFilter = document.getElementById('filterClass');
+    if (classFilter) {
+      classFilter.innerHTML = '<option value="">All Classes</option>';
+      Array.from(classSet)
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
+        .forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c;
+          opt.textContent = c;
+          classFilter.appendChild(opt);
+        });
+    }
+
+    // Populate section filter
+    const sectionFilter = document.getElementById('filterSection');
+    if (sectionFilter) {
+      sectionFilter.innerHTML = '<option value="">All Sections</option>';
+      Array.from(sectionSet).sort().forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        sectionFilter.appendChild(opt);
+      });
+    }
+  }
+
+  // Add Payment
+  document.getElementById('addPaymentBtn').addEventListener('click', () => {
+    const studentId = document.getElementById('studentSelect').value;
+    const amount = parseFloat(document.getElementById('paymentAmount').value);
+    const date = document.getElementById('paymentDate').value;
+    const method = document.getElementById('paymentMethod').value;
+    const term = document.getElementById('paymentTerm').value;
+    const month = document.getElementById('paymentMonth').value;
+    const year = document.getElementById('paymentYear').value;
+    const notes = document.getElementById('paymentNotes').value.trim();
+
+    if (!studentId || !amount || isNaN(amount) || !term || !date || !month) {
+      alert("Please fill all required fields!");
+      return;
+    }
+
+    const s = students[studentId];
+    if (!s) {
+      alert("Invalid student selected!");
+      return;
+    }
+
+    const monthName = monthNames[parseInt(month) - 1];
+    if (!confirm(`Record payment of ₹${amount} for ${s.fullName} (${term} - ${monthName} ${year})?`)) return;
+
+    const btn = document.getElementById('addPaymentBtn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+    btn.disabled = true;
+
+    const classDisplay = s.className ? 
+      (s.section ? `${s.className} ${s.section}` : s.className) : 
+      'Unassigned';
+      
+    const paymentData = {
+      studentName: s.fullName,
+      className: classDisplay,
+      amountPaid: amount,
+      paymentDate: date,
+      method,
+      term,
+      month: parseInt(month),
+      monthName,
+      year: parseInt(year),
+      notes,
+      recordedAt: firebase.database.ServerValue.TIMESTAMP
+    };
+
+    db.ref('fees/' + studentId).push(paymentData)
+      .then(() => {
+        alert("Payment recorded successfully!");
+        generatePDFReceipt(paymentData);
+        resetPaymentForm();
+      })
+      .catch(err => alert("Error: " + err.message))
+      .finally(() => {
+        btn.innerHTML = '<i class="fas fa-save mr-2"></i> Record Payment';
+        btn.disabled = false;
+      });
+  });
+
+  // Generate PDF receipt
+  function generatePDFReceipt(data) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'pt', 'a4');
+    const pageWidth = doc.internal.pageSize.getWidth();
+    let y = 60;
+
+    doc.setFontSize(22).setTextColor(40).text("UEBS School", pageWidth / 2, y, { align: 'center' });
+    y += 20;
+    doc.setFontSize(18).text("Payment Receipt", pageWidth / 2, y, { align: 'center' });
+    y += 30;
+
+    doc.setFontSize(12);
+    const fields = [
+      `Student Name: ${data.studentName}`,
+      `Class: ${data.className}`,
+      `Payment Date: ${data.paymentDate}`,
+      `Fee For: ${data.term}`,
+      `Month: ${data.monthName}`,
+      `Year: ${data.year}`,
+      `Method: ${data.method}`,
+      `Notes: ${data.notes || '-'}`,
+    ];
+    fields.forEach(text => {
+      doc.text(text, 50, y);
+      y += 20;
+    });
+
+    y += 10;
+    doc.setDrawColor(200).setLineWidth(1).line(50, y, pageWidth - 50, y);
+    y += 20;
+    doc.setFontSize(14).setFont(undefined, 'bold');
+    doc.text("Total Amount Paid", 50, y);
+    doc.text(`₹${data.amountPaid.toLocaleString()}`, pageWidth - 100, y, { align: 'right' });
+    y += 30;
+
+    doc.setFontSize(12).text("Thank you for your payment!", pageWidth / 2, y, { align: 'center' });
+    doc.save(`Receipt_${data.studentName}_${Date.now()}.pdf`);
+  }
+
+  // Reset form
+  function resetPaymentForm() {
+    document.getElementById('paymentAmount').value = '';
+    document.getElementById('paymentNotes').value = '';
+    document.getElementById('paymentDate').valueAsDate = new Date();
+  }
+
+  // Calculate fees for a student
+  function calculateStudentFees(studentId) {
+    const student = students[studentId];
+    if (!student) return { 
+      totalOwed: 0, 
+      paid: 0, 
+      remaining: 0, 
+      status: 'Unknown'
+    };
+
+    const classData = getClassDataForStudent(student);
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+    
+    let totalOwed = 0;
+    
+    if (classData) {
+      if (classData.termsEnabled && classData.termFee) {
+        // Calculate based on terms
+        const termsPerYear = 4;
+        totalOwed = classData.termFee * termsPerYear;
+      } else if (classData.monthlyFee) {
+        // Calculate based on months
+        totalOwed = classData.monthlyFee * 12;
+      }
+      
+      // Add annual fee if exists
+      if (classData.fee) {
+        totalOwed += classData.fee;
+      }
+    }
+
+    // Calculate total payments
+    let paid = 0;
+    
+    if (payments[studentId]) {
+      Object.values(payments[studentId]).forEach(payment => {
+        paid += parseFloat(payment.amountPaid) || 0;
+      });
+    }
+
+    const remaining = Math.max(totalOwed - paid, 0);
+    
+    let status = 'Pending';
+    if (remaining <= 0) {
+      status = 'Paid';
+    } else if (paid > 0) {
+      status = 'Partial';
+    }
+
+    return {
+      totalOwed: totalOwed,
+      paid: paid,
+      remaining: remaining,
+      status: status
+    };
+  }
+
+  // Populate Pending Fees Table
+  function calculatePendingFees() {
+    const tbody = document.querySelector('#pendingTable tbody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+
+    const classFilter = document.getElementById('filterClass')?.value || '';
+    const sectionFilter = document.getElementById('filterSection')?.value || '';
+    const search = (document.getElementById('searchStudent')?.value || document.getElementById('searchStudentMobile')?.value || '').toLowerCase();
+    
+    Object.entries(students).forEach(([studentId, student]) => {
+      if (!student || !student.fullName) return;
+
+      // Apply filters
+      if (classFilter && student.className !== classFilter) return;
+      if (sectionFilter && student.section !== sectionFilter) return;
+      if (search && !student.fullName.toLowerCase().includes(search)) return;
+
+      const fees = calculateStudentFees(studentId);
+      
+      const classDisplay = student.className ? 
+        (student.section ? `${student.className} ${student.section}` : student.className) : 
+        'Unassigned';
+
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-white/10 hover:bg-white/5';
+      tr.innerHTML = `
+        <td class="py-3 px-4">${student.fullName}</td>
+        <td class="py-3 px-4">${classDisplay}</td>
+        <td class="py-3 px-4">₹${fees.totalOwed.toLocaleString()}</td>
+        <td class="py-3 px-4">₹${fees.paid.toLocaleString()}</td>
+        <td class="py-3 px-4">₹${fees.remaining.toLocaleString()}</td>
+        <td class="py-3 px-4">
+          <span class="px-2 py-1 rounded-full text-xs ${
+            fees.status === 'Paid' ? 'bg-green-500/20 text-green-400' :
+            fees.status === 'Partial' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'
+          }">${fees.status}</span>
+        </td>
+        <td class="py-3 px-4">
+          <button onclick="selectStudentForPayment('${studentId}')" class="glass-card px-3 py-1 rounded-lg text-blue-400 hover:bg-blue-400/20">
+            <i class="fas fa-money-bill"></i> Pay
+          </button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Populate Payment Table
+  function populatePaymentTable() {
+    const tbody = document.querySelector('#paymentTable tbody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+
+    const classFilter = document.getElementById('filterClass')?.value || '';
+    const sectionFilter = document.getElementById('filterSection')?.value || '';
+    const termFilter = document.getElementById('filterTerm')?.value || '';
+    const yearFilter = document.getElementById('filterYear')?.value || '';
+    const search = (document.getElementById('searchStudent')?.value || document.getElementById('searchStudentMobile')?.value || '').toLowerCase();
+
+    Object.keys(payments).forEach(studentId => {
+      const studentPayments = payments[studentId] || {};
+      const s = students[studentId];
+      if (!s) return;
+
+      Object.keys(studentPayments).forEach(payId => {
+        const p = studentPayments[payId];
+
+        // Apply filters
+        if (classFilter && !p.className.includes(classFilter)) return;
+        if (sectionFilter && s.section && !p.className.includes(sectionFilter)) return;
+        if (termFilter && p.term !== termFilter) return;
+        if (yearFilter && p.year != yearFilter) return;
+        if (search && !p.studentName.toLowerCase().includes(search)) return;
+
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-white/10 hover:bg-white/5';
+        tr.innerHTML = `
+          <td class="py-3 px-4">${p.studentName}</td>
+          <td class="py-3 px-4">${p.className}</td>
+          <td class="py-3 px-4">₹${p.amountPaid.toLocaleString()}</td>
+          <td class="py-3 px-4">${p.paymentDate}</td>
+          <td class="py-3 px-4">${p.method}</td>
+          <td class="py-3 px-4">${p.term}</td>
+          <td class="py-3 px-4">${p.monthName || monthNames[(p.month || 1) - 1]}</td>
+          <td class="py-3 px-4">${p.year}</td>
+          <td class="py-3 px-4">
+            <div class="flex space-x-2">
+              <button onclick="viewBill(${JSON.stringify(p).replace(/"/g, '&quot;')})" class="glass-card px-3 py-1 rounded-lg text-green-400 hover:bg-green-400/20">
+                <i class="fas fa-file-invoice"></i> Bill
+              </button>
+              <button onclick="editPayment('${studentId}','${payId}')" class="glass-card px-3 py-1 rounded-lg text-blue-400 hover:bg-blue-400/20">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deletePayment('${studentId}','${payId}')" class="glass-card px-3 py-1 rounded-lg text-red-400 hover:bg-red-400/20">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    });
+  }
+
+  // Select student for payment
+  window.selectStudentForPayment = (studentId) => {
+    document.getElementById('studentSelect').value = studentId;
+    selectedStudentId = studentId;
+    showStudentDetails(studentId);
+    
+    // Scroll to payment form
+    document.querySelector('.glass-card').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // View Bill
+  window.viewBill = (payment) => {
+    const modal = document.getElementById('billModal');
+    const content = document.getElementById('billContent');
+    content.innerHTML = `
+      <div class="text-white space-y-3">
+        <h3 class="text-xl font-bold text-center">UEBS School</h3>
+        <h4 class="text-lg font-semibold text-center">Payment Receipt</h4>
+        <hr class="border-white/20">
+        <div class="grid grid-cols-2 gap-4">
+          <p><strong>Student:</strong> ${payment.studentName}</p>
+          <p><strong>Class:</strong> ${payment.className}</p>
+          <p><strong>Payment Date:</strong> ${payment.paymentDate}</p>
+          <p><strong>Fee Type:</strong> ${payment.term}</p>
+          <p><strong>Month:</strong> ${payment.monthName || monthNames[(payment.month || 1) - 1]}</p>
+          <p><strong>Year:</strong> ${payment.year}</p>
+          <p><strong>Method:</strong> ${payment.method}</p>
+          <p><strong>Notes:</strong> ${payment.notes || '—'}</p>
+        </div>
+        <div class="mt-4 p-4 bg-white/10 rounded-lg">
+          <h4 class="font-semibold mb-2">Payment Details</h4>
+          <div class="flex justify-between">
+            <span>${payment.term} - ${payment.monthName || monthNames[(payment.month || 1) - 1]}</span>
+            <span>₹${payment.amountPaid.toLocaleString()}</span>
+          </div>
+          <hr class="my-2 border-white/20">
+          <div class="flex justify-between font-bold text-lg">
+            <span>Total Paid</span>
+            <span>₹${payment.amountPaid.toLocaleString()}</span>
+          </div>
+        </div>
+        <p class="text-center text-sm mt-4">Thank you for your payment!</p>
+      </div>
+    `;
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+  };
+
+  document.getElementById('closeBill')?.addEventListener('click', () => {
+    document.getElementById('billModal').style.display = 'none';
+  });
+
+  document.getElementById('downloadBill')?.addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'pt', 'a4');
+    const pageWidth = doc.internal.pageSize.getWidth();
+    let y = 60;
+
+    const bill = document.querySelector('#billContent > div');
+    const text = bill.innerText.split('\n');
+
+    doc.setFontSize(22).text("UEBS School - Payment Bill", pageWidth / 2, y, { align: 'center' });
+    y += 40;
+
+    text.forEach(line => {
+      if (line.trim()) {
+        doc.setFontSize(12).text(line, 50, y);
+        y += 20;
+      }
+    });
+
+    doc.save(`Bill_${Date.now()}.pdf`);
+  });
+
+  // Edit Payment
+  window.editPayment = (sid, pid) => {
+    editStudentId = sid;
+    editPaymentId = pid;
+    const p = payments[sid][pid];
+    
+    document.getElementById('editAmount').value = p.amountPaid;
+    document.getElementById('editDate').value = p.paymentDate;
+    document.getElementById('editMethod').value = p.method;
+    document.getElementById('editTerm').value = p.term;
+    document.getElementById('editMonth').value = p.month || 1;
+    document.getElementById('editYear').value = p.year;
+    document.getElementById('editNotes').value = p.notes || '';
+    
+    document.getElementById('editModal').style.display = 'flex';
+  };
+
+  document.getElementById('closeEdit')?.addEventListener('click', () => {
+    document.getElementById('editModal').style.display = 'none';
+  });
+
+  document.getElementById('saveEdit')?.addEventListener('click', () => {
+    const updated = {
+      amountPaid: parseFloat(document.getElementById('editAmount').value),
+      paymentDate: document.getElementById('editDate').value,
+      method: document.getElementById('editMethod').value,
+      term: document.getElementById('editTerm').value,
+      month: parseInt(document.getElementById('editMonth').value),
+      monthName: monthNames[parseInt(document.getElementById('editMonth').value) - 1],
+      year: parseInt(document.getElementById('editYear').value),
+      notes: document.getElementById('editNotes').value.trim()
+    };
+
+    if (!updated.amountPaid || isNaN(updated.amountPaid)) {
+      alert("Enter valid amount!");
+      return;
+    }
+
+    const btn = document.getElementById('saveEdit');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+
+    db.ref(`fees/${editStudentId}/${editPaymentId}`).update(updated)
+      .then(() => {
+        alert("Payment updated successfully!");
+        document.getElementById('editModal').style.display = 'none';
+      })
+      .catch(err => alert("Error: " + err.message))
+      .finally(() => {
+        btn.innerHTML = '<i class="fas fa-save mr-2"></i> Save Changes';
+        btn.disabled = false;
+      });
+  });
+
+  // Delete Payment
+  window.deletePayment = (sid, pid) => {
+    if (confirm("Are you sure you want to delete this payment record?")) {
+      db.ref(`fees/${sid}/${pid}`).remove()
+        .then(() => alert("Payment record deleted successfully!"))
+        .catch(err => alert("Error: " + err.message));
+    }
+  };
+
+  // Apply filters
+  ['filterClass', 'filterSection', 'filterTerm', 'filterYear', 'searchStudent', 'searchStudentMobile'].forEach(id => {
+    const el = document.getElementById(id);
+    el?.addEventListener('input', () => {
+      calculatePendingFees();
+      populatePaymentTable();
+    });
+  });
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', () => {
+    populateYearDropdowns();
+    // Set current month as default
+    const currentMonth = new Date().getMonth() + 1;
+    document.getElementById('paymentMonth').value = currentMonth;
+    document.getElementById('editMonth').value = currentMonth;
+  });
+</script>
+{% endblock %}

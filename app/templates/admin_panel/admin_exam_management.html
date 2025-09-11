@@ -1,0 +1,461 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Exam Management - UEBS{% endblock %}
+
+{% block content %}
+<!-- Top Navbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+  <div class="mt-12 md:mt-0">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Exam Management System</h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">Manage exams and student marks</p>
+  </div>
+  <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+    <div class="hidden md:block relative flex-1 max-w-md">
+      <input type="text" id="searchExam" placeholder="Search exams..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+      <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative md:hidden" onclick="document.getElementById('searchExamMobile').focus()">
+      <i class="fas fa-search text-sm sm:text-base"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile search bar -->
+<div class="md:hidden mb-4">
+  <div class="relative">
+    <input type="text" id="searchExamMobile" placeholder="Search exams..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+    <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Add/Edit Exam -->
+<div class="glass-card p-4 mb-6 rounded-2xl animate__animated animate__fadeInUp">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-plus-circle text-purple-400 mr-3"></i> Add New Exam
+  </h3>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-white/80 mb-2">Exam Name</label>
+      <input type="text" id="examName" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., Final Exam">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Class</label>
+      <input type="text" id="examClass" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., Class 10">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Section</label>
+      <input type="text" id="examSection" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., A">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Subject</label>
+      <input type="text" id="examSubject" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., Mathematics">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Date</label>
+      <input type="date" id="examDate" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Total Marks</label>
+      <input type="number" id="totalMarks" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., 100">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Passing Marks</label>
+      <input type="number" id="passingMarks" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., 40">
+    </div>
+  </div>
+  <div class="flex space-x-4 mt-6">
+    <button id="addExamBtn" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+      <i class="fas fa-plus mr-2"></i> Add Exam
+    </button>
+  </div>
+</div>
+
+<!-- Exam List -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-list text-purple-400 mr-3"></i> Exams
+  </h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div>
+      <label class="block text-white/80 mb-2">Class</label>
+      <select id="filterClass" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Classes</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Section</label>
+      <select id="filterSection" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Sections</option>
+      </select>
+    </div>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="examTable">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">#</th>
+          <th class="text-left py-3 px-4">Exam Name</th>
+          <th class="text-left py-3 px-4">Class</th>
+          <th class="text-left py-3 px-4">Section</th>
+          <th class="text-left py-3 px-4">Subject</th>
+          <th class="text-left py-3 px-4">Date</th>
+          <th class="text-left py-3 px-4">Total Marks</th>
+          <th class="text-left py-3 px-4">Passing Marks</th>
+          <th class="text-left py-3 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Marks Entry -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-edit text-purple-400 mr-3"></i> Enter Marks
+  </h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div>
+      <label class="block text-white/80 mb-2">Select Exam</label>
+      <select id="selectExam" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400"></select>
+    </div>
+    <div class="flex items-end">
+      <button id="loadStudentsBtn" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+        <i class="fas fa-users mr-2"></i> Load Students
+      </button>
+    </div>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="marksTable">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">Student Name</th>
+          <th class="text-left py-3 px-4">Marks Obtained</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div class="flex space-x-4 mt-6">
+    <button id="saveMarksBtn" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+      <i class="fas fa-save mr-2"></i> Save Marks
+    </button>
+  </div>
+</div>
+
+<!-- Report Card -->
+<div id="reportCard" class="glass-card p-4 rounded-2xl animate__animated animate__fadeInUp hidden w-[350px]">
+  <h3 id="reportStudentName" class="text-lg font-semibold text-white mb-4"></h3>
+  <p class="text-white/80 text-sm">Exam: <span id="reportExamName"></span></p>
+  <p class="text-white/80 text-sm">Subject: <span id="reportSubject"></span></p>
+  <p class="text-white/80 text-sm">Marks Obtained: <span id="reportMarks"></span>/<span id="reportTotal"></span></p>
+  <p class="text-white/80 text-sm">Percentage: <span id="reportPercent"></span>%</p>
+  <p class="text-white/80 text-sm">Grade: <span id="reportGrade"></span></p>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fixed inset-0 bg-black/50 z-50 hidden justify-center items-center" id="confirmModal">
+  <div class="glass-card p-6 lg:p-8 rounded-2xl w-full max-w-md">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl sm:text-2xl font-semibold text-white" id="modalTitle">Confirm Delete</h3>
+      <button id="closeModal" class="text-white/70 hover:text-white text-2xl">&times;</button>
+    </div>
+    <p class="text-white/80 mb-6" id="modalMessage">Are you sure you want to delete this exam? This will also delete all associated marks.</p>
+    <div class="flex justify-end space-x-4">
+      <button id="confirmAction" class="liquid-btn text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+        Confirm
+      </button>
+      <button id="cancelAction" class="glass-card text-white px-6 py-3 rounded-xl font-semibold transition-all hover:bg-white/20">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+// Initialize Firebase with your config
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let exams = {};
+let students = {};
+let currentEditExamId = null;
+
+// Load exams and students
+db.ref('exams').on('value', snap => {
+  exams = snap.val() || {};
+  populateExamTable();
+  populateExamSelect();
+});
+
+db.ref('students').on('value', snap => {
+  students = snap.val() || {};
+  populateClassSectionFilters();
+});
+
+// Add/Edit Exam
+document.getElementById('addExamBtn').addEventListener('click', () => {
+  const btn = document.getElementById('addExamBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+  btn.disabled = true;
+
+  const exam = {
+    name: document.getElementById('examName').value.trim(),
+    class: document.getElementById('examClass').value.trim(),
+    section: document.getElementById('examSection').value.trim(),
+    subject: document.getElementById('examSubject').value.trim(),
+    date: document.getElementById('examDate').value,
+    totalMarks: parseInt(document.getElementById('totalMarks').value) || 0,
+    passingMarks: parseInt(document.getElementById('passingMarks').value) || 0
+  };
+
+  if (!exam.name || !exam.class || !exam.subject || !exam.date || !exam.totalMarks || !exam.passingMarks) {
+    alert("Please fill all required fields");
+    btn.innerHTML = '<i class="fas fa-plus mr-2"></i> ' + (currentEditExamId ? 'Update Exam' : 'Add Exam');
+    btn.disabled = false;
+    return;
+  }
+
+  const ref = currentEditExamId ? db.ref('exams/' + currentEditExamId) : db.ref('exams').push();
+  ref.set(exam).then(() => {
+    alert(currentEditExamId ? 'Exam updated!' : 'Exam added!');
+    currentEditExamId = null;
+    document.getElementById('examName').value = '';
+    document.getElementById('examClass').value = '';
+    document.getElementById('examSection').value = '';
+    document.getElementById('examSubject').value = '';
+    document.getElementById('examDate').value = '';
+    document.getElementById('totalMarks').value = '';
+    document.getElementById('passingMarks').value = '';
+    btn.innerHTML = '<i class="fas fa-plus mr-2"></i> Add Exam';
+    btn.disabled = false;
+  });
+});
+
+// Populate Exam Table
+function populateExamTable() {
+  const tbody = document.querySelector('#examTable tbody');
+  tbody.innerHTML = '';
+  const filterClass = document.getElementById('filterClass').value;
+  const filterSection = document.getElementById('filterSection').value;
+  const search = document.getElementById('searchExam').value.toLowerCase() || 
+                 document.getElementById('searchExamMobile').value.toLowerCase();
+
+  Object.keys(exams).forEach((id, idx) => {
+    const e = exams[id];
+    if (filterClass && e.class !== filterClass) return;
+    if (filterSection && e.section !== filterSection) return;
+    if (search && !e.name.toLowerCase().includes(search)) return;
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-white/10 hover:bg-white/5';
+    tr.innerHTML = `
+      <td class="py-3 px-4">${idx + 1}</td>
+      <td class="py-3 px-4">${e.name}</td>
+      <td class="py-3 px-4">${e.class}</td>
+      <td class="py-3 px-4">${e.section || '-'}</td>
+      <td class="py-3 px-4">${e.subject}</td>
+      <td class="py-3 px-4">${e.date}</td>
+      <td class="py-3 px-4">${e.totalMarks}</td>
+      <td class="py-3 px-4">${e.passingMarks}</td>
+      <td class="py-3 px-4">
+        <div class="flex space-x-2">
+          <button onclick="editExam('${id}')" class="glass-card px-3 py-1 rounded-lg text-yellow-400 hover:bg-yellow-400/20">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button onclick="deleteExam('${id}')" class="glass-card px-3 py-1 rounded-lg text-red-400 hover:bg-red-400/20">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Populate Class and Section Filters
+function populateClassSectionFilters() {
+  const classes = new Set();
+  const sections = new Set();
+  Object.values(exams).forEach(e => {
+    if (e.class) classes.add(e.class);
+    if (e.section) sections.add(e.section);
+  });
+  Object.values(students).forEach(s => {
+    if (s.class) classes.add(s.class);
+    if (s.section) sections.add(s.section);
+  });
+  const classSelect = document.getElementById('filterClass');
+  const sectionSelect = document.getElementById('filterSection');
+  classSelect.innerHTML = '<option value="">All Classes</option>' + 
+                          Array.from(classes).map(c => `<option value="${c}">${c}</option>`).join('');
+  sectionSelect.innerHTML = '<option value="">All Sections</option>' + 
+                           Array.from(sections).map(s => `<option value="${s}">${s}</option>`).join('');
+}
+
+// Exam select dropdown
+function populateExamSelect() {
+  const sel = document.getElementById('selectExam');
+  sel.innerHTML = '<option value="">Select an exam</option>' + 
+                  Object.keys(exams).map(id => {
+                    const e = exams[id];
+                    return `<option value="${id}">${e.name} - ${e.class}${e.section ? ' ' + e.section : ''}</option>`;
+                  }).join('');
+}
+
+// Load students for marks entry
+document.getElementById('loadStudentsBtn').addEventListener('click', () => {
+  const btn = document.getElementById('loadStudentsBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Loading...';
+  btn.disabled = true;
+
+  const examId = document.getElementById('selectExam').value;
+  if (!examId) {
+    alert("Please select an exam");
+    btn.innerHTML = '<i class="fas fa-users mr-2"></i> Load Students';
+    btn.disabled = false;
+    return;
+  }
+
+  const tbody = document.querySelector('#marksTable tbody');
+  tbody.innerHTML = '';
+  const e = exams[examId];
+  Object.keys(students).forEach(id => {
+    const s = students[id];
+    if (e.class && s.class !== e.class) return;
+    if (e.section && s.section !== e.section) return;
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-white/10';
+    tr.innerHTML = `
+      <td class="py-3 px-4">${s.fullName}</td>
+      <td class="py-3 px-4">
+        <input type="number" min="0" max="${e.totalMarks}" data-student="${id}" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  btn.innerHTML = '<i class="fas fa-users mr-2"></i> Load Students';
+  btn.disabled = false;
+});
+
+// Save marks
+document.getElementById('saveMarksBtn').addEventListener('click', () => {
+  const btn = document.getElementById('saveMarksBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+  btn.disabled = true;
+
+  const examId = document.getElementById('selectExam').value;
+  if (!examId) {
+    alert("Please select an exam");
+    btn.innerHTML = '<i class="fas fa-save mr-2"></i> Save Marks';
+    btn.disabled = false;
+    return;
+  }
+
+  const e = exams[examId];
+  const inputs = document.querySelectorAll('#marksTable input');
+  inputs.forEach(input => {
+    const studentId = input.dataset.student;
+    const marks = parseInt(input.value) || 0;
+    const percent = ((marks / e.totalMarks) * 100).toFixed(2);
+    let grade = 'F';
+    if (percent >= 90) grade = 'A+';
+    else if (percent >= 80) grade = 'A';
+    else if (percent >= 70) grade = 'B';
+    else if (percent >= 60) grade = 'C';
+    else if (percent >= 50) grade = 'D';
+    db.ref('examResults/' + examId + '/' + studentId).set({ marks, percent, grade });
+    
+    // Update report card
+    document.getElementById('reportStudentName').textContent = students[studentId].fullName;
+    document.getElementById('reportExamName').textContent = e.name;
+    document.getElementById('reportSubject').textContent = e.subject;
+    document.getElementById('reportMarks').textContent = marks;
+    document.getElementById('reportTotal').textContent = e.totalMarks;
+    document.getElementById('reportPercent').textContent = percent;
+    document.getElementById('reportGrade').textContent = grade;
+    document.getElementById('reportCard').style.display = 'block';
+  });
+  alert('Marks saved!');
+  btn.innerHTML = '<i class="fas fa-save mr-2"></i> Save Marks';
+  btn.disabled = false;
+});
+
+// Edit Exam
+function editExam(id) {
+  const e = exams[id];
+  currentEditExamId = id;
+  document.getElementById('examName').value = e.name;
+  document.getElementById('examClass').value = e.class;
+  document.getElementById('examSection').value = e.section || '';
+  document.getElementById('examSubject').value = e.subject;
+  document.getElementById('examDate').value = e.date;
+  document.getElementById('totalMarks').value = e.totalMarks;
+  document.getElementById('passingMarks').value = e.passingMarks;
+  document.getElementById('addExamBtn').innerHTML = '<i class="fas fa-edit mr-2"></i> Update Exam';
+}
+
+// Delete Exam
+function deleteExam(id) {
+  const modal = document.getElementById('confirmModal');
+  const confirmBtn = document.getElementById('confirmAction');
+  const cancelBtn = document.getElementById('cancelAction');
+  const closeBtn = document.getElementById('closeModal');
+  modal.classList.remove('hidden');
+
+  confirmBtn.onclick = () => {
+    db.ref('exams/' + id).remove();
+    db.ref('examResults/' + id).remove();
+    modal.classList.add('hidden');
+  };
+  cancelBtn.onclick = () => modal.classList.add('hidden');
+  closeBtn.onclick = () => modal.classList.add('hidden');
+}
+
+// Debounced search
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+const debouncedPopulateTable = debounce(populateExamTable, 300);
+document.getElementById('searchExam').addEventListener('keyup', debouncedPopulateTable);
+document.getElementById('searchExamMobile').addEventListener('keyup', debouncedPopulateTable);
+document.getElementById('filterClass').addEventListener('change', populateExamTable);
+document.getElementById('filterSection').addEventListener('change', populateExamTable);
+
+// Initial load
+populateExamTable();
+populateExamSelect();
+</script>
+{% endblock %}

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Chat Assistant</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .chat-container {
+    width: 400px;
+    max-width: 90%;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .chat-header {
+    background: #4CAF50;
+    color: white;
+    padding: 15px;
+    font-size: 18px;
+    text-align: center;
+  }
+  .chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #f9f9f9;
+  }
+  .chat-input {
+    display: flex;
+    border-top: 1px solid #ddd;
+  }
+  .chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    font-size: 16px;
+  }
+  .chat-input button {
+    padding: 10px 15px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 80%;
+    word-wrap: break-word;
+  }
+  .user-msg {
+    background: #dcf8c6;
+    align-self: flex-end;
+  }
+  .ai-msg {
+    background: #eee;
+    align-self: flex-start;
+  }
+</style>
+</head>
+<body>
+
+<div class="chat-container">
+  <div class="chat-header">🤖 AI Assistant</div>
+  <div class="chat-messages" id="messages"></div>
+  <div class="chat-input">
+    <input type="text" id="userInput" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<script>
+  const messagesEl = document.getElementById("messages");
+  const inputEl = document.getElementById("userInput");
+
+  function appendMessage(text, className) {
+    const msgDiv = document.createElement("div");
+    msgDiv.classList.add("message", className);
+    msgDiv.textContent = text;
+    messagesEl.appendChild(msgDiv);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function sendMessage() {
+    const userMsg = inputEl.value.trim();
+    if (!userMsg) return;
+    appendMessage(userMsg, "user-msg");
+    inputEl.value = "";
+
+    // Simulated AI response (replace this with API call to ChatGPT/OpenAI later)
+    setTimeout(() => {
+      const aiResponse = generateAIResponse(userMsg);
+      appendMessage(aiResponse, "ai-msg");
+    }, 800);
+  }
+
+  function generateAIResponse(msg) {
+    // Simple example logic
+    const lower = msg.toLowerCase();
+    if (lower.includes("hello") || lower.includes("hi")) return "Hello! How can I help you today?";
+    if (lower.includes("how are you")) return "I'm just a program, but I'm doing great! 😊";
+    if (lower.includes("help")) return "Sure! Ask me anything and I'll try to assist.";
+    return "I'm not sure about that. Can you rephrase?";
+  }
+
+  // Optional: press Enter to send
+  inputEl.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") sendMessage();
+  });
+</script>
+
+</body>
+</html>

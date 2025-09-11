@@ -1,0 +1,326 @@
+{% extends "Admin-base.html" %}
+
+{% block title %}Ledger Management - UEBS{% endblock %}
+
+{% block content %}
+<!-- Top Navbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+  <div class="mt-12 md:mt-0">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white animate__animated animate__fadeInLeft bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Ledger Management</h2>
+    <p class="text-white/70 mt-1 text-sm sm:text-base">Track financial transactions and generate reports</p>
+  </div>
+  <div class="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+    <div class="hidden md:block relative flex-1 max-w-md">
+      <input type="text" id="searchDescription" placeholder="Search transactions..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+      <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    <button class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all relative md:hidden" onclick="document.getElementById('searchDescriptionMobile').focus()">
+      <i class="fas fa-search text-sm sm:text-base"></i>
+    </button>
+    <button id="downloadPdfBtn" class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all" title="Download as PDF">
+      <i class="fas fa-file-pdf text-sm sm:text-base"></i>
+    </button>
+    <button id="printBtn" class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all" title="Print">
+      <i class="fas fa-print text-sm sm:text-base"></i>
+    </button>
+    <button id="exportExcelBtn" class="glass-card p-2 sm:p-3 rounded-xl text-white hover:bg-white/20 transition-all" title="Export to Excel">
+      <i class="fas fa-file-excel text-sm sm:text-base"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile search bar -->
+<div class="md:hidden mb-4">
+  <div class="relative">
+    <input type="text" id="searchDescriptionMobile" placeholder="Search transactions..." class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 search-input">
+    <button class="absolute right-3 top-2 text-white/70 hover:text-white">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Ledger Filters -->
+<div class="glass-card p-4 mb-6 rounded-2xl animate__animated animate__fadeInUp">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-filter text-purple-400 mr-3"></i> Ledger Filters
+  </h3>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-white/80 mb-2">Type</label>
+      <select id="filterType" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+        <option value="">All Types</option>
+        <option value="Income">Income</option>
+        <option value="Expenses">Expenses</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Category</label>
+      <input type="text" id="filterCategory" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., Tuition Fee">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">Start Date</label>
+      <input type="date" id="startDate" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+    </div>
+    <div>
+      <label class="block text-white/80 mb-2">End Date</label>
+      <input type="date" id="endDate" class="w-full glass-card text-white placeholder-white/50 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400">
+    </div>
+  </div>
+</div>
+
+<!-- Ledger Table -->
+<div class="glass-card p-6 lg:p-8 rounded-2xl animate__animated animate__fadeInUp mb-6">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+    <i class="fas fa-book text-purple-400 mr-3"></i> Ledger
+  </h3>
+  <div class="overflow-x-auto">
+    <table class="w-full text-white/80" id="ledgerTable">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="text-left py-3 px-4">#</th>
+          <th class="text-left py-3 px-4">Date</th>
+          <th class="text-left py-3 px-4">Type</th>
+          <th class="text-left py-3 px-4">Category</th>
+          <th class="text-left py-3 px-4">Amount</th>
+          <th class="text-left py-3 px-4">Payment Mode</th>
+          <th class="text-left py-3 px-4">Description</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Summary -->
+<div class="glass-card p-4 rounded-2xl animate__animated animate__fadeInUp summary">
+  <h3 class="text-xl sm:text-2xl font-semibold text-white mb-4 flex items-center">
+    <i class="fas fa-chart-bar text-purple-400 mr-3"></i> Summary
+  </h3>
+  <div class="text-white/80">
+    Total Income: <span id="totalIncome" class="font-bold">0</span> |
+    Total Expenses: <span id="totalExpenses" class="font-bold">0</span> |
+    Net Balance: <span id="netBalance" class="font-bold">0</span>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+<!-- jsPDF and html2canvas for PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- XLSX for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+// Initialize Firebase with your config
+const firebaseConfig = {
+  apiKey: "AIzaSyC7cG8KemxvH2VveDO6DnIkYUpIl2exesU",
+  authDomain: "uebs-school.firebaseapp.com",
+  projectId: "uebs-school",
+  storageBucket: "uebs-school.firebasestorage.app",
+  messagingSenderId: "740325293639",
+  appId: "1:740325293639:web:9c505c9a48dd8ccc55fb62",
+  measurementId: "G-T7YEBMNHBH"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const { jsPDF } = window.jspdf;
+
+let journal = {};
+
+// Load Journal
+db.ref('journal').on('value', snap => {
+  journal = snap.val() || {};
+  populateLedgerTable();
+});
+
+// Populate Ledger Table
+function populateLedgerTable() {
+  const tbody = document.querySelector('#ledgerTable tbody');
+  tbody.innerHTML = '';
+  const search = document.getElementById('searchDescription').value.toLowerCase() || 
+                 document.getElementById('searchDescriptionMobile').value.toLowerCase();
+  const typeFilter = document.getElementById('filterType').value;
+  const categoryFilter = document.getElementById('filterCategory').value.toLowerCase();
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+
+  let totalIncome = 0;
+  let totalExpenses = 0;
+
+  Object.keys(journal).forEach((id, idx) => {
+    const t = journal[id];
+    // Map Debit to Income and Credit to Expenses for filtering
+    const displayType = t.type === 'Debit' ? 'Income' : 'Expenses';
+    if (typeFilter && ((typeFilter === 'Income' && t.type !== 'Debit') || (typeFilter === 'Expenses' && t.type !== 'Credit'))) return;
+    if (categoryFilter && !t.category.toLowerCase().includes(categoryFilter)) return;
+    if (startDate && t.date < startDate) return;
+    if (endDate && t.date > endDate) return;
+    if (search && !t.note.toLowerCase().includes(search)) return;
+
+    if (t.type === 'Debit') totalIncome += t.amount;
+    if (t.type === 'Credit') totalExpenses += t.amount;
+
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-white/10 hover:bg-white/5';
+    tr.innerHTML = `
+      <td class="py-3 px-4">${idx + 1}</td>
+      <td class="py-3 px-4">${t.date}</td>
+      <td class="py-3 px-4">${displayType}</td>
+      <td class="py-3 px-4">${t.category}</td>
+      <td class="py-3 px-4">${t.amount.toFixed(2)}</td>
+      <td class="py-3 px-4">${t.paymentMethod || '-'}</td>
+      <td class="py-3 px-4">${t.note || '-'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('totalIncome').textContent = totalIncome.toFixed(2);
+  document.getElementById('totalExpenses').textContent = totalExpenses.toFixed(2);
+  document.getElementById('netBalance').textContent = (totalIncome - totalExpenses).toFixed(2);
+}
+
+// Download as PDF
+document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+  const btn = document.getElementById('downloadPdfBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.disabled = true;
+
+  const element = document.getElementById('ledgerTable');
+  const summary = document.querySelector('.summary');
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  // Set canvas size to fit content
+  canvas.width = element.offsetWidth;
+  canvas.height = element.offsetHeight + summary.offsetHeight + 50;
+
+  // White background
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  html2canvas(element, { backgroundColor: null }).then(tableCanvas => {
+    html2canvas(summary, { backgroundColor: null }).then(summaryCanvas => {
+      ctx.drawImage(tableCanvas, 0, 0);
+      ctx.drawImage(summaryCanvas, 0, element.offsetHeight + 20);
+      const doc = new jsPDF('p', 'mm', 'a4');
+      const imgData = canvas.toDataURL('image/png');
+      const imgProps = doc.getImageProperties(imgData);
+      const pdfWidth = doc.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      doc.save('ledger_report.pdf');
+      btn.innerHTML = '<i class="fas fa-file-pdf"></i>';
+      btn.disabled = false;
+    });
+  });
+});
+
+// Print Ledger
+document.getElementById('printBtn').addEventListener('click', () => {
+  const printContent = document.getElementById('ledgerTable').outerHTML + 
+                       '<div style="margin-top:20px;">' + document.querySelector('.summary').outerHTML + '</div>';
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Ledger</title>
+        <style>
+          body { font-family: Arial, sans-serif; }
+          table { width: 100%; border-collapse: collapse; }
+          th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+          th { background: #007bff; color: white; }
+          .summary { margin-top: 20px; font-weight: bold; }
+        </style>
+      </head>
+      <body>${printContent}</body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
+});
+
+// Export to Excel
+document.getElementById('exportExcelBtn').addEventListener('click', () => {
+  const btn = document.getElementById('exportExcelBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.disabled = true;
+
+  const data = [];
+  data.push(['#', 'Date', 'Type', 'Category', 'Amount', 'Payment Mode', 'Description']);
+  Object.keys(journal).forEach((id, idx) => {
+    const t = journal[id];
+    const search = document.getElementById('searchDescription').value.toLowerCase() || 
+                   document.getElementById('searchDescriptionMobile').value.toLowerCase();
+    const typeFilter = document.getElementById('filterType').value;
+    const categoryFilter = document.getElementById('filterCategory').value.toLowerCase();
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    if (typeFilter && ((typeFilter === 'Income' && t.type !== 'Debit') || (typeFilter === 'Expenses' && t.type !== 'Credit'))) return;
+    if (categoryFilter && !t.category.toLowerCase().includes(categoryFilter)) return;
+    if (startDate && t.date < startDate) return;
+    if (endDate && t.date > endDate) return;
+    if (search && !t.note.toLowerCase().includes(search)) return;
+
+    const displayType = t.type === 'Debit' ? 'Income' : 'Expenses';
+    data.push([
+      idx + 1,
+      t.date,
+      displayType,
+      t.category,
+      t.amount.toFixed(2),
+      t.paymentMethod || '-',
+      t.note || '-'
+    ]);
+  });
+
+  // Add summary
+  const totalIncome = parseFloat(document.getElementById('totalIncome').textContent);
+  const totalExpenses = parseFloat(document.getElementById('totalExpenses').textContent);
+  const netBalance = parseFloat(document.getElementById('netBalance').textContent);
+  data.push([]);
+  data.push(['Summary', '', '', '', '', '', '']);
+  data.push(['Total Income', '', '', '', totalIncome.toFixed(2), '', '']);
+  data.push(['Total Expenses', '', '', '', totalExpenses.toFixed(2), '', '']);
+  data.push(['Net Balance', '', '', '', netBalance.toFixed(2), '', '']);
+
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Ledger');
+  XLSX.writeFile(wb, 'ledger_report.xlsx');
+  btn.innerHTML = '<i class="fas fa-file-excel"></i>';
+  btn.disabled = false;
+});
+
+// Debounced search
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+const debouncedPopulateTable = debounce(populateLedgerTable, 300);
+document.getElementById('searchDescription').addEventListener('keyup', debouncedPopulateTable);
+document.getElementById('searchDescriptionMobile').addEventListener('keyup', debouncedPopulateTable);
+document.getElementById('filterType').addEventListener('change', populateLedgerTable);
+document.getElementById('filterCategory').addEventListener('keyup', debouncedPopulateTable);
+document.getElementById('startDate').addEventListener('change', populateLedgerTable);
+document.getElementById('endDate').addEventListener('change', populateLedgerTable);
+
+// Initial load
+populateLedgerTable();
+</script>
+{% endblock %}

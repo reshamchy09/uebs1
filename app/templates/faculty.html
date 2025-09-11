@@ -1,0 +1,929 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Our Faculty - Unison English Boarding School{% endblock %}
+
+{% block extra_css %}
+<style>
+    .faculty-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 120px 0 80px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .faculty-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><polygon points="1000,100 1000,0 0,100"/></svg>');
+        background-size: cover;
+    }
+
+    .faculty-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .faculty-hero h1 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        animation: fadeInUp 1s ease;
+    }
+
+    .faculty-hero p {
+        font-size: 1.3rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+        animation: fadeInUp 1s ease 0.2s both;
+        line-height: 1.6;
+    }
+
+    .faculty-container {
+        max-width: 1200px;
+        margin: -60px auto 0;
+        padding: 0 20px 80px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .faculty-stats {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        margin-bottom: 60px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 30px;
+        text-align: center;
+    }
+
+    .stat-item {
+        padding: 20px;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #f8f9fa, #ffffff);
+        transition: transform 0.3s ease;
+    }
+
+    .stat-item:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #667eea;
+        font-family: 'Poppins', sans-serif;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 1.1rem;
+        color: #2c3e50;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .section-header h2 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 15px;
+    }
+
+    .section-header p {
+        font-size: 1.2rem;
+        color: #7f8c8d;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .faculty-filters {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 50px;
+    }
+
+    .filter-btn {
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        color: #6c757d;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .faculty-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 60px;
+    }
+
+    .faculty-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .faculty-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .faculty-image {
+        width: 100%;
+        height: 300px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .faculty-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .faculty-card:hover .faculty-image img {
+        transform: scale(1.05);
+    }
+
+    .faculty-image::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));
+        z-index: 1;
+    }
+
+    .faculty-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        font-size: 4rem;
+    }
+
+    .faculty-content {
+        padding: 30px;
+        text-align: center;
+    }
+
+    .faculty-name {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 8px;
+    }
+
+    .faculty-position {
+        color: #667eea;
+        font-weight: 500;
+        font-size: 1rem;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .faculty-department {
+        color: #7f8c8d;
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+        font-style: italic;
+    }
+
+    .faculty-qualifications {
+        margin-bottom: 15px;
+    }
+
+    .qualification {
+        display: inline-block;
+        background: #f8f9fa;
+        color: #495057;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        margin: 2px;
+        font-weight: 500;
+    }
+
+    .faculty-bio {
+        color: #6c757d;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 20px;
+    }
+
+    .faculty-contact {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .contact-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: white;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .contact-btn.email {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    .contact-btn.phone {
+        background: linear-gradient(135deg, #28a745, #20c997);
+    }
+
+    .contact-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        color: white;
+        text-decoration: none;
+    }
+
+    .leadership-section {
+        background: #f8f9fa;
+        border-radius: 20px;
+        padding: 60px;
+        margin-bottom: 60px;
+    }
+
+    .leadership-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+        margin-top: 40px;
+    }
+
+    .leadership-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .leadership-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .leadership-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2.5rem;
+    }
+
+    .join-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 60px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .join-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="white" opacity="0.05"><circle cx="20" cy="20" r="2"/><circle cx="80" cy="20" r="2"/><circle cx="20" cy="80" r="2"/><circle cx="80" cy="80" r="2"/><circle cx="50" cy="50" r="3"/></svg>');
+        background-size: 50px 50px;
+    }
+
+    .join-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .join-section h2 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+
+    .join-section p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 30px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .join-btn {
+        background: white;
+        color: #667eea;
+        padding: 15px 40px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .join-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(255, 255, 255, 0.3);
+        color: #667eea;
+        text-decoration: none;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .faculty-card {
+        animation: fadeInUp 0.6s ease forwards;
+        opacity: 0;
+    }
+
+    .faculty-card:nth-child(1) { animation-delay: 0.1s; }
+    .faculty-card:nth-child(2) { animation-delay: 0.2s; }
+    .faculty-card:nth-child(3) { animation-delay: 0.3s; }
+    .faculty-card:nth-child(4) { animation-delay: 0.4s; }
+    .faculty-card:nth-child(5) { animation-delay: 0.5s; }
+    .faculty-card:nth-child(6) { animation-delay: 0.6s; }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .faculty-hero h1 {
+            font-size: 3rem;
+        }
+        
+        .faculty-stats {
+            padding: 30px;
+            gap: 20px;
+        }
+        
+        .leadership-section,
+        .join-section {
+            padding: 40px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .faculty-hero {
+            padding: 100px 0 60px;
+        }
+        
+        .faculty-hero h1 {
+            font-size: 2.5rem;
+        }
+        
+        .faculty-hero p {
+            font-size: 1.1rem;
+        }
+        
+        .faculty-container {
+            margin-top: -40px;
+            padding: 0 15px 60px;
+        }
+        
+        .faculty-stats {
+            padding: 25px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2rem;
+        }
+        
+        .faculty-filters {
+            gap: 8px;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            font-size: 0.8rem;
+        }
+        
+        .faculty-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .faculty-content {
+            padding: 25px;
+        }
+        
+        .leadership-section,
+        .join-section {
+            padding: 30px;
+        }
+        
+        .leadership-grid {
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .faculty-hero h1 {
+            font-size: 2rem;
+        }
+        
+        .faculty-hero p {
+            font-size: 1rem;
+        }
+        
+        .faculty-stats {
+            grid-template-columns: 1fr;
+            padding: 20px;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+        }
+        
+        .section-header h2 {
+            font-size: 1.8rem;
+        }
+        
+        .faculty-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .faculty-content {
+            padding: 20px;
+        }
+        
+        .faculty-name {
+            font-size: 1.2rem;
+        }
+        
+        .leadership-section,
+        .join-section {
+            padding: 25px 20px;
+        }
+        
+        .join-section h2 {
+            font-size: 2rem;
+        }
+        
+        .join-section p {
+            font-size: 1.1rem;
+        }
+    }
+
+    /* Filter Animation */
+    .faculty-card.hidden {
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.3s ease;
+    }
+
+    .faculty-card.visible {
+        opacity: 1;
+        transform: scale(1);
+        transition: all 0.3s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Faculty Hero Section -->
+<section class="faculty-hero">
+    <div class="faculty-hero-content">
+        <h1>Our Valued Faculty</h1>
+        <p>Meet our dedicated team of educators who are committed to nurturing young minds and shaping future leaders at Unison English Boarding School.</p>
+    </div>
+</section>
+
+<div class="faculty-container">
+    <!-- Faculty Statistics -->
+    <div class="faculty-stats">
+        <div class="stat-item">
+            <span class="stat-number">45+</span>
+            <span class="stat-label">Expert Teachers</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">15+</span>
+            <span class="stat-label">Years Average Experience</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">12</span>
+            <span class="stat-label">Different Specializations</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">95%</span>
+            <span class="stat-label">Advanced Degrees</span>
+        </div>
+    </div>
+
+    <!-- Leadership Team -->
+    <div class="leadership-section">
+        <div class="section-header">
+            <h2>School Leadership</h2>
+            <p>Our experienced leadership team guides the vision and mission of our institution.</p>
+        </div>
+        
+        <div class="leadership-grid">
+            <div class="leadership-card">
+                <div class="leadership-image">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3>Dr. Rajesh Sharma</h3>
+                <p class="faculty-position">Principal</p>
+                <p class="faculty-department">Educational Leadership</p>
+                <p class="faculty-bio">Ph.D. in Educational Administration with 25+ years of experience in academic leadership and institutional development.</p>
+            </div>
+            
+            <div class="leadership-card">
+                <div class="leadership-image">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <h3>Ms. Priya Adhikari</h3>
+                <p class="faculty-position">Vice Principal</p>
+                <p class="faculty-department">Academic Affairs</p>
+                <p class="faculty-bio">M.Ed. in Curriculum Development with expertise in modern teaching methodologies and student assessment.</p>
+            </div>
+            
+            <div class="leadership-card">
+                <div class="leadership-image">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <h3>Mr. Suresh Thapa</h3>
+                <p class="faculty-position">Academic Director</p>
+                <p class="faculty-department">Curriculum & Instruction</p>
+                <p class="faculty-bio">M.A. in Educational Psychology with specialization in innovative learning strategies and academic excellence.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Faculty Filters -->
+    <div class="section-header">
+        <h2>Our Teaching Faculty</h2>
+        <p>Explore our diverse team of qualified educators across different departments and specializations.</p>
+    </div>
+
+    <div class="faculty-filters">
+        <button class="filter-btn active" data-filter="all">All Faculty</button>
+        <button class="filter-btn" data-filter="english">English</button>
+        <button class="filter-btn" data-filter="science">Science</button>
+        <button class="filter-btn" data-filter="mathematics">Mathematics</button>
+        <button class="filter-btn" data-filter="social">Social Studies</button>
+        <button class="filter-btn" data-filter="arts">Arts & Culture</button>
+        <button class="filter-btn" data-filter="sports">Physical Education</button>
+    </div>
+
+    <!-- Faculty Grid -->
+    <div class="faculty-grid" id="facultyGrid">
+        <!-- English Department -->
+        <div class="faculty-card" data-category="english">
+            <div class="faculty-image">
+                <div class="faculty-placeholder">
+                    <i class="fas fa-book-reader"></i>
+                </div>
+            </div>
+            <div class="faculty-content">
+                <h3 class="faculty-name">Ms. Sita Rai</h3>
+                <p class="faculty-position">Head of English</p>
+                <p class="faculty-department">English Literature & Language</p>
+                <div class="faculty-qualifications">
+                    <span class="qualification">M.A. English</span>
+                    <span class="qualification">B.Ed.</span>
+                    <span class="qualification">12 Years Exp.</span>
+                </div>
+                <p class="faculty-bio">Passionate about literature and creative writing, Ms. Rai inspires students to express themselves through words and develop critical thinking skills.</p>
+                <div class="faculty-contact">
+                    <a href="mailto:sita.rai@uebs.edu.np" class="contact-btn email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="tel:+9779876543210" class="contact-btn phone">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Science Department -->
+        <div class="faculty-card" data-category="science">
+            <div class="faculty-image">
+                <div class="faculty-placeholder">
+                    <i class="fas fa-microscope"></i>
+                </div>
+            </div>
+            <div class="faculty-content">
+                <h3 class="faculty-name">Dr. Ramesh Bhattarai</h3>
+                <p class="faculty-position">Head of Science</p>
+                <p class="faculty-department">Physics & Chemistry</p>
+                <div class="faculty-qualifications">
+                    <span class="qualification">Ph.D. Physics</span>
+                    <span class="qualification">M.Sc.</span>
+                    <span class="qualification">18 Years Exp.</span>
+                </div>
+                <p class="faculty-bio">Dr. Bhattarai brings cutting-edge scientific research experience to the classroom, making complex concepts accessible and engaging for students.</p>
+                <div class="faculty-contact">
+                    <a href="mailto:ramesh.bhattarai@uebs.edu.np" class="contact-btn email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="tel:+9779876543211" class="contact-btn phone">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mathematics Department -->
+        <div class="faculty-card" data-category="mathematics">
+            <div class="faculty-image">
+                <div class="faculty-placeholder">
+                    <i class="fas fa-calculator"></i>
+                </div>
+            </div>
+            <div class="faculty-content">
+                <h3 class="faculty-name">Mr. Bikash Pandey</h3>
+                <p class="faculty-position">Mathematics Teacher</p>
+                <p class="faculty-department">Advanced Mathematics</p>
+                <div class="faculty-qualifications">
+                    <span class="qualification">M.Sc. Mathematics</span>
+                    <span class="qualification">B.Ed.</span>
+                    <span class="qualification">10 Years Exp.</span>
+                </div>
+                <p class="faculty-bio">Mr. Pandey excels at making mathematics enjoyable and understandable, helping students build strong analytical and problem-solving skills.</p>
+                <div class="faculty-contact">
+                    <a href="mailto:bikash.pandey@uebs.edu.np" class="contact-btn email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="tel:+9779876543212" class="contact-btn phone">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Studies Department -->
+        <div class="faculty-card" data-category="social">
+            <div class="faculty-image">
+                <div class="faculty-placeholder">
+                    <i class="fas fa-globe-asia"></i>
+                </div>
+            </div>
+            <div class="faculty-content">
+                <h3 class="faculty-name">Ms. Kamala Shrestha</h3>
+                <p class="faculty-position">Social Studies Teacher</p>
+                <p class="faculty-department">History & Geography</p>
+                <div class="faculty-qualifications">
+                    <span class="qualification">M.A. History</span>
+                    <span class="qualification">B.Ed.</span>
+                    <span class="qualification">14 Years Exp.</span>
+                </div>
+                <p class="faculty-bio">Ms. Shrestha brings history to life through storytelling and interactive learning, fostering cultural awareness and critical thinking.</p>
+                <div class="faculty-contact">
+                    <a href="mailto:kamala.shrestha@uebs.edu.np" class="contact-btn email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="tel:+9779876543213" class="contact-btn phone">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Arts Department -->
+        <div class="faculty-card" data-category="arts">
+            <div class="faculty-image">
+                <div class="faculty-placeholder">
+                    <i class="fas fa-palette"></i>
+                </div>
+            </div>
+            <div class="faculty-content">
+                <h3 class="faculty-name">Mr. Arjun Gurung</h3>
+                <p class="faculty-position">Arts & Music Teacher</p>
+                <p class="faculty-department">Creative Arts</p>
+                <div class="faculty-qualifications">
+                    <span class="qualification">M.A. Fine Arts</span>
+                    <span class="qualification">Music Diploma</span>
+                    <span class="qualification">8 Years Exp.</span>
+                </div>
+                <p class="faculty-bio">Mr. Gurung nurtures creativity and artistic expression, helping students discover their talents in visual arts, music, and performance.</p>
+                <div class="faculty-contact">
+                    <a href="mailto:arjun.gurung@uebs.edu.np" class="contact-btn email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="tel:+9779876543214" class="contact-btn phone">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sports Department -->
+        <div class="faculty-card" data-category="sports">
+            <div class="faculty-image">
+                <div class="faculty-placeholder">
+                    <i class="fas fa-running"></i>
+                </div>
+            </div>
+            <div class="faculty-content">
+                <h3 class="faculty-name">Ms. Sunita Magar</h3>
+                <p class="faculty-position">Physical Education Teacher</p>
+                <p class="faculty-department">Sports & Fitness</p>
+                <div class="faculty-qualifications">
+                    <span class="qualification">M.P.Ed.</span>
+                    <span class="qualification">Sports Coaching</span>
+                    <span class="qualification">11 Years Exp.</span>
+                </div>
+                <p class="faculty-bio">Ms. Magar promotes physical fitness and sportsmanship, training students in various sports and building teamwork and leadership skills.</p>
+                <div class="faculty-contact">
+                    <a href="mailto:sunita.magar@uebs.edu.np" class="contact-btn email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="tel:+9779876543215" class="contact-btn phone">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Join Our Team Section -->
+    <div class="join-section">
+        <div class="join-content">
+            <h2>Join Our Teaching Community</h2>
+            <p>Are you passionate about education and want to make a difference in young lives? We're always looking for dedicated professionals to join our faculty team.</p>
+            <a href="{% url 'contact' %}" class="join-btn">
+                <i class="fas fa-paper-plane"></i>
+                Apply Now
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize AOS if available
+        if (typeof AOS !== 'undefined') {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
+        }
+
+        // Faculty Filter System
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const facultyCards = document.querySelectorAll('.faculty-card');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                // Filter cards
+                facultyCards.forEach(card => {
+                    card.classList.remove('visible', 'hidden');
+                    
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.classList.add('visible');
+                        card.style.display = 'block';
+                    } else {
+                        card.classList.add('hidden');
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300); // Match the CSS transition duration
+                    }
+                });
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for animation on scroll
+        if ('IntersectionObserver' in window) {
+            const cardObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        cardObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.faculty-card').forEach(card => {
+                cardObserver.observe(card);
+            });
+        }
+    });
+
+    // Additional utility functions
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Handle window resize events with debounce
+    window.addEventListener('resize', debounce(function() {
+        // Any responsive adjustments can go here
+    }, 250));
+</script>
+{% endblock %}
